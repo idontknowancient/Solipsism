@@ -38,7 +38,7 @@ public:
                      float width, float height,
                      float radius, float shadow_offset,
                      const std::string& text_string, int text_size,
-                     sf::Font& font,
+                     const sf::Font& font,
                      sf::Color rectangle_color = BUTTON_RECTANGLE_COLOR, 
                      sf::Color shadow_color = BUTTON_SHADOW_COLOR,
                      sf::Color text_color = BUTTON_TEXT_COLOR);

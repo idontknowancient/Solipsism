@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include <iostream>
 #include <vector>
+#include <string>
 
 class Entity {
 protected:
@@ -45,11 +46,12 @@ class Trap {
 // ========== Stage Class =============
 class Stage {
 private:
-    int stageNum;
+    // Starts from 1
+    int stageId;
     int row;
     int column;
     // Hold tile data
-    std::vector<std::vector<char>> tileMap; 
+    std::vector<std::vector<char>> tileMap;
     // Store all shapes drawn
     // Later binding
     std::vector<sf::Shape*> shapes;
@@ -57,10 +59,15 @@ private:
     std::vector<Entity> entities;
     Player player;
 
+    std::string patternDispensor;
+    std::string patternTraceMonster;
+
 public:
-    Stage(int stageNum, int column, int row);
+    Stage(int stageId, int column, int row);
 
     ~Stage();
+
+    static void createFromFile(std::vector<Stage>& stages);
 
     // Disable copy to avoid double-free of raw shape pointers
     Stage(const Stage&) = delete;
@@ -73,6 +80,10 @@ public:
     int getRow() const;
     int getColumn() const;
     Player& getPlayer();
+
+    void setPatternDispensor(const std::string& pattern);
+
+    void setPatternTraceMonster(const std::string& pattern);
 
     // Attempt to move the entity in the specified direction
     // Returns true if the move was successful, false otherwise

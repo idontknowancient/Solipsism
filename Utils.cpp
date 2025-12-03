@@ -76,3 +76,28 @@ void handleDrag(const sf::RenderWindow& window, sf::View& view, sf::Vector2i& la
         
         Logger::log_debug("View moved to (" + std::to_string(view.getCenter().x) + ", " + std::to_string(view.getCenter().y) + ")");
 }
+
+void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTexture) {
+    // Original size of the background texture
+    sf::Vector2u backgroundSize = backgroundTexture.getSize();
+    
+    float viewWidth = WORLD_WIDTH;
+    float viewHeight = WORLD_HEIGHT; 
+    
+    // 1. Calculate scaling factor
+    // Must use the larger scale (Cover mode)
+    float scaleX = viewWidth / backgroundSize.x;
+    float scaleY = viewHeight / backgroundSize.y;
+    float finalScale = std::max(scaleX, scaleY); // Choose the largest scale to ensure full coverage
+    // 2. Apply scaling
+    backgroundSprite.setScale({finalScale, finalScale});
+
+    // 3. Set origin to center and align sprite center to View center
+    // This ensures the sprite is centered in the View and excess parts are cropped
+    sf::Vector2f spriteCenter = {backgroundSprite.getGlobalBounds().size.x / 2.f, backgroundSprite.getGlobalBounds().size.y / 2.f};
+    backgroundSprite.setOrigin({spriteCenter.x / finalScale, spriteCenter.y / finalScale}); // Origin should still be based on unscaled size
+    
+    // Set position (align with View center)
+    backgroundSprite.setPosition({viewWidth / 2.f, viewHeight / 2.f});
+    backgroundSprite.setColor(BACKGROUND_TRANSLUCENT);
+}

@@ -8,7 +8,7 @@ RoundedRectangle::RoundedRectangle(float center_x, float center_y,
         float width, float height,
         float radius, float shadow_offset,
         const std::string& text_string, int text_size,
-        sf::Font& font,
+        const sf::Font& font,
         sf::Color rectangle_color, 
         sf::Color shadow_color,
         sf::Color text_color) : text(font, text_string, text_size) {

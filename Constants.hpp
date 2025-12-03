@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <string>
 
 enum class GameState {
@@ -21,10 +22,13 @@ inline const std::string TITLE_IMAGE_FILE = "assets/title_image.png";
 inline const std::string BACKGROUND_IMAGE_FILE = "assets/background_image.jpg";
 inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
 inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
-inline const std::string FONT_FILE = "assets/Conthrax.otf";
+inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
+inline const std::string STAGE_FILE = "stages.txt";
 
 inline const float BGM_VOLUME = 20.f;
 inline const float ZOOM_RATE = 0.1f; // Rate of zooming in/out per mouse wheel scroll
+
+inline const sf::Color BACKGROUND_TRANSLUCENT = sf::Color(255, 255, 255, 50);
 
 // Default Button Settings
 inline const float BUTTON_WIDTH = 200.0f;
@@ -41,6 +45,10 @@ inline const sf::Color BUTTON_TEXT_COLOR = sf::Color(200, 200, 200);
 
 class Resource {
 private:
+    static sf::Music music;
+    static sf::Texture titleTexture;
+    static sf::Texture titleBackgroundTexture;
+    static sf::Font buttonFont;
     static sf::Texture playerTexture;
 
 public:
@@ -48,5 +56,9 @@ public:
     ~Resource() = delete;
 
     static void init();
+    static sf::Music& getMusic();
+    static const sf::Texture& getTitleTexture();
+    static const sf::Texture& getTitleBackgroundTexture();
+    static const sf::Font& getButtonFont();
     static const sf::Texture& getPlayerTexture();
 };

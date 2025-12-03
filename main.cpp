@@ -36,86 +36,39 @@ int main() {
 
 
 
-    // BGM setup
-    sf::Music music;
-    if(music.openFromFile(BGM_FILE)) {
-        music.play();
-        music.setVolume(BGM_VOLUME);
-        music.setLooping(true);
-    } else {
-        Logger::log("Failed to load BGM file: " + BGM_FILE);
-    }
-
-
-
-    // Gamestate
-    GameState gameState = GameState::TitleScreen;
-    int stageNumber = 1;
-
-    // Title image assets
-    sf::Texture titleTexture;
-    if(!titleTexture.loadFromFile(TITLE_IMAGE_FILE)) {
-        Logger::log("Failed to load title image: " + TITLE_IMAGE_FILE);
-    }
-    sf::Sprite titleSprite(titleTexture);
-    titleSprite.setPosition({(WORLD_WIDTH - titleTexture.getSize().x) / 2.f, -50.f}); // 水平置中，Y 軸 150 單位下移
+    // Title image
+    sf::Sprite titleSprite(Resource::getTitleTexture());
+    titleSprite.setPosition({(WORLD_WIDTH - Resource::getTitleTexture().getSize().x) / 2.f, -50.f}); // 水平置中，Y 軸 150 單位下移
     titleSprite.setColor(sf::Color(255, 255, 255, 180)); // 微透明效果
     
-    // Background image assets
-    sf::Texture backgroundTexture;
-    if(!backgroundTexture.loadFromFile(BACKGROUND_IMAGE_FILE)) {
-        Logger::log("Failed to load title image: " + BACKGROUND_IMAGE_FILE);
-    }
-    sf::Sprite backgroundSprite(backgroundTexture);
-    // 計算圖片原始尺寸
-    sf::Vector2u backgroundSize = backgroundTexture.getSize();
-    
-    // 獲取當前 View 尺寸 (使用 WORLD_WIDTH/HEIGHT 作為初始 View 尺寸，用於計算)
-    float viewWidth = WORLD_WIDTH;
-    float viewHeight = WORLD_HEIGHT; 
-    
-    // 1. 計算縮放比例
-    // 必須使用較大的比例 (Cover 模式)
-    float scaleX = viewWidth / backgroundSize.x;
-    float scaleY = viewHeight / backgroundSize.y;
-    float finalScale = std::max(scaleX, scaleY); // 選擇最大的比例以確保完全覆蓋
-
-    // 2. 應用縮放
-    backgroundSprite.setScale({finalScale, finalScale});
-
-    // 3. 設置原點到中心，並將圖片中心對齊 View 中心
-    // 這樣可以確保圖片在 View 中居中，多餘的部分被裁剪
-    sf::Vector2f spriteCenter = {backgroundSprite.getGlobalBounds().size.x / 2.f, backgroundSprite.getGlobalBounds().size.y / 2.f};
-    backgroundSprite.setOrigin({spriteCenter.x / finalScale, spriteCenter.y / finalScale}); // 原點仍需基於未縮放尺寸
-    
-    // 設置位置 (對齊 View 中心)
-    backgroundSprite.setPosition({viewWidth / 2.f, viewHeight / 2.f});
-    backgroundSprite.setColor(sf::Color(255, 255, 255, 50)); // 半透明效果
-
-    // Font
-    sf::Font font;
-    if(!font.openFromFile(FONT_FILE.data())) {
-        Logger::log("Failed to load font file: " + std::string(FONT_FILE.data()));
-    }
+    // Background image
+    sf::Sprite backgroundSprite(Resource::getTitleBackgroundTexture());
+    setBackground(backgroundSprite, Resource::getTitleBackgroundTexture());
 
     // Start button
     RoundedRectangle startButton(
         BUTTON_CENTER_X, BUTTON_CENTER_Y,
         BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
         BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
-        "START", 30, font
+        "START", 30, Resource::getButtonFont()
     );
+
+
+
+    // Gamestate
+    GameState gameState = GameState::TitleScreen;
+    int stageNum = 0;
+    int stageIndex = 1;
 
 
 
     // Store all stages
     std::vector<Stage> stages;
 
-
-
     // Used for dragging view
     bool isDragging = false;
     sf::Vector2i lastMousePos;
+
 
 
     // Start the game loop
@@ -124,7 +77,7 @@ int main() {
         // I: Process events
         while(const std::optional event = window.pollEvent()) {
             if(event->is<sf::Event::Closed>()) {
-                music.stop();
+                Resource::getMusic().stop();
                 window.close();
                 Logger::log("Window closed by user.");
             } 
@@ -152,7 +105,9 @@ int main() {
 
                             // Construct Stage in-place to avoid copying (which would
                             // shallow-copy raw shape pointers and lead to double-free / dangling pointers)
-                            stages.emplace_back(stageNumber, 15, 10);
+                            // stages.emplace_back(stageIndex, 15, 10);
+                            Stage::createFromFile(stages);
+                            stageNum = static_cast<int>(stages.size());
                         }
                     }
 
@@ -193,35 +148,44 @@ int main() {
             }
 
             else if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-                if(keyPressed->code == sf::Keyboard::Key::W) {
+                if(keyPressed->code == sf::Keyboard::Key::Escape) {
+                    Logger::log("Escape key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        Logger::log("Returning to Title Screen.");
+                        gameState = GameState::TitleScreen;
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up) {
                     Logger::log("W key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "W");
+                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "W");
                     }
                 }
 
-                else if(keyPressed->code == sf::Keyboard::Key::A) {
+                else if(keyPressed->code == sf::Keyboard::Key::A || keyPressed->code == sf::Keyboard::Key::Left) {
                     Logger::log("A key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "A");
+                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "A");
                     }
                 }
 
-                else if(keyPressed->code == sf::Keyboard::Key::S) {
+                else if(keyPressed->code == sf::Keyboard::Key::S || keyPressed->code == sf::Keyboard::Key::Down) {
                     Logger::log("S key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "S");
+                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "S");
                     }
                 }
 
-                else if(keyPressed->code == sf::Keyboard::Key::D) {
+                else if(keyPressed->code == sf::Keyboard::Key::D || keyPressed->code == sf::Keyboard::Key::Right) {
                     Logger::log("D key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "D");
+                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "D");
                     }
                 }
             }
@@ -251,7 +215,7 @@ int main() {
             startButton.draw(window);
         } else if(gameState == GameState::Playing) {
             window.setView(view);
-            stages.at(stageNumber - 1).draw(window);
+            stages.at(stageIndex - 1).draw(window);
         }
 
         // Update the window
