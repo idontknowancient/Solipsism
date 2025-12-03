@@ -72,7 +72,7 @@ RoundedRectangle::RoundedRectangle(float center_x, float center_y,
     clickRectangle.setOrigin({rectangle_width / 2.f, rectangle_height / 2.f});
     // Locate to top-left corner
     clickRectangle.setPosition({rectangle_center_x - circle_radius, rectangle_center_y - circle_radius});
-    clickRectangle.setFillColor(text_color);
+    clickRectangle.setFillColor(sf::Color::Transparent); // Invisible
 }
 
 void RoundedRectangle::draw(sf::RenderWindow& window) {

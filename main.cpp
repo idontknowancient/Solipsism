@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "Utils.hpp"
 #include "Shape.hpp"
+#include "Stage.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -11,9 +12,10 @@
 
 int main() {
 
-    // Initialize logger
+    // Initialize logger and resources
     Logger::init("debug_log.txt");
     Logger::log("Game started.");
+    Resource::init();
 
 
 
@@ -48,6 +50,7 @@ int main() {
 
     // Gamestate
     GameState gameState = GameState::TitleScreen;
+    int stageNumber = 1;
 
     // Title image assets
     sf::Texture titleTexture;
@@ -105,9 +108,8 @@ int main() {
 
 
 
-    // Store all shapes drawn
-    // Later binding
-    std::vector<sf::Shape*> shapes;
+    // Store all stages
+    std::vector<Stage> stages;
 
 
 
@@ -136,6 +138,8 @@ int main() {
             
             else if(const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
                 if(mousePressed->button == sf::Mouse::Button::Left) {
+                    Logger::log("Clicked left button at (" + std::to_string(mousePressed->position.x) + ", " 
+                        + std::to_string(mousePressed->position.y) + ").");
 
                     if(gameState == GameState::TitleScreen) {
                         // Map pixel to world coordinates
@@ -146,7 +150,9 @@ int main() {
                             gameState = GameState::Playing;
                             Logger::log("Start Game button pressed. Entering Playing state.");
 
-                            createTiles(shapes, 8, 8, 100, 100);
+                            // Construct Stage in-place to avoid copying (which would
+                            // shallow-copy raw shape pointers and lead to double-free / dangling pointers)
+                            stages.emplace_back(stageNumber, 15, 10);
                         }
                     }
 
@@ -155,7 +161,6 @@ int main() {
                     }
 
                     lastMousePos = mousePressed->position;
-                    Logger::log("Clicked left button at (" + std::to_string(lastMousePos.x) + ", " + std::to_string(lastMousePos.y) + ").");
                 }
             } 
             
@@ -186,6 +191,40 @@ int main() {
                     }
                 }
             }
+
+            else if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+                if(keyPressed->code == sf::Keyboard::Key::W) {
+                    Logger::log("W key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "W");
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::A) {
+                    Logger::log("A key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "A");
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::S) {
+                    Logger::log("S key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "S");
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::D) {
+                    Logger::log("D key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        stages.at(stageNumber - 1).moveEntitySuccessful(stages.at(stageNumber - 1).getPlayer(), "D");
+                    }
+                }
+            }
         }
 
 
@@ -212,11 +251,7 @@ int main() {
             startButton.draw(window);
         } else if(gameState == GameState::Playing) {
             window.setView(view);
-
-            // Draw all shapes
-            for(const auto& shape : shapes) {
-                window.draw(*shape);
-            }
+            stages.at(stageNumber - 1).draw(window);
         }
 
         // Update the window
@@ -228,11 +263,6 @@ int main() {
     // Cleanup and exit
     Logger::log("Game exited.");
     Logger::shutdown();
-
-    // Free allocated memory
-    for(auto& shape : shapes) {
-        delete shape;
-    }
 
     return 0;
 }

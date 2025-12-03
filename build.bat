@@ -6,7 +6,10 @@ echo Compiling main.cpp...
 g++ -std=c++17 -IC:\SFML-3.0.2\include -c main.cpp -o main.o
 if errorlevel 1 goto error
 
-REM 編譯 Constants.hpp (無需編譯，僅供參考)
+REM 編譯 Constants.cpp (輸出 Constants.o)
+echo Compiling Constants.cpp...
+g++ -std=c++17 -IC:\SFML-3.0.2\include -c Constants.cpp -o Constants.o
+if errorlevel 1 goto error
 
 REM 編譯 Logger.cpp (輸出 Logger.o)
 echo Compiling Logger.cpp...
@@ -22,16 +25,23 @@ echo Compiling Shape.cpp...
 g++ -std=c++17 -IC:\SFML-3.0.2\include -c Shape.cpp -o Shape.o
 if errorlevel 1 goto error
 
+REM 編譯 Stage.cpp (輸出 Stage.o)
+echo Compiling Stage.cpp...
+g++ -std=c++17 -IC:\SFML-3.0.2\include -c Stage.cpp -o Stage.o
+if errorlevel 1 goto error
+
 REM 連結所有物件檔 (.o) - 輸出 game.exe
 echo Linking game.exe...
-g++ -LC:\SFML-3.0.2\lib .\Logger.o .\Utils.o .\Shape.o .\main.o -o game.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -mwindows
+g++ -LC:\SFML-3.0.2\lib .\Constants.o .\Logger.o .\Utils.o .\Shape.o .\Stage.o .\main.o -o game.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -mwindows
 if errorlevel 1 goto error
 
 REM 清理物件檔 (可選，但在開發階段很有用)
 del .\main.o
+del .\Constants.o
 del .\Logger.o
 del .\Utils.o
 del .\Shape.o
+del .\Stage.o
 
 REM 執行 (Execute)
 echo Running game.exe...
