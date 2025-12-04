@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 // Define static member
+sf::Image Resource::icon;
 sf::Music Resource::music;
 sf::Texture Resource::titleTexture;
 sf::Texture Resource::titleBackgroundTexture;
@@ -10,6 +11,11 @@ sf::Font Resource::buttonFont;
 sf::Texture Resource::playerTexture;
 
 void Resource::init() {
+    // Load icon
+    if(!icon.loadFromFile(ICON_FILE)) {
+        Logger::log("Failed to load icon file: " + ICON_FILE);
+    }
+
     // Load music
     if(!music.openFromFile(BGM_FILE)) {
         Logger::log("Failed to load BGM file: " + BGM_FILE);
@@ -35,6 +41,10 @@ void Resource::init() {
     if(!playerTexture.loadFromFile(PLAYER_TEXTURE_FILE)) {
         Logger::log("Failed to load player texture: " + PLAYER_TEXTURE_FILE);
     }
+}
+
+const sf::Image& Resource::getIcon() {
+    return icon;
 }
 
 sf::Music& Resource::getMusic() {

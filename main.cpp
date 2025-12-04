@@ -21,6 +21,7 @@ int main() {
 
     // Create the main window
     sf::RenderWindow window(sf::VideoMode({WORLD_WIDTH, WORLD_HEIGHT}), GAME_TITLE);
+    window.setIcon(Resource::getIcon());
     // Set a framerate limit (not depending on device refresh rate)
     // setFramerateLimit and setVerticalSyncEnabled should not be used together
     window.setFramerateLimit(FRAME_RATE);

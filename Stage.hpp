@@ -12,20 +12,23 @@ protected:
 
 public:
     // Position in tile coordinates
-    int posX;
-    int posY;
+    sf::Vector2i posTile;
+    // Position in window coordinates
+    sf::Vector2f posWindow;
 
-    Entity(int x, int y, const sf::Texture& texture);
+    Entity(const sf::Texture& texture);
     virtual ~Entity() = default;
+
+    sf::Sprite& getSprite();
 
     virtual void interact(Entity& entity) = 0;
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window, int tile_size);
 };
 
 class Player : public Entity {
 public:
-    Player(int x, int y, const sf::Texture& texture);
+    Player(const sf::Texture& texture);
     void interact(Entity& entity) override;
 };
 
@@ -51,6 +54,7 @@ private:
     int row;
     int column;
     // Hold tile data
+    int tile_size;
     std::vector<std::vector<char>> tileMap;
     // Store all shapes drawn
     // Later binding
@@ -82,8 +86,9 @@ public:
     Player& getPlayer();
 
     void setPatternDispensor(const std::string& pattern);
-
     void setPatternTraceMonster(const std::string& pattern);
+
+    void createTiles(int tile_size);
 
     // Attempt to move the entity in the specified direction
     // Returns true if the move was successful, false otherwise

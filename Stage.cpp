@@ -5,21 +5,18 @@
 #include <iostream>
 #include <vector>
 
-Entity::Entity(int x, int y, const sf::Texture& texture) : posX(x), posY(y), sprite(texture) {}
+Entity::Entity(const sf::Texture& texture) : sprite(texture) {}
 
-// Attempt to move the entity in the specified direction
-// Returns true if the move was successful, false otherwise
+sf::Sprite& Entity::getSprite() {
+    return sprite;
+}
 
-void Entity::draw(sf::RenderWindow& window) {
-    // To be determined
-    sprite.setPosition({posX * 100.f, posY * 100.f});
-    // Logger::log("Drawing entity at position: (" + std::to_string(posX * 100.f) + ", " 
-    //     + std::to_string(posY * 100.f) + ")");
+void Entity::draw(sf::RenderWindow& window, int tile_size) {
     window.draw(sprite);
 }
 
-Player::Player(int x, int y, const sf::Texture& texture) : Entity(x, y, texture) {
-    Logger::log("Player created at tile: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
+Player::Player(const sf::Texture& texture) : Entity(texture) {
+    Logger::log("Player created.");
 }
 
 void Player::interact(Entity& entity) {
@@ -29,10 +26,9 @@ void Player::interact(Entity& entity) {
 
 
 // ========== Stage Class =============
-Stage::Stage(int stageId, int column, int row) : stageId(stageId), row(row), column(column), player(0, 0, Resource::getPlayerTexture()) {
+Stage::Stage(int stageId, int column, int row) : stageId(stageId), row(row), column(column), player(Resource::getPlayerTexture()) {
     // Initialize tile map with open space '-'
     tileMap.resize(row, std::vector<char>(column, '-'));
-    createTiles(shapes, column, row, 100, 100);
     Logger::log("Stage " + std::to_string(stageId) + " created with size (" 
         + std::to_string(column) + ", " + std::to_string(row) + ").");
 }
@@ -93,8 +89,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                 stage.tileMap[r][c] = ch;
                 if(ch == 'P') {
                     // Player start tile position in tile coordinates (c,r)
-                    stage.getPlayer().posX = c;
-                    stage.getPlayer().posY = r;
+                    stage.getPlayer().posTile = {c, r};
                 }
             }
             // Fill remaining columns with open space if line shorter
@@ -134,6 +129,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         // Store patterns into stage
         stage.setPatternDispensor(dispensorPattern);
         stage.setPatternTraceMonster(guardMonsterPattern);
+        stage.createTiles(100);
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
 
@@ -156,22 +152,94 @@ void Stage::setPatternTraceMonster(const std::string& pattern) {
     patternTraceMonster = pattern;
 }
 
+void Stage::createTiles(int tile_size) {
+    this->tile_size = tile_size;
+    float start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
+    float start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
+
+    // Scale player sprite to fit tile size
+    sf::Sprite& playerSprite = player.getSprite();
+    playerSprite.scale({static_cast<float>(tile_size) / playerSprite.getTexture().getSize().x, 
+        static_cast<float>(tile_size) / playerSprite.getTexture().getSize().y});
+    player.posWindow = {start_x + player.posTile.x * tile_size, start_y + player.posTile.y * tile_size};
+    playerSprite.setPosition(player.posWindow);
+    Logger::log("Player positioned at (" 
+        + std::to_string(player.posWindow.x) + ", " 
+        + std::to_string(player.posWindow.y) + ").");
+
+    for(int i = 0; i < row; i++) {
+        for(int j = 0; j < column; j++) {
+            // Use new to allocate on heap to prevent going out of scope
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tile_size, tile_size));
+            
+            // Set position
+            float x = start_x + j * tile_size;
+            float y = start_y + i * tile_size;
+            tile->setPosition({x, y});
+
+            // Set tile appearance
+            tile->setOutlineThickness(1.0f);
+            tile->setOutlineColor(sf::Color(100, 100, 100));
+            
+            // Checkerboard colors
+            char tileType = tileMap[i][j];
+            switch(tileType) {
+                case 'P': // Player start
+                    tile->setFillColor(TILE_COLOR_PLAYER);
+                    break;
+                case 'G': // Goal
+                    tile->setFillColor(TILE_COLOR_GOAL);
+                    break;
+                case 'X': // Wall
+                    tile->setFillColor(TILE_COLOR_WALL);
+                    break;
+                case 'D': // Dispensor
+                    tile->setFillColor(TILE_COLOR_DISPENSOR);
+                    break;
+                case 'M': // Trace Monster
+                    tile->setFillColor(TILE_COLOR_TRACE_MONSTER);
+                    break;
+                case 'm': // Guard Monster
+                    tile->setFillColor(TILE_COLOR_GUARD_MONSTER);
+                    break;
+                case '-': // Open space
+                default:
+                    tile->setFillColor(TILE_COLOR_NORMAL);
+                    break;
+            }
+            
+            shapes.push_back(tile);
+            Logger::log("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
+                + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
+        }
+    }
+}
+
 bool Stage::moveEntitySuccessful(Entity& entity, std::string direction) {
-    if(direction == "W" && entity.posY > 0) {
-        entity.posY -= 1;
-        Logger::log("Move upward.");
+    // Update tile and window positions based on direction
+    if(direction == "W" && entity.posTile.y > 0) {
+        entity.posTile.y -= 1;
+        entity.posWindow.y -= tile_size;
+        entity.getSprite().setPosition(entity.posWindow);
+        Logger::log("Move upward. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
         return true;
-    } else if(direction == "S" && entity.posY < row - 1) {
-        entity.posY += 1;
-        Logger::log("Move downward.");
+    } else if(direction == "S" && entity.posTile.y < row - 1) {
+        entity.posTile.y += 1;
+        entity.posWindow.y += tile_size;
+        entity.getSprite().setPosition(entity.posWindow);
+        Logger::log("Move downward. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
         return true;
-    } else if(direction == "A" && entity.posX > 0) {
-        entity.posX -= 1;
-        Logger::log("Move right.");
+    } else if(direction == "A" && entity.posTile.x > 0) {
+        entity.posTile.x -= 1;
+        entity.posWindow.x -= tile_size;
+        entity.getSprite().setPosition(entity.posWindow);
+        Logger::log("Move left. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
         return true;
-    } else if(direction == "D" && entity.posX < column - 1) {
-        entity.posX += 1;
-        Logger::log("Move left.");
+    } else if(direction == "D" && entity.posTile.x < column - 1) {
+        entity.posTile.x += 1;
+        entity.posWindow.x += tile_size;
+        entity.getSprite().setPosition(entity.posWindow);
+        Logger::log("Move right. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
         return true;
     }
     Logger::log("Move failed.");
@@ -185,7 +253,7 @@ void Stage::draw(sf::RenderWindow& window) {
     }
 
     // Draw player
-    player.draw(window);
+    player.draw(window, tile_size);
 }
 
 void Stage::print() const {
