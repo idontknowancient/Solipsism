@@ -66,6 +66,8 @@ private:
     std::string patternDispensor;
     std::string patternTraceMonster;
 
+    bool isValidMove(Entity& entity, std::string direction);
+
 public:
     Stage(int stageId, int column, int row);
 

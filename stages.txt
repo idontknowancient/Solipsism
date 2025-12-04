@@ -5,9 +5,9 @@ ROW: 10
 MAP_START
 ## P: Player start / X: Wall / D: Dispensor / M: Trace Monster
 ## m: Guard Monster / G: Goal
-P---XX--D--D--M
+----XX--D--D--M
 ----XX---X-----
-----XXm--X-----
+P---XXm--X-----
 ---------X-----
 ---M-----Xm---G
 XX------------G

@@ -104,11 +104,11 @@ int main() {
                             gameState = GameState::Playing;
                             Logger::log("Start Game button pressed. Entering Playing state.");
 
-                            // Construct Stage in-place to avoid copying (which would
-                            // shallow-copy raw shape pointers and lead to double-free / dangling pointers)
-                            // stages.emplace_back(stageIndex, 15, 10);
-                            Stage::createFromFile(stages);
-                            stageNum = static_cast<int>(stages.size());
+                            // Create stages if not already created
+                            if(stages.empty()) {
+                                Stage::createFromFile(stages);
+                                stageNum = static_cast<int>(stages.size());
+                            }
                         }
                     }
 

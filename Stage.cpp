@@ -215,35 +215,60 @@ void Stage::createTiles(int tile_size) {
     }
 }
 
+bool Stage::isValidMove(Entity& entity, std::string direction) {
+    sf::Vector2i newPos = entity.posTile;
+    if(direction == "W") {
+        newPos.y -= 1;
+    } else if(direction == "S") {
+        newPos.y += 1;
+    } else if(direction == "A") {
+        newPos.x -= 1;
+    } else if(direction == "D") {
+        newPos.x += 1;
+    } else {
+        Logger::log("Invalid direction input: " + direction);
+        return false; // Invalid direction
+    }
+
+    // Check bounds
+    if(newPos.x < 0 || newPos.x >= column || newPos.y < 0 || newPos.y >= row) {
+        Logger::log("Move out of bounds to (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
+        return false;
+    }
+
+    // Check tile type
+    char tileType = tileMap[newPos.y][newPos.x];
+    if(tileType == 'X') { // Wall
+        Logger::log("Move blocked by wall at (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
+        return false;
+    }
+
+    return true; // Valid move
+}
+
 bool Stage::moveEntitySuccessful(Entity& entity, std::string direction) {
-    // Update tile and window positions based on direction
-    if(direction == "W" && entity.posTile.y > 0) {
+    if(!isValidMove(entity, direction)) return false;
+
+    // Update tile and window position
+    if(direction == "W") {
         entity.posTile.y -= 1;
         entity.posWindow.y -= tile_size;
-        entity.getSprite().setPosition(entity.posWindow);
-        Logger::log("Move upward. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
-        return true;
-    } else if(direction == "S" && entity.posTile.y < row - 1) {
+    } else if(direction == "S") {
         entity.posTile.y += 1;
         entity.posWindow.y += tile_size;
-        entity.getSprite().setPosition(entity.posWindow);
-        Logger::log("Move downward. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
-        return true;
-    } else if(direction == "A" && entity.posTile.x > 0) {
+    } else if(direction == "A") {
         entity.posTile.x -= 1;
         entity.posWindow.x -= tile_size;
-        entity.getSprite().setPosition(entity.posWindow);
-        Logger::log("Move left. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
-        return true;
-    } else if(direction == "D" && entity.posTile.x < column - 1) {
+    } else if(direction == "D") {
         entity.posTile.x += 1;
         entity.posWindow.x += tile_size;
-        entity.getSprite().setPosition(entity.posWindow);
-        Logger::log("Move right. Position: (" + std::to_string(entity.posTile.x) + ", " + std::to_string(entity.posTile.y) + ")");
-        return true;
     }
-    Logger::log("Move failed.");
-    return false;
+    entity.getSprite().setPosition(entity.posWindow);
+
+    Logger::log("Entity moved to (" 
+        + std::to_string(entity.posTile.x) + ", " 
+        + std::to_string(entity.posTile.y) + ").");
+    return true;
 }
 
 void Stage::draw(sf::RenderWindow& window) {

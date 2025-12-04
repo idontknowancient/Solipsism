@@ -26,7 +26,7 @@ inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
-inline const float BGM_VOLUME = 20.f;
+inline const float BGM_VOLUME = 10.f;
 inline const float ZOOM_RATE = 0.1f; // Rate of zooming in/out per mouse wheel scroll
 
 // Colors
