@@ -9,6 +9,7 @@ sf::Texture Resource::titleTexture;
 sf::Texture Resource::titleBackgroundTexture;
 sf::Font Resource::buttonFont;
 sf::Texture Resource::playerTexture;
+sf::Texture Resource::guardMonsterTexture;
 
 void Resource::init() {
     // Load icon
@@ -41,6 +42,10 @@ void Resource::init() {
     if(!playerTexture.loadFromFile(PLAYER_TEXTURE_FILE)) {
         Logger::log("Failed to load player texture: " + PLAYER_TEXTURE_FILE);
     }
+
+    if(!guardMonsterTexture.loadFromFile(GUARD_MONSTER_TEXTURE_FILE)) {
+        Logger::log("Failed to load guard monster texture: " + GUARD_MONSTER_TEXTURE_FILE);
+    }
 }
 
 const sf::Image& Resource::getIcon() {
@@ -65,4 +70,8 @@ const sf::Font& Resource::getButtonFont() {
 
 const sf::Texture& Resource::getPlayerTexture() {
     return playerTexture;
+}
+
+const sf::Texture& Resource::getGuardMonsterTexture() {
+    return guardMonsterTexture;
 }

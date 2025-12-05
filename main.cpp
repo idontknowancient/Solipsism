@@ -4,6 +4,7 @@
 #include "Logger.hpp"
 #include "Utils.hpp"
 #include "Shape.hpp"
+#include "Object.hpp"
 #include "Stage.hpp"
 #include <iostream>
 #include <fstream>
@@ -21,7 +22,11 @@ int main() {
 
     // Create the main window
     sf::RenderWindow window(sf::VideoMode({WORLD_WIDTH, WORLD_HEIGHT}), GAME_TITLE);
-    window.setIcon(Resource::getIcon());
+    // Set icon (convert sf::Image to icon format)
+    const sf::Image& iconImg = Resource::getIcon();
+    if(iconImg.getSize().x > 0) {
+        window.setIcon(iconImg);
+    }
     // Set a framerate limit (not depending on device refresh rate)
     // setFramerateLimit and setVerticalSyncEnabled should not be used together
     window.setFramerateLimit(FRAME_RATE);
@@ -65,6 +70,7 @@ int main() {
 
     // Store all stages
     std::vector<Stage> stages;
+    Stage::createFromFile(stages);
 
     // Used for dragging view
     bool isDragging = false;
@@ -106,7 +112,6 @@ int main() {
 
                             // Create stages if not already created
                             if(stages.empty()) {
-                                Stage::createFromFile(stages);
                                 stageNum = static_cast<int>(stages.size());
                             }
                         }
@@ -158,11 +163,14 @@ int main() {
                     }
                 }
 
-                else if(keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up) {
+                if(stages.empty()) continue;
+                Stage& currentStage = stages.at(stageIndex - 1);
+
+                if(keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up) {
                     Logger::log("W key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "W");
+                        currentStage.addAction(Action::MoveUp);
                     }
                 }
 
@@ -170,7 +178,7 @@ int main() {
                     Logger::log("A key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "A");
+                        currentStage.addAction(Action::MoveLeft);
                     }
                 }
 
@@ -178,7 +186,7 @@ int main() {
                     Logger::log("S key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "S");
+                        currentStage.addAction(Action::MoveDown);
                     }
                 }
 
@@ -186,7 +194,23 @@ int main() {
                     Logger::log("D key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        stages.at(stageIndex - 1).moveEntitySuccessful(stages.at(stageIndex - 1).getPlayer(), "D");
+                        currentStage.addAction(Action::MoveRight);
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::X) {
+                    Logger::log("X key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        currentStage.addAction(Action::None);
+                    }
+                }
+
+                else if(keyPressed->code == sf::Keyboard::Key::Backspace) {
+                    Logger::log("Backspace key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        currentStage.undoLastAction();
                     }
                 }
             }
@@ -195,8 +219,16 @@ int main() {
 
 
         // II: Handle
-        if(isDragging && gameState == GameState::Playing) handleDrag(window, view, lastMousePos);
+        if(gameState == GameState::Playing) {
+            if(isDragging) handleDrag(window, view, lastMousePos);
 
+            if(stages.empty()) continue;
+            Stage& currentStage = stages.at(stageIndex - 1);
+            if(currentStage.reachMaxActions()) {
+                currentStage.advance();
+            }
+        }
+        
 
 
         // III: Update

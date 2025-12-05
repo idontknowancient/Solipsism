@@ -5,7 +5,16 @@
 
 enum class GameState {
     TitleScreen,
-    Playing
+    Playing,
+};
+
+enum class Action {
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    Attack,
+    None,
 };
 
 // Inline ensures single definition across translation units
@@ -23,6 +32,7 @@ inline const std::string TITLE_IMAGE_FILE = "assets/title_image.png";
 inline const std::string BACKGROUND_IMAGE_FILE = "assets/background_image.jpg";
 inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
 inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
+inline const std::string GUARD_MONSTER_TEXTURE_FILE = "assets/guard_monster.png";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
@@ -38,6 +48,15 @@ inline const sf::Color TILE_COLOR_WALL = sf::Color(31, 49, 52);
 inline const sf::Color TILE_COLOR_DISPENSOR = sf::Color(240, 131, 0);
 inline const sf::Color TILE_COLOR_TRACE_MONSTER = sf::Color(217, 51, 63);
 inline const sf::Color TILE_COLOR_GUARD_MONSTER = sf::Color(239, 171, 147);
+
+// Object symbols
+inline const char SYMBOL_PLAYER = 'P';
+inline const char SYMBOL_GOAL = 'G';
+inline const char SYMBOL_WALL = 'X';
+inline const char SYMBOL_OPEN_SPACE = '-';
+inline const char SYMBOL_DISPENSOR = 'D';
+inline const char SYMBOL_TRACE_MONSTER = 'M';
+inline const char SYMBOL_GUARD_MONSTER = 'm';
 
 // Default Button Settings
 inline const float BUTTON_WIDTH = 200.0f;
@@ -60,6 +79,7 @@ private:
     static sf::Texture titleBackgroundTexture;
     static sf::Font buttonFont;
     static sf::Texture playerTexture;
+    static sf::Texture guardMonsterTexture;
 
 public:
     Resource() = delete;
@@ -72,4 +92,5 @@ public:
     static const sf::Texture& getTitleBackgroundTexture();
     static const sf::Font& getButtonFont();
     static const sf::Texture& getPlayerTexture();
+    static const sf::Texture& getGuardMonsterTexture();
 };

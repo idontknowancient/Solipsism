@@ -2,74 +2,44 @@
 #include <SFML/Graphics.hpp>
 #include "Utils.hpp"
 #include "Logger.hpp"
+#include "Object.hpp"
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <string>
+#include <queue>
 
-class Entity {
-protected:
-    sf::Sprite sprite;
-
-public:
-    // Position in tile coordinates
-    sf::Vector2i posTile;
-    // Position in window coordinates
-    sf::Vector2f posWindow;
-
-    Entity(const sf::Texture& texture);
-    virtual ~Entity() = default;
-
-    sf::Sprite& getSprite();
-
-    virtual void interact(Entity& entity) = 0;
-
-    void draw(sf::RenderWindow& window, int tile_size);
-};
-
-class Player : public Entity {
-public:
-    Player(const sf::Texture& texture);
-    void interact(Entity& entity) override;
-};
-
-class Monster : public Entity {
-    
-};
-
-class Projectile : public Entity {
-    
-};
-
-class Trap {
-
-};
-
-
-
-// ========== Stage Class =============
 class Stage {
 private:
     // Starts from 1
     int stageId;
     int row;
     int column;
+    int actionPerTurn;
     // Hold tile data
     int tile_size;
+    // Start position of the tile map in window coordinates
+    float start_x;
+    float start_y;
+
     std::vector<std::vector<char>> tileMap;
     // Store all shapes drawn
-    // Later binding
-    std::vector<sf::Shape*> shapes;
+    // Use unique_ptr to manage shape memory automatically
+    std::vector<std::unique_ptr<sf::Shape>> shapes;
     // Store monsters and projectiles in the stage
-    std::vector<Entity> entities;
+    std::vector<std::unique_ptr<Object>> objects;
     Player player;
+    std::queue<Action> actions;
 
     std::string patternDispensor;
-    std::string patternTraceMonster;
+    std::string patternGuardMonster;
 
-    bool isValidMove(Entity& entity, std::string direction);
+    bool isValidMove(Object& object, const Action& action);
+    void handleObjectAction();
+    void handleAction();
 
 public:
-    Stage(int stageId, int column, int row);
+    Stage(int stageId, int column, int row, int actionPerTurn);
 
     ~Stage();
 
@@ -87,14 +57,21 @@ public:
     int getColumn() const;
     Player& getPlayer();
 
+    void addAction(const Action action);
+    bool reachMaxActions() const;
+    void undoLastAction();
+
+    // Advance by actionPerTurn actions
+    void advance();
+
     void setPatternDispensor(const std::string& pattern);
-    void setPatternTraceMonster(const std::string& pattern);
+    void setPatternGuardMonster(const std::string& pattern);
 
     void createTiles(int tile_size);
 
     // Attempt to move the entity in the specified direction
     // Returns true if the move was successful, false otherwise
-    bool moveEntitySuccessful(Entity& entity, std::string direction);
+    bool moveEntitySuccessful(Object& object, const Action& action);
 
     void draw(sf::RenderWindow& window);
     void print() const;
