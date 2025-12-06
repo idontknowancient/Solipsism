@@ -19,7 +19,7 @@ enum class Action {
 
 // Inline ensures single definition across translation units
 // Global settings
-inline const bool DEBUG_MODE = false;
+inline const bool DEBUG_MODE = true;
 inline const int WORLD_WIDTH = 1920;
 inline const int WORLD_HEIGHT = 1080;
 inline const int FRAME_RATE = 60;

@@ -1,5 +1,6 @@
 #include "Logger.hpp"
 #include "Utils.hpp"
+#include "Astar.hpp"
 #include "Object.hpp"
 
 Object::Object(const sf::Texture& texture, sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) 
@@ -109,33 +110,52 @@ TraceMonster::TraceMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int til
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
 
-void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
-    // Simple trace logic: move down if possible, else up
-    char actionChar = 'D';
-    if(!isValidMove(tileMap, actionChar)) {
-        actionChar = 'U';
-        if(!isValidMove(tileMap, actionChar)) {
-            return; // No valid move
+void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size, const sf::Vector2i& playerPosTile) {
+    
+    // 1. 執行 A* 尋路
+    Pathfinder pathfinder;
+    std::vector<sf::Vector2i> path = pathfinder.findPath(posTile, playerPosTile, tileMap);
+    
+    // 檢查路徑是否有效，且長度大於 1 (至少包含起點和一個移動點)
+    if (path.size() > 1) {
+        
+        sf::Vector2i nextTilePos = path[1]; // 獲取下一步的最佳網格座標
+
+        if(tileMap[nextTilePos.y][nextTilePos.x] == 'M') {
+            Logger::log_debug("TraceMonster next position blocked by another TraceMonster at (" 
+                + std::to_string(nextTilePos.x) + ", " + std::to_string(nextTilePos.y) + ").");
+            return; // 被其他 TraceMonster 阻擋，無法移動
         }
-    }
 
-    // Update tile and window position
-    if(actionChar == 'U') {
-        posTile.y -= 1;
-        posWindow.y -= tile_size;
-        tileMap[posTile.y + 1][posTile.x] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
-    } else if(actionChar == 'D') {
-        posTile.y += 1;
-        posWindow.y += tile_size;
-        tileMap[posTile.y - 1][posTile.x] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
-    }
-    getSprite().setPosition(posWindow);
+        // 2. 清除舊位置符號
+        // 將怪物舊的網格位置標記為空位 (假設'-'是空位)
+        tileMap[posTile.y][posTile.x] = '-'; 
+        
+        // 3. 更新網格位置和視窗位置
+        
+        // 計算位移量 (以 tile_size 為單位)
+        float deltaX = (float)(nextTilePos.x - posTile.x);
+        float deltaY = (float)(nextTilePos.y - posTile.y);
+        
+        // 更新網格座標
+        posTile = nextTilePos; 
+        
+        // 更新視窗像素座標
+        posWindow.x += deltaX * tile_size;
+        posWindow.y += deltaY * tile_size;
+        
+        // 4. 在新位置標記怪物
+        // 假設 'M' 是 TraceMonster 的符號
+        tileMap[posTile.y][posTile.x] = 'M'; 
+        
+        // 5. 將 Sprite 繪圖位置同步到新的視窗座標
+        getSprite().setPosition(posWindow);
 
-    Logger::log_debug("TraceMonster moved to (" 
-        + std::to_string(posTile.x) + ", " 
-        + std::to_string(posTile.y) + ").");
+        Logger::log_debug("TraceMonster moved to (" + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
+    } else {
+        Logger::log_debug("TraceMonster is blocked or at goal.");
+        // 如果 path.size() <= 1，表示怪物已被包圍或已到達目標，原地不動。
+    }
 }
 
 GuardMonster::GuardMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, const std::string& pattern) : 

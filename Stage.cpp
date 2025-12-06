@@ -164,6 +164,34 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
 
+        // === 儲存初始狀態，供 reset() 使用 ===
+        stage.initialTileMap = stage.tileMap;
+        stage.initialObjects.clear();
+        for(const auto& objPtr : stage.objects) {
+            if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
+                Stage::InitialObject io;
+                io.type = SYMBOL_GUARD_MONSTER;
+                io.posTile = gm->posTile;
+                io.pattern = gm->getBehaviorPattern();
+                stage.initialObjects.push_back(std::move(io));
+            } else if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
+                Stage::InitialObject io;
+                io.type = SYMBOL_TRACE_MONSTER;
+                io.posTile = tm->posTile;
+                io.pattern = "";
+                stage.initialObjects.push_back(std::move(io));
+            } else {
+                // 暫時不處理其他種類
+            }
+        }
+        if(stage.player) {
+            stage.initialPlayerPos = stage.player->posTile;
+            stage.hasInitialPlayer = true;
+        } else {
+            stage.hasInitialPlayer = false;
+        }
+        // === initial state saved ===
+
         // Add stage to stages vector
         stages.emplace_back(std::move(stage));
     }
@@ -268,7 +296,7 @@ void Stage::handleObjectAction() {
         if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
             guardMonster->update(tileMap, tile_size);
         } else if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
-            traceMonster->update(tileMap, tile_size);
+            traceMonster->update(tileMap, tile_size, player->posTile);
         }
     }
 }
@@ -341,4 +369,54 @@ void Stage::print() const {
     Logger::log_debug("Pattern Dispensor: " + patternDispensor);
     Logger::log_debug("Pattern Guard Monster: " + patternGuardMonster);
     Logger::log_debug("=====================");
+}
+
+// 新增：將關卡還原到初始狀態
+void Stage::reset() {
+    Logger::log("Resetting stage " + std::to_string(stageId) + " to initial state.");
+
+    // Clear any queued actions
+    while(!actions.empty()) actions.pop();
+
+    // Restore tile map
+    if(!initialTileMap.empty()) {
+        tileMap = initialTileMap;
+    } else {
+        Logger::log_debug("No initial tileMap stored; skipping restore.");
+    }
+
+    // Clear current objects and shapes
+    objects.clear();
+    shapes.clear();
+
+    // Recreate objects from initialObjects
+    for(const auto& io : initialObjects) {
+        sf::Vector2f posWindow = { start_x + io.posTile.x * tile_size, start_y + io.posTile.y * tile_size };
+        if(io.type == SYMBOL_GUARD_MONSTER) {
+            objects.emplace_back(std::make_unique<GuardMonster>(io.posTile, posWindow, tile_size, io.pattern));
+        } else if(io.type == SYMBOL_TRACE_MONSTER) {
+            objects.emplace_back(std::make_unique<TraceMonster>(io.posTile, posWindow, tile_size));
+        } else {
+            // 未處理型別：可依需求新增
+        }
+    }
+
+    // Restore or create player
+    if(hasInitialPlayer) {
+        sf::Vector2f pWin = { start_x + initialPlayerPos.x * tile_size, start_y + initialPlayerPos.y * tile_size };
+        player = std::make_unique<Player>(initialPlayerPos, pWin, tile_size);
+        Logger::log("Player reset to initial position (" + std::to_string(initialPlayerPos.x) + ", " + std::to_string(initialPlayerPos.y) + ").");
+    } else {
+        // 如果沒有初始 player，保留現有或建立預設
+        if(!player) {
+            player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tile_size);
+            Logger::log_debug("No initial player found; created default player at (0,0).");
+        }
+    }
+
+    // Recreate visual tiles
+    createTiles(tile_size);
+
+    Logger::log("Stage " + std::to_string(stageId) + " reset complete.");
+    print();
 }

@@ -42,6 +42,19 @@ private:
     void handleObjectAction();
     void handlePlayerAction();
 
+    // 新增：用來保存初始物件資訊（reset 會用到）
+    struct InitialObject {
+        char type; // e.g. SYMBOL_GUARD_MONSTER, SYMBOL_TRACE_MONSTER
+        sf::Vector2i posTile;
+        std::string pattern; // guard monster 的 pattern；其他物件可為空
+    };
+
+    // Store initial state for reset
+    std::vector<std::vector<char>> initialTileMap;
+    std::vector<InitialObject> initialObjects;
+    sf::Vector2i initialPlayerPos;
+    bool hasInitialPlayer = false;
+
 public:
     Stage(int stageId, int column, int row, int actionPerTurn);
     // Disable copy to avoid double-free of raw shape pointers
@@ -70,4 +83,7 @@ public:
 
     void draw(sf::RenderWindow& window);
     void print() const;
+
+    // 新增：將關卡還原到讀檔時的初始狀態
+    void reset();
 };

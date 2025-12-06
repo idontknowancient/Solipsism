@@ -166,6 +166,15 @@ int main() {
                 if(stages.empty()) continue;
                 Stage& currentStage = stages.at(stageIndex - 1);
 
+                // Press R to reset stage
+                if(keyPressed->code == sf::Keyboard::Key::R) {
+                    Logger::log("R key pressed.");
+
+                    if(gameState == GameState::Playing) {
+                        currentStage.reset();
+                    }
+                }
+
                 if(keyPressed->code == sf::Keyboard::Key::W || keyPressed->code == sf::Keyboard::Key::Up) {
                     Logger::log("W key pressed.");
 

@@ -49,9 +49,11 @@ public:
 };
 
 class TraceMonster : public Monster {
+private:
+    void update(std::vector<std::vector<char>>& tileMap, int tile_size) override {}
 public:
     TraceMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size);
-    void update(std::vector<std::vector<char>>& tileMap, int tile_size) override;
+    void update(std::vector<std::vector<char>>& tileMap, int tile_size, const sf::Vector2i& playerPosTile);
 };
 
 class GuardMonster : public Monster {
