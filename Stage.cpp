@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), tile_size(100), player(Resource::getPlayerTexture()) {
+Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), tile_size(100) {
     // Initialize start positions for the tile map in window coordinates
     this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
     this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
@@ -19,9 +19,6 @@ Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stag
     
     Logger::log("Stage " + std::to_string(stageId) + " created with size (" 
         + std::to_string(column) + ", " + std::to_string(row) + ").");
-}
-
-Stage::~Stage() {
 }
 
 void Stage::createFromFile(std::vector<Stage>& stages) {
@@ -110,13 +107,19 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             for(int c = 0; c < column && c < static_cast<int>(line.size()); c++) {
                 char ch = line[c];
                 stage.tileMap[r][c] = ch;
+                // Initial position in window coordinates
+                sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
+
                 // Player
                 if(ch == SYMBOL_PLAYER) {
-                    stage.getPlayer().posTile = {c, r};
+                    stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
                 }
+
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
+                    
                 }
+
                 // Guard monsters 
                 else if(ch == SYMBOL_GUARD_MONSTER) {
                     // Extract the first pattern segment (from start to first semicolon)
@@ -127,12 +130,11 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                     } else {
                         slicedPattern = guardMonsterPattern;
                     }
-                    // Initial position in window coordinates
-                    sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
                     stage.objects.emplace_back(std::make_unique<GuardMonster>(
                         sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
                 }
             }
+
             // Fill remaining columns with open space if line shorter
             for(int c = static_cast<int>(line.size()); c < column; ++c) {
                 stage.tileMap[r][c] = '-';
@@ -145,7 +147,14 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             }
         }
 
-        // Finally, advance to STAGE_END
+        // Handle if symbol of player not found
+        if(!stage.player) {
+            Logger::log_debug("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
+            stage.player = std::make_unique<Player>(sf::Vector2i{0, 0}, 
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
+        }
+
+        // Advance to STAGE_END
         while(line != "STAGE_END" && std::getline(file, line)) {}
 
         stage.createTiles(stage.tile_size);
@@ -160,102 +169,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
     file.close();
 }
 
-int Stage::getRow() const { return row; }
-int Stage::getColumn() const { return column; }
-Player& Stage::getPlayer() { return player; }
-
-void Stage::addAction(const Action action) {
-    actions.push(action);
-}
-
-bool Stage::reachMaxActions() const {
-    return actions.size() >= static_cast<size_t>(actionPerTurn);
-}
-
-void Stage::undoLastAction() {
-    if(actions.empty()) {
-        Logger::log_debug("No actions to undo.");
-        return;
-    }
-
-    // Remove the last action added
-    std::queue<Action> tempQueue;
-    int actionCount = actions.size();
-    for(int i = 0; i < actionCount - 1; i++) {
-        tempQueue.push(actions.front());
-        actions.pop();
-    }
-    actions.pop(); // Remove the last action
-
-    // Restore the remaining actions back to the original queue
-    actions = std::move(tempQueue);
-
-    Logger::log_debug("Last action undone. Remaining actions: " + std::to_string(actions.size()));
-}
-
-void Stage::handleObjectAction() {
-    Logger::log("Handling object action.");
-    for(std::unique_ptr<Object>& object : objects) {
-        // Use .get() to access the raw pointer from unique_ptr
-        if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
-            guardMonster->update(tileMap, tile_size);
-        }
-    }
-}
-
-void Stage::handleAction() {
-    Logger::log("Handling action.");
-    Action action = actions.front();
-    actions.pop();
-
-    switch(action) {
-        case Action::MoveUp:
-        case Action::MoveDown:
-        case Action::MoveLeft:
-        case Action::MoveRight:
-            moveEntitySuccessful(player, action);
-            break;
-        case Action::Attack:
-            // To be implemented
-            break;
-        case Action::None:
-            break;
-    }
-}
-
-void Stage::advance() {
-    Logger::log("Advancing stage by " + std::to_string(actionPerTurn) + " actions.");
-    for(int i = 0; i < actionPerTurn; i++) {
-        if(actions.empty()) {
-            Logger::log_debug("No more actions to handle.");
-            break;
-        }
-        handleObjectAction();
-        handleAction();
-    }
-}
-
-void Stage::setPatternDispensor(const std::string& pattern) {
-    patternDispensor = pattern;
-}
-
-void Stage::setPatternGuardMonster(const std::string& pattern) {
-    patternGuardMonster = pattern;
-}
-
 void Stage::createTiles(int tile_size) {
-    this->tile_size = tile_size;
-
-    // Scale player sprite to fit tile size
-    sf::Sprite& playerSprite = player.getSprite();
-    playerSprite.scale({static_cast<float>(tile_size) / playerSprite.getTexture().getSize().x, 
-        static_cast<float>(tile_size) / playerSprite.getTexture().getSize().y});
-    player.posWindow = {start_x + player.posTile.x * tile_size, start_y + player.posTile.y * tile_size};
-    playerSprite.setPosition(player.posWindow);
-    Logger::log("Player positioned at (" 
-        + std::to_string(player.posWindow.x) + ", " 
-        + std::to_string(player.posWindow.y) + ").");
-
     for(int i = 0; i < row; i++) {
         for(int j = 0; j < column; j++) {
             // Use new to allocate on heap to prevent going out of scope
@@ -301,6 +215,89 @@ void Stage::createTiles(int tile_size) {
             Logger::log("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
                 + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
         }
+    }
+}
+
+int Stage::getRow() const { return row; }
+int Stage::getColumn() const { return column; }
+Player& Stage::getPlayer() { return *player; }
+
+void Stage::setPatternDispensor(const std::string& pattern) {
+    patternDispensor = pattern;
+}
+
+void Stage::setPatternGuardMonster(const std::string& pattern) {
+    patternGuardMonster = pattern;
+}
+
+void Stage::addAction(const Action action) {
+    actions.push(action);
+}
+
+bool Stage::reachMaxActions() const {
+    return actions.size() >= static_cast<size_t>(actionPerTurn);
+}
+
+void Stage::undoLastAction() {
+    if(actions.empty()) {
+        Logger::log_debug("No actions to undo.");
+        return;
+    }
+
+    // Remove the last action added
+    std::queue<Action> tempQueue;
+    int actionCount = actions.size();
+    for(int i = 0; i < actionCount - 1; i++) {
+        tempQueue.push(actions.front());
+        actions.pop();
+    }
+    actions.pop(); // Remove the last action
+
+    // Restore the remaining actions back to the original queue
+    actions = std::move(tempQueue);
+
+    Logger::log_debug("Last action undone. Remaining actions: " + std::to_string(actions.size()));
+}
+
+void Stage::handleObjectAction() {
+    Logger::log("Handling object action.");
+    for(std::unique_ptr<Object>& object : objects) {
+        // Use .get() to access the raw pointer from unique_ptr
+        if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
+            guardMonster->update(tileMap, tile_size);
+        }
+    }
+}
+
+void Stage::handlePlayerAction() {
+    Logger::log("Handling player action.");
+    Action action = actions.front();
+    actions.pop();
+
+    switch(action) {
+        case Action::MoveUp:
+        case Action::MoveDown:
+        case Action::MoveLeft:
+        case Action::MoveRight:
+            moveEntitySuccessful(*player, action);
+            break;
+        case Action::Attack:
+            // To be implemented
+            break;
+        case Action::None:
+            break;
+    }
+}
+
+void Stage::advance() {
+    Logger::log("Advancing stage by " + std::to_string(actionPerTurn) + " actions.");
+    for(int i = 0; i < actionPerTurn; i++) {
+        if(actions.empty()) {
+            Logger::log_debug("No more actions to handle.");
+            break;
+        }
+        handleObjectAction();
+        handlePlayerAction();
     }
 }
 
@@ -369,11 +366,12 @@ void Stage::draw(sf::RenderWindow& window) {
     }
 
     // Draw player
-    player.draw(window, tile_size);
+    player->draw(window, tile_size);
 
 }
 
 void Stage::print() const {
+    Logger::log_debug("=====================");
     Logger::log_debug("Printing tile map for Stage " + std::to_string(stageId) + ":");
     Logger::log_debug("Size (" + std::to_string(column) + ", " + std::to_string(row) + "):");
     Logger::log_debug("Action Per Turn: " + std::to_string(actionPerTurn));

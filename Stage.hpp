@@ -41,20 +41,14 @@ private:
 
     bool isValidMove(Object& object, const Action& action);
     void handleObjectAction();
-    void handleAction();
+    void handlePlayerAction();
 
 public:
     Stage(int stageId, int column, int row, int actionPerTurn);
-
-    ~Stage();
-
-    static void createFromFile(std::vector<Stage>& stages);
-
     // Disable copy to avoid double-free of raw shape pointers
     Stage(const Stage&) = delete;
     Stage& operator=(const Stage&) = delete;
-
-    // Allow move (default)
+    // Allow move
     Stage(Stage&&) = default;
     Stage& operator=(Stage&&) = default;
 
@@ -62,17 +56,18 @@ public:
     int getColumn() const;
     Player& getPlayer();
 
+    void setPatternDispensor(const std::string& pattern);
+    void setPatternGuardMonster(const std::string& pattern);
+
+    static void createFromFile(std::vector<Stage>& stages);
+    void createTiles(int tile_size);
+
     void addAction(const Action action);
     bool reachMaxActions() const;
     void undoLastAction();
 
     // Advance by actionPerTurn actions
     void advance();
-
-    void setPatternDispensor(const std::string& pattern);
-    void setPatternGuardMonster(const std::string& pattern);
-
-    void createTiles(int tile_size);
 
     // Attempt to move the entity in the specified direction
     // Returns true if the move was successful, false otherwise

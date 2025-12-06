@@ -27,7 +27,7 @@ public:
 // ========== Player Class =============
 class Player : public Object {
 public:
-    Player(const sf::Texture& texture);
+    Player(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size);
     void update(std::vector<std::vector<char>>& tileMap, int tile_size) override;
 };
 

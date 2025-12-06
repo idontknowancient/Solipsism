@@ -15,8 +15,14 @@ void Object::draw(sf::RenderWindow& window, int tile_size) {
 
 
 // ========== Player Class =============
-Player::Player(const sf::Texture& texture) : Object(texture) {
-    Logger::log("Player created.");
+Player::Player(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : Object(Resource::getPlayerTexture()) {
+    this->posTile = posTile;
+    this->posWindow = posWindow;
+    Logger::log("Player created at tile (" 
+        + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
+    sprite.setPosition(posWindow);
+
+    resizeTileTexture(this->sprite, tile_size);
 }
 
 void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
