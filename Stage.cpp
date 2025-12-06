@@ -1,0 +1,392 @@
+#include "Constants.hpp"
+#include "Utils.hpp"
+#include "Logger.hpp"
+#include "Stage.hpp"
+#include "Object.hpp"
+#include <iostream>
+#include <vector>
+
+Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), tile_size(100), player(Resource::getPlayerTexture()) {
+    // Initialize start positions for the tile map in window coordinates
+    this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
+    this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
+    
+    // Initialize tile map with open space '-'
+    tileMap.resize(row, std::vector<char>(column, '-'));
+    
+    // Create visual tiles for the stage (will be called after loading map from file)
+    // createTiles(100) should be called after map is loaded
+    
+    Logger::log("Stage " + std::to_string(stageId) + " created with size (" 
+        + std::to_string(column) + ", " + std::to_string(row) + ").");
+}
+
+Stage::~Stage() {
+}
+
+void Stage::createFromFile(std::vector<Stage>& stages) {
+    std::ifstream file(STAGE_FILE);
+    if(!file.is_open()) {
+        Logger::log("Failed to open " + STAGE_FILE + " for stages creation.");
+        return;
+    }
+
+    std::string line;
+    while(std::getline(file, line)) {
+        if(line != "STAGE_START") continue; // Find next stage block
+
+        int stageId = 0;
+        int column = 0;
+        int row = 0;
+        int actionPerTurn = 1;
+
+        // Parse header lines: STAGE_ID, COLUMN, ROW
+        while(std::getline(file, line)) {
+            if(line.rfind("STAGE_ID:", 0) == 0) {
+                stageId = std::stoi(line.substr(std::string("STAGE_ID:").size()));
+                Logger::log("Loading Stage: " + std::to_string(stageId));
+            } else if(line.rfind("COLUMN:", 0) == 0) {
+                column = std::stoi(line.substr(std::string("COLUMN:").size()));
+            } else if(line.rfind("ROW:", 0) == 0) {
+                row = std::stoi(line.substr(std::string("ROW:").size()));
+            } else if(line.rfind("ACTION_PER_TURN:", 0) == 0) {
+                actionPerTurn = std::stoi(line.substr(std::string("ACTION_PER_TURN:").size()));
+            } else if(line == "PATTERN_START") {
+                break; // Proceed to pattern parsing
+            }
+        }
+
+        if(stageId <= 0 || column <= 0 || row <= 0) {
+            Logger::log("Invalid stage header encountered. Skipping.");
+            // Skip to next STAGE_END
+            while(std::getline(file, line) && line != "STAGE_END");
+            continue;
+        }
+
+        Stage stage(stageId, column, row, actionPerTurn);
+
+        // Parse pattern section
+        std::string dispensorPattern;
+        std::string guardMonsterPattern;
+        std::string slicedPattern;
+
+        if(line == "PATTERN_START") {
+            Logger::log_debug("Parsing patterns for stage " + std::to_string(stageId));
+            // Read until PATTERN_END
+            while(std::getline(file, line) && line != "PATTERN_END") {
+                line = trim(line);
+                if(line.rfind("DISPENSOR:", 0) == 0) {
+                    dispensorPattern = line.substr(std::string("DISPENSOR:").size());
+                    // Remove leading/trailing whitespace
+                    dispensorPattern = trim(dispensorPattern);
+                } else if(line.rfind("GUARD_MONSTER:", 0) == 0) {
+                    guardMonsterPattern = line.substr(std::string("GUARD_MONSTER:").size());
+                    // e.g. U2D2L4 -> UUDDLLLL
+                    guardMonsterPattern = processPattern(guardMonsterPattern);
+                    // Remove leading/trailing whitespace
+                    guardMonsterPattern = trim(guardMonsterPattern);
+                }
+            }
+        }
+        // Store patterns into stage
+        stage.setPatternDispensor(dispensorPattern);
+        stage.setPatternGuardMonster(guardMonsterPattern);
+
+        // Find MAP_START
+        while(std::getline(file, line) && line != "MAP_START") {
+            if(line == "STAGE_END") {
+                Logger::log_debug("Warning: MAP_START not found for stage " + std::to_string(stageId));
+                break;
+            }
+        }
+
+        // Parse map lines until MAP_END
+        int r = 0;
+        while(std::getline(file, line)) {
+            if(line == "MAP_END") break;
+            if(line.size() >= 2 && line[0] == '#' && line[1] == '#') continue; // skip comment lines starting with '##'
+            if(line.empty()) continue;
+            // Ensure the line length matches column (allow shorter lines, fill with '-')
+            for(int c = 0; c < column && c < static_cast<int>(line.size()); c++) {
+                char ch = line[c];
+                stage.tileMap[r][c] = ch;
+                // Player
+                if(ch == SYMBOL_PLAYER) {
+                    stage.getPlayer().posTile = {c, r};
+                }
+                // Trace monsters 
+                else if(ch == SYMBOL_TRACE_MONSTER) {
+                }
+                // Guard monsters 
+                else if(ch == SYMBOL_GUARD_MONSTER) {
+                    // Extract the first pattern segment (from start to first semicolon)
+                    int semicolonPos = guardMonsterPattern.find(';');
+                    if(semicolonPos != std::string::npos) {
+                        slicedPattern = guardMonsterPattern.substr(0, semicolonPos);
+                        guardMonsterPattern = guardMonsterPattern.substr(semicolonPos + 1);
+                    } else {
+                        slicedPattern = guardMonsterPattern;
+                    }
+                    // Initial position in window coordinates
+                    sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
+                    stage.objects.emplace_back(std::make_unique<GuardMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                }
+            }
+            // Fill remaining columns with open space if line shorter
+            for(int c = static_cast<int>(line.size()); c < column; ++c) {
+                stage.tileMap[r][c] = '-';
+            }
+            r++;
+            if(r >= row) {
+                // consume remaining lines up to MAP_END
+                while(std::getline(file, line) && line != "MAP_END");
+                break;
+            }
+        }
+
+        // Finally, advance to STAGE_END
+        while(line != "STAGE_END" && std::getline(file, line)) {}
+
+        stage.createTiles(stage.tile_size);
+        Logger::log("Total objects in stage " + std::to_string(stageId) + ": " + std::to_string(stage.objects.size()));
+        Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
+        stage.print();
+
+        // Add stage to stages vector
+        stages.emplace_back(std::move(stage));
+    }
+
+    file.close();
+}
+
+int Stage::getRow() const { return row; }
+int Stage::getColumn() const { return column; }
+Player& Stage::getPlayer() { return player; }
+
+void Stage::addAction(const Action action) {
+    actions.push(action);
+}
+
+bool Stage::reachMaxActions() const {
+    return actions.size() >= static_cast<size_t>(actionPerTurn);
+}
+
+void Stage::undoLastAction() {
+    if(actions.empty()) {
+        Logger::log_debug("No actions to undo.");
+        return;
+    }
+
+    // Remove the last action added
+    std::queue<Action> tempQueue;
+    int actionCount = actions.size();
+    for(int i = 0; i < actionCount - 1; i++) {
+        tempQueue.push(actions.front());
+        actions.pop();
+    }
+    actions.pop(); // Remove the last action
+
+    // Restore the remaining actions back to the original queue
+    actions = std::move(tempQueue);
+
+    Logger::log_debug("Last action undone. Remaining actions: " + std::to_string(actions.size()));
+}
+
+void Stage::handleObjectAction() {
+    Logger::log("Handling object action.");
+    for(std::unique_ptr<Object>& object : objects) {
+        // Use .get() to access the raw pointer from unique_ptr
+        if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
+            guardMonster->update(tileMap, tile_size);
+        }
+    }
+}
+
+void Stage::handleAction() {
+    Logger::log("Handling action.");
+    Action action = actions.front();
+    actions.pop();
+
+    switch(action) {
+        case Action::MoveUp:
+        case Action::MoveDown:
+        case Action::MoveLeft:
+        case Action::MoveRight:
+            moveEntitySuccessful(player, action);
+            break;
+        case Action::Attack:
+            // To be implemented
+            break;
+        case Action::None:
+            break;
+    }
+}
+
+void Stage::advance() {
+    Logger::log("Advancing stage by " + std::to_string(actionPerTurn) + " actions.");
+    for(int i = 0; i < actionPerTurn; i++) {
+        if(actions.empty()) {
+            Logger::log_debug("No more actions to handle.");
+            break;
+        }
+        handleObjectAction();
+        handleAction();
+    }
+}
+
+void Stage::setPatternDispensor(const std::string& pattern) {
+    patternDispensor = pattern;
+}
+
+void Stage::setPatternGuardMonster(const std::string& pattern) {
+    patternGuardMonster = pattern;
+}
+
+void Stage::createTiles(int tile_size) {
+    this->tile_size = tile_size;
+
+    // Scale player sprite to fit tile size
+    sf::Sprite& playerSprite = player.getSprite();
+    playerSprite.scale({static_cast<float>(tile_size) / playerSprite.getTexture().getSize().x, 
+        static_cast<float>(tile_size) / playerSprite.getTexture().getSize().y});
+    player.posWindow = {start_x + player.posTile.x * tile_size, start_y + player.posTile.y * tile_size};
+    playerSprite.setPosition(player.posWindow);
+    Logger::log("Player positioned at (" 
+        + std::to_string(player.posWindow.x) + ", " 
+        + std::to_string(player.posWindow.y) + ").");
+
+    for(int i = 0; i < row; i++) {
+        for(int j = 0; j < column; j++) {
+            // Use new to allocate on heap to prevent going out of scope
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tile_size, tile_size));
+            
+            // Set position
+            float x = start_x + j * tile_size;
+            float y = start_y + i * tile_size;
+            tile->setPosition({x, y});
+
+            // Set tile appearance
+            tile->setOutlineThickness(1.0f);
+            tile->setOutlineColor(sf::Color(100, 100, 100));
+            
+            // Checkerboard colors
+            char tileType = tileMap[i][j];
+            switch(tileType) {
+                case SYMBOL_PLAYER:
+                    tile->setFillColor(TILE_COLOR_PLAYER);
+                    break;
+                case SYMBOL_GOAL:
+                    tile->setFillColor(TILE_COLOR_GOAL);
+                    break;
+                case SYMBOL_WALL:
+                    tile->setFillColor(TILE_COLOR_WALL);
+                    break;
+                case SYMBOL_DISPENSOR:
+                    tile->setFillColor(TILE_COLOR_DISPENSOR);
+                    break;
+                case SYMBOL_TRACE_MONSTER:
+                    tile->setFillColor(TILE_COLOR_TRACE_MONSTER);
+                    break;
+                case SYMBOL_GUARD_MONSTER:
+                    tile->setFillColor(TILE_COLOR_GUARD_MONSTER);
+                    break;
+                case SYMBOL_OPEN_SPACE:
+                default:
+                    tile->setFillColor(TILE_COLOR_NORMAL);
+                    break;
+            }
+            
+            shapes.emplace_back(std::unique_ptr<sf::Shape>(tile));
+            Logger::log("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
+                + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
+        }
+    }
+}
+
+bool Stage::isValidMove(Object& object, const Action& action) {
+    sf::Vector2i newPos = object.posTile;
+    if(action == Action::MoveUp) {
+        newPos.y -= 1;
+    } else if(action == Action::MoveDown) {
+        newPos.y += 1;
+    } else if(action == Action::MoveLeft) {
+        newPos.x -= 1;
+    } else if(action == Action::MoveRight) {
+        newPos.x += 1;
+    }
+
+    // Check bounds
+    if(newPos.x < 0 || newPos.x >= column || newPos.y < 0 || newPos.y >= row) {
+        Logger::log("Move out of bounds to (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
+        return false;
+    }
+
+    // Check tile type
+    char tileType = tileMap[newPos.y][newPos.x];
+    if(tileType == 'X') { // Wall
+        Logger::log("Move blocked by wall at (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
+        return false;
+    }
+
+    return true; // Valid move
+}
+
+bool Stage::moveEntitySuccessful(Object& object, const Action& action) {
+    if(!isValidMove(object, action)) return false;
+
+    // Update tile and window position
+    if(action == Action::MoveUp) {
+        object.posTile.y -= 1;
+        object.posWindow.y -= tile_size;
+    } else if(action == Action::MoveDown) {
+        object.posTile.y += 1;
+        object.posWindow.y += tile_size;
+    } else if(action == Action::MoveLeft) {
+        object.posTile.x -= 1;
+        object.posWindow.x -= tile_size;
+    } else if(action == Action::MoveRight) {
+        object.posTile.x += 1;
+        object.posWindow.x += tile_size;
+    }
+    object.getSprite().setPosition(object.posWindow);
+
+    Logger::log("Entity moved to (" 
+        + std::to_string(object.posTile.x) + ", " 
+        + std::to_string(object.posTile.y) + ").");
+    return true;
+}
+
+void Stage::draw(sf::RenderWindow& window) {
+    // Draw all shapes
+    for(const auto& shape : shapes) {
+        window.draw(*shape);
+    }
+
+    //Draw all objects
+    for(auto& object : objects) {
+        object->draw(window, tile_size);
+    }
+
+    // Draw player
+    player.draw(window, tile_size);
+
+}
+
+void Stage::print() const {
+    Logger::log_debug("Printing tile map for Stage " + std::to_string(stageId) + ":");
+    Logger::log_debug("Size (" + std::to_string(column) + ", " + std::to_string(row) + "):");
+    Logger::log_debug("Action Per Turn: " + std::to_string(actionPerTurn));
+    Logger::log_debug("=====================");
+    for(const auto& row : tileMap) {
+        std::string line;
+        for(const auto& tile : row) {
+            line += tile;
+        }
+        Logger::log_debug(line);
+    }
+    Logger::log_debug("=====================");
+    Logger::log_debug("Pattern Dispensor: " + patternDispensor);
+    Logger::log_debug("Pattern Guard Monster: " + patternGuardMonster);
+    Logger::log_debug("=====================");
+}
