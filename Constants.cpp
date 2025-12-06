@@ -11,6 +11,8 @@ sf::Font Resource::buttonFont;
 sf::Texture Resource::playerTexture;
 sf::Texture Resource::guardMonsterTexture;
 sf::Texture Resource::traceMonsterTexture;
+sf::Texture Resource::dispenserTexture;
+sf::Texture Resource::arrowTexture;
 
 void Resource::init() {
     // Load icon
@@ -51,6 +53,14 @@ void Resource::init() {
     if(!traceMonsterTexture.loadFromFile(TRACE_MONSTER_TEXTURE_FILE)) {
         Logger::log("Failed to load trace monster texture: " + TRACE_MONSTER_TEXTURE_FILE);
     }
+
+    if(!dispenserTexture.loadFromFile(DISPENSER_TEXTURE_FILE)) {
+        Logger::log("Failed to load dispenser texture: " + DISPENSER_TEXTURE_FILE);
+    }
+
+    if(!arrowTexture.loadFromFile(ARROW_TEXTURE_FILE)) {
+        Logger::log("Failed to load arrow texture: " + ARROW_TEXTURE_FILE);
+    }
 }
 
 const sf::Image& Resource::getIcon() {
@@ -83,4 +93,12 @@ const sf::Texture& Resource::getGuardMonsterTexture() {
 
 const sf::Texture& Resource::getTraceMonsterTexture() {
     return traceMonsterTexture;
+}
+
+const sf::Texture& Resource::getDispenserTexture() {
+    return dispenserTexture;
+}
+
+const sf::Texture& Resource::getArrowTexture() {
+    return arrowTexture;
 }

@@ -34,6 +34,8 @@ inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
 inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
 inline const std::string GUARD_MONSTER_TEXTURE_FILE = "assets/guard_monster.png";
 inline const std::string TRACE_MONSTER_TEXTURE_FILE = "assets/trace_monster.png";
+inline const std::string DISPENSER_TEXTURE_FILE = "assets/dispenser.png";
+inline const std::string ARROW_TEXTURE_FILE = "assets/arrow.png";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
@@ -46,7 +48,7 @@ inline const sf::Color TILE_COLOR_PLAYER = sf::Color(30, 80, 162);
 inline const sf::Color TILE_COLOR_GOAL = sf::Color(147, 202, 118);
 inline const sf::Color TILE_COLOR_NORMAL = sf::Color(114, 113, 113);
 inline const sf::Color TILE_COLOR_WALL = sf::Color(31, 49, 52);
-inline const sf::Color TILE_COLOR_DISPENSOR = sf::Color(240, 131, 0);
+inline const sf::Color TILE_COLOR_DISPENSER = sf::Color(240, 131, 0);
 inline const sf::Color TILE_COLOR_TRACE_MONSTER = sf::Color(217, 51, 63);
 inline const sf::Color TILE_COLOR_GUARD_MONSTER = sf::Color(239, 171, 147);
 
@@ -55,7 +57,7 @@ inline const char SYMBOL_PLAYER = 'P';
 inline const char SYMBOL_GOAL = 'G';
 inline const char SYMBOL_WALL = 'X';
 inline const char SYMBOL_OPEN_SPACE = '-';
-inline const char SYMBOL_DISPENSOR = 'D';
+inline const char SYMBOL_DISPENSER = 'D';
 inline const char SYMBOL_TRACE_MONSTER = 'M';
 inline const char SYMBOL_GUARD_MONSTER = 'm';
 
@@ -82,6 +84,8 @@ private:
     static sf::Texture playerTexture;
     static sf::Texture guardMonsterTexture;
     static sf::Texture traceMonsterTexture;
+    static sf::Texture dispenserTexture;
+    static sf::Texture arrowTexture;
 
 public:
     Resource() = delete;
@@ -96,4 +100,6 @@ public:
     static const sf::Texture& getPlayerTexture();
     static const sf::Texture& getGuardMonsterTexture();
     static const sf::Texture& getTraceMonsterTexture();
+    static const sf::Texture& getDispenserTexture();
+    static const sf::Texture& getArrowTexture();
 };

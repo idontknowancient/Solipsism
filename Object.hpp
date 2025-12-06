@@ -19,7 +19,7 @@ public:
 
     sf::Sprite& getSprite();
 
-    bool isValidMove(std::vector<std::vector<char>>& tileMap, sf::Vector2i newPosTile);
+    bool isValidAction(std::vector<std::vector<char>>& tileMap, sf::Vector2i newPosTile);
     virtual void update(std::vector<std::vector<char>>& tileMap, int tile_size) = 0;
     void draw(sf::RenderWindow& window, int tile_size);
 };
@@ -68,14 +68,35 @@ public:
 
 
 
-// ========== Dispensor Class =============
-class Dispensor : public Object {
+// ========== Dispenser Class =============
+class Dispenser : public Object {
+private:
+    std::string behaviorPattern;
+    void update(std::vector<std::vector<char>>& tileMap, int tile_size) override {}
+
 public:
-    void update(std::vector<std::vector<char>>& tileMap, int tile_size) override;
+    Dispenser(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, const std::string& pattern);
+    bool isSpawnable(std::vector<std::vector<char>>& tileMap, char actionChar);
+    void update(std::vector<std::vector<char>>& tileMap, int tile_size, std::vector<std::unique_ptr<Object>>& bufferObjects);
+    std::string& getBehaviorPattern();
 };
 
 class Projectile : public Object {
+protected:
+    sf::Vector2i originalPosTile;
+    char direction;
+
 public:
+    Projectile(const sf::Texture& texture, sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, char direction) :
+        Object(texture, posTile, posWindow, tile_size), direction(direction) {};
+    virtual void update(std::vector<std::vector<char>>& tileMap, int tile_size) override = 0;
+
+    sf::Vector2i getOriginalPosTile() const;
+};
+
+class Arrow : public Projectile {
+public:
+    Arrow(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, char direction);
     void update(std::vector<std::vector<char>>& tileMap, int tile_size) override;
 };
 
@@ -84,5 +105,6 @@ public:
 // ========== Trap Class =============
 class Trap : public Object {
 public:
+    Trap(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size);
     void update(std::vector<std::vector<char>>& tileMap, int tile_size) override;
 };

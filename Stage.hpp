@@ -31,29 +31,27 @@ private:
 
     // Store monsters / projectiles / traps in the stage
     std::vector<std::unique_ptr<Object>> objects;
+    // Buffer for objects to be added or removed during updates
+    std::vector<std::unique_ptr<Object>> bufferObjects;
+    // Store numbers of objects that should be removed
+    std::vector<int> objectsToRemove;
+
     std::unique_ptr<Player> player;
     // Record actions by player
     std::queue<Action> actions;
 
     // Behavior patterns
-    std::string patternDispensor;
     std::string patternGuardMonster;
+    std::string patternDispenser;
 
     void handleObjectAction();
     void handlePlayerAction();
-
-    // 新增：用來保存初始物件資訊（reset 會用到）
-    struct InitialObject {
-        char type; // e.g. SYMBOL_GUARD_MONSTER, SYMBOL_TRACE_MONSTER
-        sf::Vector2i posTile;
-        std::string pattern; // guard monster 的 pattern；其他物件可為空
-    };
+    bool shouldRemoveProjectile(Projectile* projectile, sf::Vector2i oldPosTile, int i);
 
     // Store initial state for reset
     std::vector<std::vector<char>> initialTileMap;
-    std::vector<InitialObject> initialObjects;
-    sf::Vector2i initialPlayerPos;
-    bool hasInitialPlayer = false;
+    std::vector<std::unique_ptr<Object>> initialObjects;
+    std::unique_ptr<Player> initialPlayer;
 
 public:
     Stage(int stageId, int column, int row, int actionPerTurn);
@@ -68,8 +66,8 @@ public:
     int getColumn() const;
     Player& getPlayer();
 
-    void setPatternDispensor(const std::string& pattern);
     void setPatternGuardMonster(const std::string& pattern);
+    void setPatternDispenser(const std::string& pattern);
 
     static void createFromFile(std::vector<Stage>& stages);
     void createTiles(int tile_size);
@@ -83,7 +81,5 @@ public:
 
     void draw(sf::RenderWindow& window);
     void print() const;
-
-    // 新增：將關卡還原到讀檔時的初始狀態
     void reset();
 };

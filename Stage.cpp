@@ -63,8 +63,8 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         Stage stage(stageId, column, row, actionPerTurn);
 
         // Parse pattern section
-        std::string dispensorPattern;
         std::string guardMonsterPattern;
+        std::string dispenserPattern;
         std::string slicedPattern;
 
         if(line == "PATTERN_START") {
@@ -72,10 +72,10 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             // Read until PATTERN_END
             while(std::getline(file, line) && line != "PATTERN_END") {
                 line = trim(line);
-                if(line.rfind("DISPENSOR:", 0) == 0) {
-                    dispensorPattern = line.substr(std::string("DISPENSOR:").size());
+                if(line.rfind("DISPENSER:", 0) == 0) {
+                    dispenserPattern = line.substr(std::string("DISPENSER:").size());
                     // Remove leading/trailing whitespace
-                    dispensorPattern = trim(dispensorPattern);
+                    dispenserPattern = trim(dispenserPattern);
                 } else if(line.rfind("GUARD_MONSTER:", 0) == 0) {
                     guardMonsterPattern = line.substr(std::string("GUARD_MONSTER:").size());
                     // e.g. U2D2L4 -> UUDDLLLL
@@ -86,8 +86,8 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             }
         }
         // Store patterns into stage
-        stage.setPatternDispensor(dispensorPattern);
         stage.setPatternGuardMonster(guardMonsterPattern);
+        stage.setPatternDispenser(dispenserPattern);
 
         // Find MAP_START
         while(std::getline(file, line) && line != "MAP_START") {
@@ -114,11 +114,14 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                 // Player
                 if(ch == SYMBOL_PLAYER) {
                     stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
+                    stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
                 }
 
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
                     stage.objects.emplace_back(std::make_unique<TraceMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                    stage.initialObjects.emplace_back(std::make_unique<TraceMonster>(
                         sf::Vector2i{c, r}, posWindow, stage.tile_size));
                 }
 
@@ -133,6 +136,24 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                         slicedPattern = guardMonsterPattern;
                     }
                     stage.objects.emplace_back(std::make_unique<GuardMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                    stage.initialObjects.emplace_back(std::make_unique<GuardMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                }
+
+                // Dispensers
+                else if(ch == SYMBOL_DISPENSER) {
+                    // Extract the first pattern segment (from start to first semicolon)
+                    int semicolonPos = dispenserPattern.find(';');
+                    if(semicolonPos != std::string::npos) {
+                        slicedPattern = dispenserPattern.substr(0, semicolonPos);
+                        dispenserPattern = dispenserPattern.substr(semicolonPos + 1);
+                    } else {
+                        slicedPattern = dispenserPattern;
+                    }
+                    stage.objects.emplace_back(std::make_unique<Dispenser>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                    stage.initialObjects.emplace_back(std::make_unique<Dispenser>(
                         sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
                 }
             }
@@ -149,10 +170,15 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             }
         }
 
+        // Save initial state for reset
+        stage.initialTileMap = stage.tileMap;
+
         // Handle if symbol of player not found
         if(!stage.player) {
             Logger::log("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
             stage.player = std::make_unique<Player>(sf::Vector2i{0, 0}, 
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
+            stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{0, 0}, 
                 sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
         }
 
@@ -163,34 +189,6 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         Logger::log("Total objects in stage " + std::to_string(stageId) + ": " + std::to_string(stage.objects.size()));
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
-
-        // === 儲存初始狀態，供 reset() 使用 ===
-        stage.initialTileMap = stage.tileMap;
-        stage.initialObjects.clear();
-        for(const auto& objPtr : stage.objects) {
-            if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
-                Stage::InitialObject io;
-                io.type = SYMBOL_GUARD_MONSTER;
-                io.posTile = gm->posTile;
-                io.pattern = gm->getBehaviorPattern();
-                stage.initialObjects.push_back(std::move(io));
-            } else if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
-                Stage::InitialObject io;
-                io.type = SYMBOL_TRACE_MONSTER;
-                io.posTile = tm->posTile;
-                io.pattern = "";
-                stage.initialObjects.push_back(std::move(io));
-            } else {
-                // 暫時不處理其他種類
-            }
-        }
-        if(stage.player) {
-            stage.initialPlayerPos = stage.player->posTile;
-            stage.hasInitialPlayer = true;
-        } else {
-            stage.hasInitialPlayer = false;
-        }
-        // === initial state saved ===
 
         // Add stage to stages vector
         stages.emplace_back(std::move(stage));
@@ -226,8 +224,8 @@ void Stage::createTiles(int tile_size) {
                 case SYMBOL_WALL:
                     tile->setFillColor(TILE_COLOR_WALL);
                     break;
-                case SYMBOL_DISPENSOR:
-                    tile->setFillColor(TILE_COLOR_DISPENSOR);
+                case SYMBOL_DISPENSER:
+                    tile->setFillColor(TILE_COLOR_DISPENSER);
                     break;
                 case SYMBOL_TRACE_MONSTER:
                     tile->setFillColor(TILE_COLOR_TRACE_MONSTER);
@@ -252,8 +250,8 @@ int Stage::getRow() const { return row; }
 int Stage::getColumn() const { return column; }
 Player& Stage::getPlayer() { return *player; }
 
-void Stage::setPatternDispensor(const std::string& pattern) {
-    patternDispensor = pattern;
+void Stage::setPatternDispenser(const std::string& pattern) {
+    patternDispenser = pattern;
 }
 
 void Stage::setPatternGuardMonster(const std::string& pattern) {
@@ -291,14 +289,51 @@ void Stage::undoLastAction() {
 
 void Stage::handleObjectAction() {
     Logger::log("Handling object action.");
-    for(std::unique_ptr<Object>& object : objects) {
-        // Use .get() to access the raw pointer from unique_ptr
-        if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
-            guardMonster->update(tileMap, tile_size);
-        } else if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
-            traceMonster->update(tileMap, tile_size, player->posTile);
+    
+    // First handle projectiles
+    for(int i = 0; i < objects.size(); i++) {
+        std::unique_ptr<Object>& object = objects[i];
+
+        if(Arrow* arrow = dynamic_cast<Arrow*>(object.get())) {
+            // Store old position before update
+            sf::Vector2i oldPosTile = arrow->posTile;
+            
+            // Update arrow
+            arrow->update(tileMap, tile_size);
+            if(shouldRemoveProjectile(arrow, arrow->getOriginalPosTile(), i)) {
+                objectsToRemove.push_back(i);
+            }
         }
     }
+    // Then handle other objects
+    for(int i = 0; i < objects.size(); i++) {
+        std::unique_ptr<Object>& object = objects[i];
+        
+        // Use .get() to access the raw pointer from unique_ptr
+        if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
+            traceMonster->update(tileMap, tile_size, player->posTile);
+        } else if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
+            guardMonster->update(tileMap, tile_size);
+        } else if(Dispenser* dispenser = dynamic_cast<Dispenser*>(object.get())) {
+            dispenser->update(tileMap, tile_size, bufferObjects);
+        }
+    }
+
+    // Add buffered objects to main objects vector
+    for(auto& bufferedObject : bufferObjects) {
+        objects.emplace_back(std::move(bufferedObject));
+    }
+    bufferObjects.clear();
+    
+    // Remove projectiles in reverse order to avoid index shifting issues
+    for(int i = objectsToRemove.size() - 1; i >= 0; i--) {
+        int removeIndex = objectsToRemove[i];
+        objects.erase(objects.begin() + removeIndex);
+        Logger::log_debug("Removed arrow at index " + std::to_string(removeIndex));
+    }
+    objectsToRemove.clear();
+
+    Logger::log_debug("Remaining objects after handling actions: " + std::to_string(objects.size()));
 }
 
 void Stage::handlePlayerAction() {
@@ -319,6 +354,17 @@ void Stage::handlePlayerAction() {
         case Action::None:
             break;
     }
+}
+
+bool Stage::shouldRemoveProjectile(Projectile* projectile, sf::Vector2i oldPosTile, int i) {
+    // If projectile position didn't change, it hit a wall or obstacle
+    if(projectile->posTile == oldPosTile) {
+        tileMap[projectile->posTile.y][projectile->posTile.x] = '-';
+        Logger::log_debug("Arrow at (" + std::to_string(oldPosTile.x) + ", " + std::to_string(oldPosTile.y) + ") stopped and will be removed.");
+        return true;
+    } 
+
+    return false;
 }
 
 void Stage::advance() {
@@ -366,12 +412,11 @@ void Stage::print() const {
         Logger::log_debug(line);
     }
     Logger::log_debug("=====================");
-    Logger::log_debug("Pattern Dispensor: " + patternDispensor);
     Logger::log_debug("Pattern Guard Monster: " + patternGuardMonster);
+    Logger::log_debug("Pattern Dispenser: " + patternDispenser);
     Logger::log_debug("=====================");
 }
 
-// 新增：將關卡還原到初始狀態
 void Stage::reset() {
     Logger::log("Resetting stage " + std::to_string(stageId) + " to initial state.");
 
@@ -389,28 +434,27 @@ void Stage::reset() {
     objects.clear();
     shapes.clear();
 
-    // Recreate objects from initialObjects
-    for(const auto& io : initialObjects) {
-        sf::Vector2f posWindow = { start_x + io.posTile.x * tile_size, start_y + io.posTile.y * tile_size };
-        if(io.type == SYMBOL_GUARD_MONSTER) {
-            objects.emplace_back(std::make_unique<GuardMonster>(io.posTile, posWindow, tile_size, io.pattern));
-        } else if(io.type == SYMBOL_TRACE_MONSTER) {
-            objects.emplace_back(std::make_unique<TraceMonster>(io.posTile, posWindow, tile_size));
-        } else {
-            // 未處理型別：可依需求新增
-        }
+    // Restore player from initial state
+    if(initialPlayer) {
+        player = std::make_unique<Player>(initialPlayer->posTile, initialPlayer->posWindow, tile_size);
+        Logger::log("Player reset to initial position (" + std::to_string(initialPlayer->posTile.x) + ", " + std::to_string(initialPlayer->posTile.y) + ").");
+    } else {
+        // If no initial player was stored, create default
+        player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tile_size);
+        Logger::log_debug("No initial player found; created default player at (0,0).");
     }
 
-    // Restore or create player
-    if(hasInitialPlayer) {
-        sf::Vector2f pWin = { start_x + initialPlayerPos.x * tile_size, start_y + initialPlayerPos.y * tile_size };
-        player = std::make_unique<Player>(initialPlayerPos, pWin, tile_size);
-        Logger::log("Player reset to initial position (" + std::to_string(initialPlayerPos.x) + ", " + std::to_string(initialPlayerPos.y) + ").");
-    } else {
-        // 如果沒有初始 player，保留現有或建立預設
-        if(!player) {
-            player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tile_size);
-            Logger::log_debug("No initial player found; created default player at (0,0).");
+    // Clone all initial objects back to objects
+    for(const auto& objPtr : initialObjects) {
+        if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<TraceMonster>(
+                tm->posTile, tm->posWindow, tile_size));
+        } else if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<GuardMonster>(
+                gm->posTile, gm->posWindow, tile_size, gm->getBehaviorPattern()));
+        } else if(Dispenser* disp = dynamic_cast<Dispenser*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Dispenser>(
+                disp->posTile, disp->posWindow, tile_size, disp->getBehaviorPattern()));
         }
     }
 
