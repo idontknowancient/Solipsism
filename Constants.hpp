@@ -19,7 +19,7 @@ enum class Action {
 
 // Inline ensures single definition across translation units
 // Global settings
-inline const bool DEBUG_MODE = true;
+inline const bool DEBUG_MODE = false;
 inline const int WORLD_WIDTH = 1920;
 inline const int WORLD_HEIGHT = 1080;
 inline const int FRAME_RATE = 60;
@@ -33,6 +33,7 @@ inline const std::string BACKGROUND_IMAGE_FILE = "assets/background_image.jpg";
 inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
 inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
 inline const std::string GUARD_MONSTER_TEXTURE_FILE = "assets/guard_monster.png";
+inline const std::string TRACE_MONSTER_TEXTURE_FILE = "assets/trace_monster.png";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
@@ -80,6 +81,7 @@ private:
     static sf::Font buttonFont;
     static sf::Texture playerTexture;
     static sf::Texture guardMonsterTexture;
+    static sf::Texture traceMonsterTexture;
 
 public:
     Resource() = delete;
@@ -93,4 +95,5 @@ public:
     static const sf::Font& getButtonFont();
     static const sf::Texture& getPlayerTexture();
     static const sf::Texture& getGuardMonsterTexture();
+    static const sf::Texture& getTraceMonsterTexture();
 };

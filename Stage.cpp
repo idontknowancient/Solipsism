@@ -110,6 +110,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                 // Initial position in window coordinates
                 sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
 
+                // Object creation based on symbol
                 // Player
                 if(ch == SYMBOL_PLAYER) {
                     stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
@@ -117,7 +118,8 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
 
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
-                    
+                    stage.objects.emplace_back(std::make_unique<TraceMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
                 }
 
                 // Guard monsters 
@@ -149,7 +151,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
 
         // Handle if symbol of player not found
         if(!stage.player) {
-            Logger::log_debug("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
+            Logger::log("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
             stage.player = std::make_unique<Player>(sf::Vector2i{0, 0}, 
                 sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
         }
@@ -212,7 +214,7 @@ void Stage::createTiles(int tile_size) {
             }
             
             shapes.emplace_back(std::unique_ptr<sf::Shape>(tile));
-            Logger::log("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
+            Logger::log_debug("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
                 + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
         }
     }
@@ -265,6 +267,8 @@ void Stage::handleObjectAction() {
         // Use .get() to access the raw pointer from unique_ptr
         if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
             guardMonster->update(tileMap, tile_size);
+        } else if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
+            traceMonster->update(tileMap, tile_size);
         }
     }
 }
@@ -279,7 +283,7 @@ void Stage::handlePlayerAction() {
         case Action::MoveDown:
         case Action::MoveLeft:
         case Action::MoveRight:
-            moveEntitySuccessful(*player, action);
+            player->update(tileMap, tile_size, action);
             break;
         case Action::Attack:
             // To be implemented
@@ -299,59 +303,9 @@ void Stage::advance() {
         handleObjectAction();
         handlePlayerAction();
     }
-}
-
-bool Stage::isValidMove(Object& object, const Action& action) {
-    sf::Vector2i newPos = object.posTile;
-    if(action == Action::MoveUp) {
-        newPos.y -= 1;
-    } else if(action == Action::MoveDown) {
-        newPos.y += 1;
-    } else if(action == Action::MoveLeft) {
-        newPos.x -= 1;
-    } else if(action == Action::MoveRight) {
-        newPos.x += 1;
-    }
-
-    // Check bounds
-    if(newPos.x < 0 || newPos.x >= column || newPos.y < 0 || newPos.y >= row) {
-        Logger::log("Move out of bounds to (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
-        return false;
-    }
-
-    // Check tile type
-    char tileType = tileMap[newPos.y][newPos.x];
-    if(tileType == 'X') { // Wall
-        Logger::log("Move blocked by wall at (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
-        return false;
-    }
-
-    return true; // Valid move
-}
-
-bool Stage::moveEntitySuccessful(Object& object, const Action& action) {
-    if(!isValidMove(object, action)) return false;
-
-    // Update tile and window position
-    if(action == Action::MoveUp) {
-        object.posTile.y -= 1;
-        object.posWindow.y -= tile_size;
-    } else if(action == Action::MoveDown) {
-        object.posTile.y += 1;
-        object.posWindow.y += tile_size;
-    } else if(action == Action::MoveLeft) {
-        object.posTile.x -= 1;
-        object.posWindow.x -= tile_size;
-    } else if(action == Action::MoveRight) {
-        object.posTile.x += 1;
-        object.posWindow.x += tile_size;
-    }
-    object.getSprite().setPosition(object.posWindow);
-
-    Logger::log("Entity moved to (" 
-        + std::to_string(object.posTile.x) + ", " 
-        + std::to_string(object.posTile.y) + ").");
-    return true;
+    Logger::log_debug("Stage advanced.");
+    Logger::log_debug("Stage state after advance:");
+    print();
 }
 
 void Stage::draw(sf::RenderWindow& window) {

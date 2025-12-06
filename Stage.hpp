@@ -39,7 +39,6 @@ private:
     std::string patternDispensor;
     std::string patternGuardMonster;
 
-    bool isValidMove(Object& object, const Action& action);
     void handleObjectAction();
     void handlePlayerAction();
 
@@ -68,10 +67,6 @@ public:
 
     // Advance by actionPerTurn actions
     void advance();
-
-    // Attempt to move the entity in the specified direction
-    // Returns true if the move was successful, false otherwise
-    bool moveEntitySuccessful(Object& object, const Action& action);
 
     void draw(sf::RenderWindow& window);
     void print() const;

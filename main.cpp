@@ -142,12 +142,12 @@ int main() {
                     if(mouseWheel->delta > 0 && view.getSize().x > 500.f && view.getSize().y > 500.f) {
                         // 1.0 - 0.1 = 0.9
                         view.zoom(1.0f - ZOOM_RATE);
-                        Logger::log("Zoomed in.");
+                        Logger::log_debug("Zoomed in.");
                         Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
                     } else if(mouseWheel->delta < 0 && view.getSize().x < WORLD_WIDTH * 2.f && view.getSize().y < WORLD_HEIGHT * 2.f) {
                         // 1.0 + 0.1 = 1.1
                         view.zoom(1.0f + ZOOM_RATE);
-                        Logger::log("Zoomed out.");
+                        Logger::log_debug("Zoomed out.");
                         Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
                     }
                 }

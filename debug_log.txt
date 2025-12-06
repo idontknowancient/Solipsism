@@ -1,230 +1,106 @@
-[2025-12-06 14:00:49] --- Logger Initialized ---
-[2025-12-06 14:00:49] Game started.
-[2025-12-06 14:00:49] Loading Stage: 1
-[2025-12-06 14:00:49] Stage 1 created with size (15, 10).
-[2025-12-06 14:00:49] Parsing patterns for stage 1
-[2025-12-06 14:00:49] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
-[2025-12-06 14:00:49] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
-[2025-12-06 14:00:49] Warning: Player symbol not found in stage 1. Creating default player at (0,0).
-[2025-12-06 14:00:49] Player created at tile (0, 0).
-[2025-12-06 14:00:49] Created tile at (0, 0) of type '-' at position (210.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (1, 0) of type '-' at position (310.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (2, 0) of type '-' at position (410.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (3, 0) of type '-' at position (510.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (4, 0) of type 'X' at position (610.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (5, 0) of type 'X' at position (710.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (6, 0) of type '-' at position (810.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (7, 0) of type '-' at position (910.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (8, 0) of type 'D' at position (1010.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (9, 0) of type '-' at position (1110.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (10, 0) of type '-' at position (1210.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (11, 0) of type 'D' at position (1310.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (12, 0) of type '-' at position (1410.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (13, 0) of type '-' at position (1510.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (14, 0) of type 'M' at position (1610.000000, 40.000000).
-[2025-12-06 14:00:49] Created tile at (0, 1) of type '-' at position (210.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (1, 1) of type '-' at position (310.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (2, 1) of type '-' at position (410.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (3, 1) of type '-' at position (510.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (4, 1) of type 'X' at position (610.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (5, 1) of type 'X' at position (710.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (6, 1) of type '-' at position (810.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (7, 1) of type '-' at position (910.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (8, 1) of type '-' at position (1010.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (9, 1) of type 'X' at position (1110.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (10, 1) of type '-' at position (1210.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (11, 1) of type '-' at position (1310.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (12, 1) of type '-' at position (1410.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (13, 1) of type '-' at position (1510.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (14, 1) of type '-' at position (1610.000000, 140.000000).
-[2025-12-06 14:00:49] Created tile at (0, 2) of type '-' at position (210.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (1, 2) of type '-' at position (310.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (2, 2) of type '-' at position (410.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (3, 2) of type '-' at position (510.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (4, 2) of type 'X' at position (610.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (5, 2) of type 'X' at position (710.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (6, 2) of type 'm' at position (810.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (7, 2) of type '-' at position (910.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (8, 2) of type '-' at position (1010.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (9, 2) of type 'X' at position (1110.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (10, 2) of type '-' at position (1210.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (11, 2) of type '-' at position (1310.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (12, 2) of type '-' at position (1410.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (13, 2) of type '-' at position (1510.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (14, 2) of type '-' at position (1610.000000, 240.000000).
-[2025-12-06 14:00:49] Created tile at (0, 3) of type '-' at position (210.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (1, 3) of type '-' at position (310.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (2, 3) of type '-' at position (410.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (3, 3) of type '-' at position (510.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (4, 3) of type '-' at position (610.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (5, 3) of type '-' at position (710.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (6, 3) of type '-' at position (810.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (7, 3) of type '-' at position (910.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (8, 3) of type '-' at position (1010.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (9, 3) of type 'X' at position (1110.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (10, 3) of type '-' at position (1210.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (11, 3) of type '-' at position (1310.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (12, 3) of type '-' at position (1410.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (13, 3) of type '-' at position (1510.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (14, 3) of type '-' at position (1610.000000, 340.000000).
-[2025-12-06 14:00:49] Created tile at (0, 4) of type '-' at position (210.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (1, 4) of type '-' at position (310.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (2, 4) of type '-' at position (410.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (3, 4) of type 'M' at position (510.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (4, 4) of type '-' at position (610.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (5, 4) of type '-' at position (710.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (6, 4) of type '-' at position (810.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (7, 4) of type '-' at position (910.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (8, 4) of type '-' at position (1010.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (9, 4) of type 'X' at position (1110.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (10, 4) of type 'm' at position (1210.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (11, 4) of type '-' at position (1310.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (12, 4) of type '-' at position (1410.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (13, 4) of type '-' at position (1510.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (14, 4) of type 'G' at position (1610.000000, 440.000000).
-[2025-12-06 14:00:49] Created tile at (0, 5) of type 'X' at position (210.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (1, 5) of type 'X' at position (310.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (2, 5) of type '-' at position (410.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (3, 5) of type '-' at position (510.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (4, 5) of type '-' at position (610.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (5, 5) of type '-' at position (710.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (6, 5) of type '-' at position (810.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (7, 5) of type '-' at position (910.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (8, 5) of type '-' at position (1010.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (9, 5) of type '-' at position (1110.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (10, 5) of type '-' at position (1210.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (11, 5) of type '-' at position (1310.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (12, 5) of type '-' at position (1410.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (13, 5) of type '-' at position (1510.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (14, 5) of type 'G' at position (1610.000000, 540.000000).
-[2025-12-06 14:00:49] Created tile at (0, 6) of type 'X' at position (210.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (1, 6) of type 'X' at position (310.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (2, 6) of type '-' at position (410.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (3, 6) of type '-' at position (510.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (4, 6) of type '-' at position (610.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (5, 6) of type '-' at position (710.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (6, 6) of type '-' at position (810.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (7, 6) of type 'X' at position (910.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (8, 6) of type '-' at position (1010.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (9, 6) of type '-' at position (1110.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (10, 6) of type '-' at position (1210.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (11, 6) of type '-' at position (1310.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (12, 6) of type '-' at position (1410.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (13, 6) of type '-' at position (1510.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (14, 6) of type '-' at position (1610.000000, 640.000000).
-[2025-12-06 14:00:49] Created tile at (0, 7) of type '-' at position (210.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (1, 7) of type '-' at position (310.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (2, 7) of type '-' at position (410.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (3, 7) of type '-' at position (510.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (4, 7) of type '-' at position (610.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (5, 7) of type '-' at position (710.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (6, 7) of type '-' at position (810.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (7, 7) of type 'X' at position (910.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (8, 7) of type '-' at position (1010.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (9, 7) of type '-' at position (1110.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (10, 7) of type '-' at position (1210.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (11, 7) of type '-' at position (1310.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (12, 7) of type '-' at position (1410.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (13, 7) of type '-' at position (1510.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (14, 7) of type '-' at position (1610.000000, 740.000000).
-[2025-12-06 14:00:49] Created tile at (0, 8) of type '-' at position (210.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (1, 8) of type '-' at position (310.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (2, 8) of type '-' at position (410.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (3, 8) of type '-' at position (510.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (4, 8) of type '-' at position (610.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (5, 8) of type '-' at position (710.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (6, 8) of type '-' at position (810.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (7, 8) of type 'X' at position (910.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (8, 8) of type '-' at position (1010.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (9, 8) of type '-' at position (1110.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (10, 8) of type '-' at position (1210.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (11, 8) of type '-' at position (1310.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (12, 8) of type '-' at position (1410.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (13, 8) of type '-' at position (1510.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (14, 8) of type '-' at position (1610.000000, 840.000000).
-[2025-12-06 14:00:49] Created tile at (0, 9) of type '-' at position (210.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (1, 9) of type '-' at position (310.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (2, 9) of type 'D' at position (410.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (3, 9) of type '-' at position (510.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (4, 9) of type '-' at position (610.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (5, 9) of type '-' at position (710.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (6, 9) of type '-' at position (810.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (7, 9) of type '-' at position (910.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (8, 9) of type '-' at position (1010.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (9, 9) of type '-' at position (1110.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (10, 9) of type '-' at position (1210.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (11, 9) of type '-' at position (1310.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (12, 9) of type '-' at position (1410.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (13, 9) of type '-' at position (1510.000000, 940.000000).
-[2025-12-06 14:00:49] Created tile at (14, 9) of type '-' at position (1610.000000, 940.000000).
-[2025-12-06 14:00:49] Total objects in stage 1: 2
-[2025-12-06 14:00:49] Stage 1 loaded from file.
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] Printing tile map for Stage 1:
-[2025-12-06 14:00:49] Size (15, 10):
-[2025-12-06 14:00:49] Action Per Turn: 5
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] ----XX--D--D--M
-[2025-12-06 14:00:49] ----XX---X-----
-[2025-12-06 14:00:49] ----XXm--X-----
-[2025-12-06 14:00:49] ---------X-----
-[2025-12-06 14:00:49] ---M-----Xm---G
-[2025-12-06 14:00:49] XX------------G
-[2025-12-06 14:00:49] XX-----X-------
-[2025-12-06 14:00:49] -------X-------
-[2025-12-06 14:00:49] -------X-------
-[2025-12-06 14:00:49] --D------------
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] Pattern Dispensor: D;D;U;
-[2025-12-06 14:00:49] Pattern Guard Monster: UDDDDDDDUUUUUU;UURRDDDDLLUU;
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] Loading Stage: 2
-[2025-12-06 14:00:49] Stage 2 created with size (5, 5).
-[2025-12-06 14:00:49] Parsing patterns for stage 2
-[2025-12-06 14:00:49] Player created at tile (0, 1).
-[2025-12-06 14:00:49] Created tile at (0, 0) of type 'X' at position (710.000000, 290.000000).
-[2025-12-06 14:00:49] Created tile at (1, 0) of type 'X' at position (810.000000, 290.000000).
-[2025-12-06 14:00:49] Created tile at (2, 0) of type 'X' at position (910.000000, 290.000000).
-[2025-12-06 14:00:49] Created tile at (3, 0) of type 'X' at position (1010.000000, 290.000000).
-[2025-12-06 14:00:49] Created tile at (4, 0) of type 'X' at position (1110.000000, 290.000000).
-[2025-12-06 14:00:49] Created tile at (0, 1) of type 'P' at position (710.000000, 390.000000).
-[2025-12-06 14:00:49] Created tile at (1, 1) of type '-' at position (810.000000, 390.000000).
-[2025-12-06 14:00:49] Created tile at (2, 1) of type '-' at position (910.000000, 390.000000).
-[2025-12-06 14:00:49] Created tile at (3, 1) of type '-' at position (1010.000000, 390.000000).
-[2025-12-06 14:00:49] Created tile at (4, 1) of type 'D' at position (1110.000000, 390.000000).
-[2025-12-06 14:00:49] Created tile at (0, 2) of type '-' at position (710.000000, 490.000000).
-[2025-12-06 14:00:49] Created tile at (1, 2) of type '-' at position (810.000000, 490.000000).
-[2025-12-06 14:00:49] Created tile at (2, 2) of type '-' at position (910.000000, 490.000000).
-[2025-12-06 14:00:49] Created tile at (3, 2) of type '-' at position (1010.000000, 490.000000).
-[2025-12-06 14:00:49] Created tile at (4, 2) of type 'M' at position (1110.000000, 490.000000).
-[2025-12-06 14:00:49] Created tile at (0, 3) of type '-' at position (710.000000, 590.000000).
-[2025-12-06 14:00:49] Created tile at (1, 3) of type '-' at position (810.000000, 590.000000).
-[2025-12-06 14:00:49] Created tile at (2, 3) of type '-' at position (910.000000, 590.000000).
-[2025-12-06 14:00:49] Created tile at (3, 3) of type 'X' at position (1010.000000, 590.000000).
-[2025-12-06 14:00:49] Created tile at (4, 3) of type 'X' at position (1110.000000, 590.000000).
-[2025-12-06 14:00:49] Created tile at (0, 4) of type 'X' at position (710.000000, 690.000000).
-[2025-12-06 14:00:49] Created tile at (1, 4) of type 'X' at position (810.000000, 690.000000).
-[2025-12-06 14:00:49] Created tile at (2, 4) of type '-' at position (910.000000, 690.000000).
-[2025-12-06 14:00:49] Created tile at (3, 4) of type '-' at position (1010.000000, 690.000000).
-[2025-12-06 14:00:49] Created tile at (4, 4) of type 'G' at position (1110.000000, 690.000000).
-[2025-12-06 14:00:49] Total objects in stage 2: 0
-[2025-12-06 14:00:49] Stage 2 loaded from file.
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] Printing tile map for Stage 2:
-[2025-12-06 14:00:49] Size (5, 5):
-[2025-12-06 14:00:49] Action Per Turn: 1
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] XXXXX
-[2025-12-06 14:00:49] P---D
-[2025-12-06 14:00:49] ----M
-[2025-12-06 14:00:49] ---XX
-[2025-12-06 14:00:49] XX--G
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:49] Pattern Dispensor: L;
-[2025-12-06 14:00:49] Pattern Guard Monster: 
-[2025-12-06 14:00:49] =====================
-[2025-12-06 14:00:50] Clicked left button at (933, 620).
-[2025-12-06 14:00:50] Start Game button pressed. Entering Playing state.
-[2025-12-06 14:01:34] Window closed by user.
-[2025-12-06 14:01:34] Game exited.
-[2025-12-06 14:01:34] --- Logger Shutdown ---
+[2025-12-06 15:05:54] --- Logger Initialized ---
+[2025-12-06 15:05:54] Game started.
+[2025-12-06 15:05:54] Loading Stage: 1
+[2025-12-06 15:05:54] Stage 1 created with size (15, 10).
+[2025-12-06 15:05:54] Player created at tile (0, 0).
+[2025-12-06 15:05:54] TraceMonster created at tile (14, 0).
+[2025-12-06 15:05:54] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
+[2025-12-06 15:05:54] TraceMonster created at tile (3, 4).
+[2025-12-06 15:05:54] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
+[2025-12-06 15:05:54] Total objects in stage 1: 4
+[2025-12-06 15:05:54] Stage 1 loaded from file.
+[2025-12-06 15:05:54] Loading Stage: 2
+[2025-12-06 15:05:54] Stage 2 created with size (5, 5).
+[2025-12-06 15:05:54] Player created at tile (0, 1).
+[2025-12-06 15:05:54] TraceMonster created at tile (4, 2).
+[2025-12-06 15:05:54] Total objects in stage 2: 1
+[2025-12-06 15:05:54] Stage 2 loaded from file.
+[2025-12-06 15:05:55] Clicked left button at (1041, 644).
+[2025-12-06 15:05:55] Start Game button pressed. Entering Playing state.
+[2025-12-06 15:05:56] S key pressed.
+[2025-12-06 15:05:56] Advancing stage by 1 actions.
+[2025-12-06 15:05:56] Handling object action.
+[2025-12-06 15:05:56] Handling player action.
+[2025-12-06 15:05:56] S key pressed.
+[2025-12-06 15:05:56] Advancing stage by 1 actions.
+[2025-12-06 15:05:56] Handling object action.
+[2025-12-06 15:05:56] Handling player action.
+[2025-12-06 15:05:56] D key pressed.
+[2025-12-06 15:05:56] Advancing stage by 1 actions.
+[2025-12-06 15:05:56] Handling object action.
+[2025-12-06 15:05:56] Handling player action.
+[2025-12-06 15:05:56] D key pressed.
+[2025-12-06 15:05:56] Advancing stage by 1 actions.
+[2025-12-06 15:05:56] Handling object action.
+[2025-12-06 15:05:56] Handling player action.
+[2025-12-06 15:05:56] D key pressed.
+[2025-12-06 15:05:56] Advancing stage by 1 actions.
+[2025-12-06 15:05:56] Handling object action.
+[2025-12-06 15:05:56] Handling player action.
+[2025-12-06 15:05:57] S key pressed.
+[2025-12-06 15:05:57] Advancing stage by 1 actions.
+[2025-12-06 15:05:57] Handling object action.
+[2025-12-06 15:05:57] Handling player action.
+[2025-12-06 15:05:57] S key pressed.
+[2025-12-06 15:05:57] Advancing stage by 1 actions.
+[2025-12-06 15:05:57] Handling object action.
+[2025-12-06 15:05:57] Handling player action.
+[2025-12-06 15:05:57] S key pressed.
+[2025-12-06 15:05:57] Advancing stage by 1 actions.
+[2025-12-06 15:05:57] Handling object action.
+[2025-12-06 15:05:57] Handling player action.
+[2025-12-06 15:05:57] A key pressed.
+[2025-12-06 15:05:57] Advancing stage by 1 actions.
+[2025-12-06 15:05:57] Handling object action.
+[2025-12-06 15:05:57] Handling player action.
+[2025-12-06 15:05:57] A key pressed.
+[2025-12-06 15:05:57] Advancing stage by 1 actions.
+[2025-12-06 15:05:57] Handling object action.
+[2025-12-06 15:05:57] Handling player action.
+[2025-12-06 15:05:58] S key pressed.
+[2025-12-06 15:05:58] Advancing stage by 1 actions.
+[2025-12-06 15:05:58] Handling object action.
+[2025-12-06 15:05:58] Handling player action.
+[2025-12-06 15:05:58] S key pressed.
+[2025-12-06 15:05:58] Advancing stage by 1 actions.
+[2025-12-06 15:05:58] Handling object action.
+[2025-12-06 15:05:58] Handling player action.
+[2025-12-06 15:05:58] S key pressed.
+[2025-12-06 15:05:58] Advancing stage by 1 actions.
+[2025-12-06 15:05:58] Handling object action.
+[2025-12-06 15:05:58] Handling player action.
+[2025-12-06 15:05:58] S key pressed.
+[2025-12-06 15:05:58] Advancing stage by 1 actions.
+[2025-12-06 15:05:58] Handling object action.
+[2025-12-06 15:05:58] Handling player action.
+[2025-12-06 15:05:59] S key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:05:59] A key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:05:59] W key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:05:59] D key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:05:59] W key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:05:59] W key pressed.
+[2025-12-06 15:05:59] Advancing stage by 1 actions.
+[2025-12-06 15:05:59] Handling object action.
+[2025-12-06 15:05:59] Handling player action.
+[2025-12-06 15:06:00] D key pressed.
+[2025-12-06 15:06:00] Advancing stage by 1 actions.
+[2025-12-06 15:06:00] Handling object action.
+[2025-12-06 15:06:00] Handling player action.
+[2025-12-06 15:06:17] Window closed by user.
+[2025-12-06 15:06:17] Game exited.
+[2025-12-06 15:06:17] --- Logger Shutdown ---

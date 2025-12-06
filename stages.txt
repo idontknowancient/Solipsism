@@ -2,7 +2,7 @@ STAGE_START
 STAGE_ID: 1
 COLUMN: 15
 ROW: 10
-ACTION_PER_TURN: 5
+ACTION_PER_TURN: 1
 PATTERN_START
 DISPENSOR: D;D;U;
 GUARD_MONSTER: UD7U6;U2R2D4L2U2;
@@ -10,7 +10,7 @@ PATTERN_END
 MAP_START
 ## P: Player start / X: Wall / D: Dispensor / M: Trace Monster
 ## m: Guard Monster / G: Goal
-----XX--D--D--M
+P---XX--D--D--M
 ----XX---X-----
 ----XXm--X-----
 ---------X-----
