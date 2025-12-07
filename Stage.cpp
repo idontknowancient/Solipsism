@@ -6,9 +6,18 @@
 #include <iostream>
 #include <vector>
 
+// Static member initialization
+sf::RectangleShape Stage::stageClearShape;
+sf::Sprite Stage::stageClearSprite(Resource::getStageClearTexture());
+RoundedRectangle Stage::buttonSelect(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+RoundedRectangle Stage::buttonRetry(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+RoundedRectangle Stage::buttonNext(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+
 Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), 
-    tile_size(100), openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()) ,
-    stageClearSprite(Resource::getStageClearTexture()) {
+    openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()) {
+    // Initialize tile size based on window size and number of tiles
+    this->tile_size = std::min(WORLD_WIDTH / (column + 1), WORLD_HEIGHT / (row + 1));
+
     // Initialize start positions for the tile map in window coordinates
     this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
     this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
@@ -17,14 +26,9 @@ Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stag
     tileMap.resize(row, std::vector<char>(column, '-'));
 
     resizeTileTexture(openSpace, tile_size);
-    resizeTileTexture(stageClearSprite, std::min(WORLD_WIDTH, WORLD_HEIGHT) * 0.75f);
     openSpace.setPosition({start_x, start_y});
-    stageClearSprite.setPosition({(WORLD_WIDTH - stageClearSprite.getGlobalBounds().size.x) / 2.f, 
-        (WORLD_HEIGHT - stageClearSprite.getGlobalBounds().size.y) / 2.f});
-    stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
-    stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
 
-    setBackground(backgroundSprite, Resource::getBackgroundStageTexture());
+    setBackground(backgroundSprite, Resource::getBackgroundStageTexture(), BACKGROUND_TRANSLUCENT_STRONGER);
     
     // Create visual tiles for the stage (will be called after loading map from file)
     // createTiles(100) should be called after map is loaded
@@ -222,10 +226,41 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         // Advance to STAGE_END
         while(line != "STAGE_END" && std::getline(file, line)) {}
 
-        stage.createTiles(stage.tile_size);
+        stage.createTiles();
         Logger::log("Total objects in stage " + std::to_string(stageId) + ": " + std::to_string(stage.objects.size()));
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
+        
+        // Setup stage clear overlay
+        Stage::stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+        Stage::stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
+        
+        // Set texture for sprite
+        Stage::stageClearSprite.setTexture(Resource::getStageClearTexture());
+        sf::Vector2u textureSize = Stage::stageClearSprite.getTexture().getSize();
+        float scaleX = static_cast<float>(stage.tile_size) / textureSize.x;
+        float scaleY = static_cast<float>(stage.tile_size) / textureSize.y;
+        Stage::stageClearSprite.setScale({scaleX, scaleY});
+        Stage::stageClearSprite.setPosition({(WORLD_WIDTH - Stage::stageClearSprite.getGlobalBounds().size.x) / 2.f, 
+            (WORLD_HEIGHT - Stage::stageClearSprite.getGlobalBounds().size.y) / 2.f});
+        Stage::buttonSelect = RoundedRectangle(
+            BUTTON_CENTER_X - 250, BUTTON_CENTER_Y + 50,
+            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
+            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+            "SELECT", 30, Resource::getButtonFont()
+        );
+        Stage::buttonRetry = RoundedRectangle(
+            BUTTON_CENTER_X, BUTTON_CENTER_Y + 50,
+            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
+            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+            "RETRY", 30, Resource::getButtonFont()
+        );
+        Stage::buttonNext = RoundedRectangle(
+            BUTTON_CENTER_X + 250, BUTTON_CENTER_Y + 50,
+            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
+            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+            "NEXT", 30, Resource::getButtonFont()
+        );
 
         // Add stage to stages vector
         stages.emplace_back(std::move(stage));
@@ -234,7 +269,7 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
     file.close();
 }
 
-void Stage::createTiles(int tile_size) {
+void Stage::createTiles() {
     for(int i = 0; i < row; i++) {
         for(int j = 0; j < column; j++) {
             // Use new to allocate on heap to prevent going out of scope
@@ -478,8 +513,11 @@ void Stage::draw(sf::RenderWindow& window, const GameState& gameState) {
 
     // If stage clear, draw stage clear sprite
     if(gameState == GameState::StageClear) {
-        window.draw(stageClearShape);
-        window.draw(stageClearSprite);
+        window.draw(Stage::stageClearShape);
+        window.draw(Stage::stageClearSprite);
+        Stage::buttonSelect.draw(window);
+        Stage::buttonRetry.draw(window);
+        Stage::buttonNext.draw(window);
     }
 }
 
@@ -550,7 +588,7 @@ void Stage::reset() {
     }
 
     // Recreate visual tiles
-    createTiles(tile_size);
+    createTiles();
 
     Logger::log("Stage " + std::to_string(stageId) + " reset complete.");
     print();

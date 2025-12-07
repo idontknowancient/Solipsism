@@ -5,6 +5,7 @@
 
 enum class GameState {
     TitleScreen,
+    StageSelect,
     Playing,
     GameOver,
     StageClear,
@@ -31,7 +32,7 @@ inline const std::string GAME_TITLE = "Solipsism";
 inline const std::string ICON_FILE = "assets/icon.png";
 inline const std::string BGM_FILE = "assets/sølips.mp3";
 inline const std::string TITLE_IMAGE_FILE = "assets/title_image.png";
-inline const std::string BACKGROUND_TITLE_FILE = "assets/background_title.jpg";
+inline const std::string BACKGROUND_TITLE_FILE = "assets/background_title.png";
 inline const std::string BACKGROUND_STAGE_FILE = "assets/background_stage.jpg";
 inline const std::string STAGE_CLEAR_FILE = "assets/stage_clear.png";
 inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
@@ -54,7 +55,8 @@ inline const float BGM_VOLUME = 10.f;
 inline const float ZOOM_RATE = 0.1f; // Rate of zooming in/out per mouse wheel scroll
 
 // Colors
-inline const sf::Color BACKGROUND_TRANSLUCENT = sf::Color(255, 255, 255, 50);
+inline const sf::Color BACKGROUND_TRANSLUCENT = sf::Color(255, 255, 255, 150);
+inline const sf::Color BACKGROUND_TRANSLUCENT_STRONGER = sf::Color(255, 255, 255, 50);
 inline const sf::Color STAGE_CLEAR_TRANSLUCENT = sf::Color(40, 40, 40, 150);
 inline const sf::Color TILE_COLOR_PLAYER = sf::Color(30, 80, 162);
 inline const sf::Color TILE_COLOR_GOAL = sf::Color(147, 202, 118);
@@ -89,7 +91,7 @@ inline const float BUTTON_CIRCLE_RADIUS = 30.f;
 inline const float BUTTON_RECTANGLE_WIDTH = BUTTON_WIDTH - 2 * BUTTON_CIRCLE_RADIUS;
 inline const float BUTTON_RECTANGLE_HEIGHT = BUTTON_HEIGHT - 2 * BUTTON_CIRCLE_RADIUS;
 inline const float BUTTON_SHADOW_OFFSET = 4.f;
-inline const sf::Color BUTTON_RECTANGLE_COLOR = sf::Color(40, 40, 40, 200);
+inline const sf::Color BUTTON_RECTANGLE_COLOR = sf::Color(40, 40, 40);
 inline const sf::Color BUTTON_SHADOW_COLOR = sf::Color(0, 0, 0, 150);
 inline const sf::Color BUTTON_TEXT_COLOR = sf::Color(200, 200, 200);
 

@@ -61,7 +61,7 @@ void handleScroll(sf::View& view, const sf::Event::MouseWheelScrolled* mouseWhee
     }
 }
 
-void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTexture) {
+void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTexture, sf::Color color) {
     // Original size of the background texture
     sf::Vector2u backgroundSize = backgroundTexture.getSize();
     
@@ -83,7 +83,7 @@ void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTe
     
     // Set position (align with View center)
     backgroundSprite.setPosition({viewWidth / 2.f, viewHeight / 2.f});
-    backgroundSprite.setColor(BACKGROUND_TRANSLUCENT);
+    backgroundSprite.setColor(color);
 
     Logger::log_debug("Background set.");
 }

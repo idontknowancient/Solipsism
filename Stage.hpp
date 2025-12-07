@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Utils.hpp"
 #include "Logger.hpp"
+#include "Shape.hpp"
 #include "Object.hpp"
 #include <iostream>
 #include <vector>
@@ -31,8 +32,6 @@ private:
     // Store sprites for tiles
     std::vector<sf::Sprite> tileSprites;
     sf::Sprite backgroundSprite;
-    sf::RectangleShape stageClearShape;
-    sf::Sprite stageClearSprite;
 
     // Store monsters / projectiles / traps in the stage
     std::vector<std::unique_ptr<Object>> objects;
@@ -63,6 +62,13 @@ private:
     std::unique_ptr<Player> initialPlayer;
 
 public:
+    // Stage clear overlay
+    static sf::RectangleShape stageClearShape;
+    static sf::Sprite stageClearSprite;
+    static RoundedRectangle buttonSelect;
+    static RoundedRectangle buttonRetry;
+    static RoundedRectangle buttonNext;
+
     Stage(int stageId, int column, int row, int actionPerTurn);
     // Disable copy to avoid double-free of raw shape pointers
     Stage(const Stage&) = delete;
@@ -79,7 +85,7 @@ public:
     void setPatternDispenser(const std::string& pattern);
 
     static void createFromFile(std::vector<Stage>& stages);
-    void createTiles(int tile_size);
+    void createTiles();
 
     void addAction(const Action action);
     bool reachMaxActions() const;

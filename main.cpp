@@ -59,11 +59,52 @@ int main() {
         "START", 30, Resource::getButtonFont()
     );
 
+    // Settings Button
+    RoundedRectangle settingsButton(
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 100,
+        BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "SETTINGS", 30, Resource::getButtonFont()
+    );
+
+    // Quit Button
+    RoundedRectangle quitButton(
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 200,
+        BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "QUIT", 30, Resource::getButtonFont()
+    );
+
+    // Stage buttons - 2 rows, 5 columns, centered on screen
+    std::vector<RoundedRectangle> stageButtons;
+    float buttonWidth = 140;
+    float buttonHeight = 60;
+    float spacing = 140.f; // Space between buttons
+    
+    // Calculate grid dimensions
+    float gridWidth = 5 * buttonWidth + 4 * spacing;
+    float gridHeight = 2 * buttonHeight + 1 * spacing;
+    float startX = (WORLD_WIDTH - gridWidth) / 2.f;
+    float startY = (WORLD_HEIGHT - gridHeight) / 2.f;
+    
+    for(int i = 0; i < 10; i++) {
+        int row = i / 5;
+        int col = i % 5;
+        float x = startX + col * (buttonWidth + spacing);
+        float y = startY + row * (buttonHeight + spacing);
+        
+        stageButtons.emplace_back(
+            x + buttonWidth / 2.f, y + buttonHeight / 2.f,
+            buttonWidth, buttonHeight,
+            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+            std::to_string(i + 1), 40, Resource::getButtonFont()
+        );
+    }
+
 
 
     // Gamestate
     GameState gameState = GameState::TitleScreen;
-    int stageNum = 0;
     int stageIndex = 1;
 
 
@@ -90,9 +131,9 @@ int main() {
             } 
             
             else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-                // Update the view to the new size of the window
-                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-                window.setView(sf::View(visibleArea));
+                // Keep view fixed to world size to prevent stretching ...?
+                // The viewport will add black bars as needed
+                window.setView(sf::View(sf::FloatRect({0.f, 0.f}, {WORLD_WIDTH, WORLD_HEIGHT})));
                 Logger::log("Window resized to " + std::to_string(resized->size.x) + "x" + std::to_string(resized->size.y) + ".");
             } 
             
@@ -107,18 +148,64 @@ int main() {
 
                         // Check if start button is pressed
                         if(startButton.isClicked(worldPos)) {
-                            gameState = GameState::Playing;
-                            Logger::log("Start Game button pressed. Entering Playing state.");
+                            gameState = GameState::StageSelect;
+                            Logger::log("Start Game button pressed. Entering Stage Select state.");
+                        } else if(settingsButton.isClicked(worldPos)) {
+                            Logger::log("Settings button pressed. (No action implemented)");
+                        } else if(quitButton.isClicked(worldPos)) {
+                            Resource::getMusic().stop();
+                            window.close();
+                            Logger::log("Quit button pressed. Exiting game.");
+                        }
+                    }
 
-                            // Create stages if not already created
-                            if(stages.empty()) {
-                                stageNum = static_cast<int>(stages.size());
+                    else if(gameState == GameState::StageSelect) {
+                        // Map pixel to world coordinates
+                        sf::Vector2f worldPos = window.mapPixelToCoords(mousePressed->position);
+
+                        // Check if stage buttons are pressed
+                        for(int i = 0; i < stageButtons.size(); i++) {
+                            if(stageButtons[i].isClicked(worldPos)) {
+                                if(i >= stages.size()) {
+                                    Logger::log("Stage " + std::to_string(i + 1) + " does not exist. Staying in Stage Select.");
+                                    break;
+                                }
+
+                                gameState = GameState::Playing;
+                                stageIndex = i + 1;
+                                Logger::log("Stage " + std::to_string(stageIndex) + " button pressed. Entering Playing state.");
+                                break;
                             }
                         }
                     }
 
                     else if(gameState == GameState::Playing) {
                         isDragging = true;
+                    }
+
+                    else if(gameState == GameState::StageClear) {
+                        // Map pixel to world coordinates
+                        sf::Vector2f worldPos = window.mapPixelToCoords(mousePressed->position);
+
+                        if(Stage::buttonSelect.isClicked(worldPos)) {
+                            Logger::log("SELECT button pressed. Returning to Stage Select.");
+                            stages.at(stageIndex - 1).reset();
+                            gameState = GameState::StageSelect;
+                        } else if(Stage::buttonRetry.isClicked(worldPos)) {
+                            Logger::log("RETRY button pressed. Restarting Stage " + std::to_string(stageIndex) + ".");
+                            stages.at(stageIndex - 1).reset();
+                            gameState = GameState::Playing;
+                        } else if(Stage::buttonNext.isClicked(worldPos)) {
+                            if(stageIndex + 1 > stages.size()) {
+                                Logger::log("NEXT button pressed but no more stages. Staying on the screen.");
+                                break;
+                            } else {
+                                Logger::log("NEXT button pressed. Proceeding to Stage " + std::to_string(stageIndex + 1) + ".");
+                                stages.at(stageIndex - 1).reset();
+                                stageIndex++;
+                            }
+                            gameState = GameState::Playing;
+                        }
                     }
 
                     lastMousePos = mousePressed->position;
@@ -139,6 +226,11 @@ int main() {
                 // Check if vertical scroll
                 if(mouseWheel->wheel == sf::Mouse::Wheel::Vertical) {
                     // handleScroll(view, mouseWheel);
+                    
+                    // Adjust music volume
+                    Resource::getMusic().setVolume(
+                        clamp(Resource::getMusic().getVolume() + mouseWheel->delta * 5.f, 0.f, 100.f)
+                    );
                 }
             }
 
@@ -147,12 +239,15 @@ int main() {
                     Logger::log("Escape key pressed.");
 
                     if(gameState == GameState::Playing) {
-                        Logger::log("Returning to Title Screen.");
+                        Logger::log("Returning to Stage Select.");
+                        gameState = GameState::StageSelect;
+                    } else if(gameState == GameState::StageSelect) {
+                        Logger::log("Returning to Title Screen from Stage Select.");
                         gameState = GameState::TitleScreen;
                     } else if(gameState == GameState::StageClear) {
                         stages.at(stageIndex - 1).reset();
-                        Logger::log("Returning to Title Screen from Stage Clear.");
-                        gameState = GameState::TitleScreen;
+                        Logger::log("Returning to Stage Select from Stage Clear.");
+                        gameState = GameState::StageSelect;
                     }
                 }
 
@@ -189,6 +284,9 @@ int main() {
 
                     if(gameState == GameState::Playing) {
                         currentStage.addAction(Action::MoveDown);
+                    } else if(gameState == GameState::TitleScreen) {
+                        gameState = GameState::StageSelect;
+                        Logger::log("Start Game button pressed. Entering Stage Select state.");
                     }
                 }
 
@@ -248,6 +346,14 @@ int main() {
             
             // Draw start button
             startButton.draw(window);
+        } else if(gameState == GameState::StageSelect) {
+            window.setView(view);
+            window.draw(backgroundSprite);
+
+            // Draw stage buttons
+            for(auto& button : stageButtons) {
+                button.draw(window);
+            }
         } else if(gameState == GameState::Playing) {
             window.setView(view);
             stages.at(stageIndex - 1).draw(window, gameState);
