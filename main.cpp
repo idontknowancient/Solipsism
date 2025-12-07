@@ -48,8 +48,8 @@ int main() {
     titleSprite.setColor(sf::Color(255, 255, 255, 180)); // 微透明效果
     
     // Background image
-    sf::Sprite backgroundSprite(Resource::getTitleBackgroundTexture());
-    setBackground(backgroundSprite, Resource::getTitleBackgroundTexture());
+    sf::Sprite backgroundSprite(Resource::getBackgroundTitleTexture());
+    setBackground(backgroundSprite, Resource::getBackgroundTitleTexture());
 
     // Start button
     RoundedRectangle startButton(
@@ -138,18 +138,7 @@ int main() {
             else if(const auto* mouseWheel = event->getIf<sf::Event::MouseWheelScrolled>()) {
                 // Check if vertical scroll
                 if(mouseWheel->wheel == sf::Mouse::Wheel::Vertical) {
-                    //  > 0 meaning zoom in and restrict max/min zoom levels
-                    if(mouseWheel->delta > 0 && view.getSize().x > 500.f && view.getSize().y > 500.f) {
-                        // 1.0 - 0.1 = 0.9
-                        view.zoom(1.0f - ZOOM_RATE);
-                        Logger::log_debug("Zoomed in.");
-                        Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
-                    } else if(mouseWheel->delta < 0 && view.getSize().x < WORLD_WIDTH * 2.f && view.getSize().y < WORLD_HEIGHT * 2.f) {
-                        // 1.0 + 0.1 = 1.1
-                        view.zoom(1.0f + ZOOM_RATE);
-                        Logger::log_debug("Zoomed out.");
-                        Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
-                    }
+                    // handleScroll(view, mouseWheel);
                 }
             }
 
@@ -159,6 +148,10 @@ int main() {
 
                     if(gameState == GameState::Playing) {
                         Logger::log("Returning to Title Screen.");
+                        gameState = GameState::TitleScreen;
+                    } else if(gameState == GameState::StageClear) {
+                        stages.at(stageIndex - 1).reset();
+                        Logger::log("Returning to Title Screen from Stage Clear.");
                         gameState = GameState::TitleScreen;
                     }
                 }
@@ -229,12 +222,12 @@ int main() {
 
         // II: Handle
         if(gameState == GameState::Playing) {
-            if(isDragging) handleDrag(window, view, lastMousePos);
+            // if(isDragging) handleDrag(window, view, lastMousePos);
 
             if(stages.empty()) continue;
             Stage& currentStage = stages.at(stageIndex - 1);
             if(currentStage.reachMaxActions()) {
-                currentStage.advance();
+                currentStage.advance(gameState);
             }
         }
         
@@ -257,7 +250,10 @@ int main() {
             startButton.draw(window);
         } else if(gameState == GameState::Playing) {
             window.setView(view);
-            stages.at(stageIndex - 1).draw(window);
+            stages.at(stageIndex - 1).draw(window, gameState);
+        } else if(gameState == GameState::StageClear) {
+            window.setView(view);
+            stages.at(stageIndex - 1).draw(window, gameState);
         }
 
         // Update the window

@@ -30,10 +30,10 @@ bool Object::isValidAction(std::vector<std::vector<char>>& tileMap, sf::Vector2i
 
     // Check tile type
     char tileType = tileMap[newPosTile.y][newPosTile.x];
-    if(tileType == 'X') { // Wall
+    if(tileType == SYMBOL_WALL) { // Wall
         Logger::log_debug("Action blocked by wall at (" + std::to_string(newPosTile.x) + ", " + std::to_string(newPosTile.y) + ").");
         return false;
-    } else if(tileType == 'D') { // Dispenser
+    } else if(tileType == SYMBOL_DISPENSER) { // Dispenser
         Logger::log_debug("Action blocked by dispenser at (" + std::to_string(newPosTile.x) + ", " + std::to_string(newPosTile.y) + ").");
         return false;
     }
@@ -70,26 +70,19 @@ void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size, cons
     if(!isValidMove(tileMap, action)) return;
 
     // Update tile and window position
+    // No need to update tileMap
     if(action == Action::MoveUp) {
         posTile.y -= 1;
         posWindow.y -= tile_size;
-        tileMap[posTile.y + 1][posTile.x] = '-';
-        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveDown) {
         posTile.y += 1;
         posWindow.y += tile_size;
-        tileMap[posTile.y - 1][posTile.x] = '-';
-        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveLeft) {
         posTile.x -= 1;
         posWindow.x -= tile_size;
-        tileMap[posTile.y][posTile.x + 1] = '-';
-        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveRight) {
         posTile.x += 1;
         posWindow.x += tile_size;
-        tileMap[posTile.y][posTile.x - 1] = '-';
-        tileMap[posTile.y][posTile.x] = 'P';
     }
     getSprite().setPosition(posWindow);
 
@@ -120,13 +113,13 @@ Goal::Goal(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) :
 // ========== Monster Class =============
 bool Monster::isValidMove(std::vector<std::vector<char>>& tileMap, char actionChar) {
     sf::Vector2i newPos = posTile;
-    if(actionChar == 'U') {
+    if(actionChar == SYMBOL_UP) {
         newPos.y -= 1;
-    } else if(actionChar == 'D') {
+    } else if(actionChar == SYMBOL_DOWN) {
         newPos.y += 1;
-    } else if(actionChar == 'L') {
+    } else if(actionChar == SYMBOL_LEFT) {
         newPos.x -= 1;
-    } else if(actionChar == 'R') {
+    } else if(actionChar == SYMBOL_RIGHT) {
         newPos.x += 1;
     }
 
@@ -153,7 +146,7 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
         sf::Vector2i nextTilePos = path[1]; // 獲取下一步的最佳網格座標
         char nextTileChar = tileMap[nextTilePos.y][nextTilePos.x];
 
-        if(nextTileChar == 'M' || nextTileChar == 'm') {
+        if(nextTileChar == SYMBOL_TRACE_MONSTER || nextTileChar == SYMBOL_GUARD_MONSTER || nextTileChar == SYMBOL_ARROW) {
             Logger::log_debug("TraceMonster next position blocked by other Monster at (" 
                 + std::to_string(nextTilePos.x) + ", " + std::to_string(nextTilePos.y) + ").");
             return; // 被其他 TraceMonster 阻擋，無法移動
@@ -161,7 +154,7 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
 
         // 2. 清除舊位置符號
         // 將怪物舊的網格位置標記為空位 (假設'-'是空位)
-        tileMap[posTile.y][posTile.x] = '-'; 
+        tileMap[posTile.y][posTile.x] = SYMBOL_OPEN_SPACE; 
         
         // 3. 更新網格位置和視窗位置
         
@@ -178,7 +171,7 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
         
         // 4. 在新位置標記怪物
         // 假設 'M' 是 TraceMonster 的符號
-        tileMap[posTile.y][posTile.x] = 'M'; 
+        tileMap[posTile.y][posTile.x] = SYMBOL_TRACE_MONSTER; 
         
         // 5. 將 Sprite 繪圖位置同步到新的視窗座標
         getSprite().setPosition(posWindow);
@@ -208,26 +201,26 @@ void GuardMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
     cyclePattern(behaviorPattern);
 
     // Update tile and window position
-    if(actionChar == 'U') {
+    if(actionChar == SYMBOL_UP) {
         posTile.y -= 1;
         posWindow.y -= tile_size;
-        tileMap[posTile.y + 1][posTile.x] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
-    } else if(actionChar == 'D') {
+        tileMap[posTile.y + 1][posTile.x] = SYMBOL_OPEN_SPACE;
+        tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
+    } else if(actionChar == SYMBOL_DOWN) {
         posTile.y += 1;
         posWindow.y += tile_size;
-        tileMap[posTile.y - 1][posTile.x] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
-    } else if(actionChar == 'L') {
+        tileMap[posTile.y - 1][posTile.x] = SYMBOL_OPEN_SPACE;
+        tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
+    } else if(actionChar == SYMBOL_LEFT) {
         posTile.x -= 1;
         posWindow.x -= tile_size;
-        tileMap[posTile.y][posTile.x + 1] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
-    } else if(actionChar == 'R') {
+        tileMap[posTile.y][posTile.x + 1] = SYMBOL_OPEN_SPACE;
+        tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
+    } else if(actionChar == SYMBOL_RIGHT) {
         posTile.x += 1;
         posWindow.x += tile_size;
-        tileMap[posTile.y][posTile.x - 1] = '-'; // Clear previous position
-        tileMap[posTile.y][posTile.x] = 'm'; // Move to new position
+        tileMap[posTile.y][posTile.x - 1] = SYMBOL_OPEN_SPACE;
+        tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
     }
     getSprite().setPosition(posWindow);
 
@@ -251,13 +244,13 @@ Dispenser::Dispenser(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size
 
 bool Dispenser::isSpawnable(std::vector<std::vector<char>>& tileMap, char actionChar) {
     sf::Vector2i newPos = posTile;
-    if(actionChar == 'U') {
+    if(actionChar == SYMBOL_UP) {
         newPos.y -= 1;
-    } else if(actionChar == 'D') {
+    } else if(actionChar == SYMBOL_DOWN) {
         newPos.y += 1;
-    } else if(actionChar == 'L') {
+    } else if(actionChar == SYMBOL_LEFT) {
         newPos.x -= 1;
-    } else if(actionChar == 'R') {
+    } else if(actionChar == SYMBOL_RIGHT) {
         newPos.x += 1;
     } else {
         return false; // Invalid actionChar
@@ -280,22 +273,22 @@ void Dispenser::update(std::vector<std::vector<char>>& tileMap, int tile_size, s
     sf::Vector2f arrowPosWindow = posWindow;
 
     // Create a new Arrow object based on the actionChar
-    if(actionChar == 'U') {
+    if(actionChar == SYMBOL_UP) {
         arrowPosTile.y -= 1;
         arrowPosWindow.y -= tile_size;
-    } else if(actionChar == 'D') {
+    } else if(actionChar == SYMBOL_DOWN) {
         arrowPosTile.y += 1;
         arrowPosWindow.y += tile_size;
-    } else if(actionChar == 'L') {
+    } else if(actionChar == SYMBOL_LEFT) {
         arrowPosTile.x -= 1;
         arrowPosWindow.x -= tile_size;
-    } else if(actionChar == 'R') {
+    } else if(actionChar == SYMBOL_RIGHT) {
         arrowPosTile.x += 1;
         arrowPosWindow.x += tile_size;
     }
 
     // Mark arrow position in tile map
-    tileMap[arrowPosTile.y][arrowPosTile.x] = 'A';
+    tileMap[arrowPosTile.y][arrowPosTile.x] = SYMBOL_ARROW;
     bufferObjects.emplace_back(std::make_unique<Arrow>(arrowPosTile, arrowPosWindow, tile_size, actionChar));
     Logger::log("Dispenser at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) 
@@ -329,16 +322,16 @@ void Arrow::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
     originalPosTile = posTile;
     
     // Move based on direction
-    if(direction == 'U') {
+    if(direction == SYMBOL_UP) {
         newPosTile.y -= 1;
         newPosWindow.y -= tile_size;
-    } else if(direction == 'D') {
+    } else if(direction == SYMBOL_DOWN) {
         newPosTile.y += 1;
         newPosWindow.y += tile_size;
-    } else if(direction == 'L') {
+    } else if(direction == SYMBOL_LEFT) {
         newPosTile.x -= 1;
         newPosWindow.x -= tile_size;
-    } else if(direction == 'R') {
+    } else if(direction == SYMBOL_RIGHT) {
         newPosTile.x += 1;
         newPosWindow.x += tile_size;
     }
@@ -346,11 +339,11 @@ void Arrow::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
     // Invalid move, let caller remove this arrow
     if(!Object::isValidAction(tileMap, newPosTile)) return;
     
-    tileMap[originalPosTile.y][originalPosTile.x] = '-';
+    tileMap[originalPosTile.y][originalPosTile.x] = SYMBOL_OPEN_SPACE;
 
     posTile = newPosTile;
     posWindow = newPosWindow;
-    tileMap[posTile.y][posTile.x] = 'A';
+    tileMap[posTile.y][posTile.x] = SYMBOL_ARROW;
     getSprite().setPosition(posWindow);
     
     Logger::log_debug("Arrow moved to (" + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");

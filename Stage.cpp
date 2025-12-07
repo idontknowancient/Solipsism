@@ -6,8 +6,9 @@
 #include <iostream>
 #include <vector>
 
-Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), 
-    actionPerTurn(actionPerTurn), tile_size(100), openSpace(Resource::getOpenSpaceTexture()) {
+Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), 
+    tile_size(100), openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()) ,
+    stageClearSprite(Resource::getStageClearTexture()) {
     // Initialize start positions for the tile map in window coordinates
     this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
     this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
@@ -15,8 +16,15 @@ Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stag
     // Initialize tile map with open space '-'
     tileMap.resize(row, std::vector<char>(column, '-'));
 
-    openSpace.setPosition({start_x, start_y});
     resizeTileTexture(openSpace, tile_size);
+    resizeTileTexture(stageClearSprite, std::min(WORLD_WIDTH, WORLD_HEIGHT) * 0.75f);
+    openSpace.setPosition({start_x, start_y});
+    stageClearSprite.setPosition({(WORLD_WIDTH - stageClearSprite.getGlobalBounds().size.x) / 2.f, 
+        (WORLD_HEIGHT - stageClearSprite.getGlobalBounds().size.y) / 2.f});
+    stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+    stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
+
+    setBackground(backgroundSprite, Resource::getBackgroundStageTexture());
     
     // Create visual tiles for the stage (will be called after loading map from file)
     // createTiles(100) should be called after map is loaded
@@ -110,9 +118,18 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             // Ensure the line length matches column (allow shorter lines, fill with '-')
             for(int c = 0; c < column && c < static_cast<int>(line.size()); c++) {
                 char ch = line[c];
+                // Leave open space for player start
+                if(ch == SYMBOL_PLAYER) ch = SYMBOL_OPEN_SPACE;
                 stage.tileMap[r][c] = ch;
                 // Initial position in window coordinates
                 sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
+
+                // Tile sprite creation
+                int variant = getVariantNumber();
+                sf::Sprite tileSprite(Resource::getOpenSpaceTexture(variant));
+                tileSprite.setPosition(posWindow);
+                resizeTileTexture(tileSprite, stage.tile_size);
+                stage.tileSprites.emplace_back(tileSprite);
 
                 // Object creation based on symbol
                 // Player
@@ -383,7 +400,34 @@ bool Stage::shouldRemoveProjectile(Projectile* projectile, sf::Vector2i oldPosTi
     return false;
 }
 
-void Stage::advance() {
+bool Stage::playerIsDead() {
+    // End position of player collides with any monster or projectile
+    char endTile = tileMap[player->posTile.y][player->posTile.x];
+    if(endTile == SYMBOL_TRACE_MONSTER || endTile == SYMBOL_GUARD_MONSTER || endTile == SYMBOL_ARROW) {
+        Logger::log("Player collided with a dangerous object at (" 
+            + std::to_string(player->posTile.x) + ", " + std::to_string(player->posTile.y) + ").");
+        return true;
+    }
+
+    // Player bumps into any monster or projectile
+    // Temporary no need to check
+
+    return false;
+}
+
+bool Stage::playerReachedGoal() {
+    // End position of player is on goal tile
+    char endTile = tileMap[player->posTile.y][player->posTile.x];
+    if(endTile == SYMBOL_GOAL) {
+        Logger::log("Player reached the goal at (" 
+            + std::to_string(player->posTile.x) + ", " + std::to_string(player->posTile.y) + ").");
+        return true;
+    }
+
+    return false;
+}
+
+void Stage::advance(GameState& gameState) {
     Logger::log("Advancing stage by " + std::to_string(actionPerTurn) + " actions.");
     for(int i = 0; i < actionPerTurn; i++) {
         if(actions.empty()) {
@@ -392,28 +436,36 @@ void Stage::advance() {
         }
         handleObjectAction();
         handlePlayerAction();
+        if(playerIsDead()) {
+            Logger::log("Player has died. Stopping stage advance. Starting reset.");
+            Logger::log_debug("Stage state before reset:");
+            print();
+            reset();
+            return;
+        }
+        if(playerReachedGoal()) {
+            Logger::log("Player has reached the goal! Stopping stage advance.");
+            gameState = GameState::StageClear;
+            return;
+        }
     }
     Logger::log_debug("Stage advanced.");
     Logger::log_debug("Stage state after advance:");
     print();
 }
 
-void Stage::draw(sf::RenderWindow& window) {
+void Stage::draw(sf::RenderWindow& window, const GameState& gameState) {
+    // Draw background
+    window.draw(backgroundSprite);
+
     // Draw all shapes
     for(const auto& shape : shapes) {
         window.draw(*shape);
     }
 
     // Draw open space tiles which are not objects
-    for(const auto& tile : tileMap) {
-        for(const char& ch : tile) {
-            if(ch == SYMBOL_OPEN_SPACE) {
-                openSpace.setPosition(
-                    {start_x + (&ch - &tile[0]) * tile_size,
-                    start_y + (&tile - &tileMap[0]) * tile_size});
-                window.draw(openSpace);
-            }
-        }
+    for(const auto& tileSprite : tileSprites) {
+        window.draw(tileSprite);
     }
 
     //Draw all objects
@@ -424,6 +476,11 @@ void Stage::draw(sf::RenderWindow& window) {
     // Draw player
     player->draw(window, tile_size);
 
+    // If stage clear, draw stage clear sprite
+    if(gameState == GameState::StageClear) {
+        window.draw(stageClearShape);
+        window.draw(stageClearSprite);
+    }
 }
 
 void Stage::print() const {

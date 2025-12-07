@@ -6,10 +6,15 @@
 sf::Image Resource::icon;
 sf::Music Resource::music;
 sf::Texture Resource::titleTexture;
-sf::Texture Resource::titleBackgroundTexture;
+sf::Texture Resource::backgroundTitleTexture;
+sf::Texture Resource::backgroundStageTexture;
+sf::Texture Resource::stageClearTexture;
 sf::Font Resource::buttonFont;
 sf::Texture Resource::playerTexture;
-sf::Texture Resource::openSpaceTexture;
+sf::Texture Resource::openSpaceTexture1;
+sf::Texture Resource::openSpaceTexture2;
+sf::Texture Resource::openSpaceTexture3;
+sf::Texture Resource::openSpaceTexture4;
 sf::Texture Resource::wallTexture;
 sf::Texture Resource::goalTexture;
 sf::Texture Resource::guardMonsterTexture;
@@ -38,8 +43,16 @@ void Resource::init() {
         Logger::log("Failed to load title texture: " + TITLE_IMAGE_FILE);
     }
 
-    if(!titleBackgroundTexture.loadFromFile(BACKGROUND_IMAGE_FILE)) {
-        Logger::log("Failed to load title background texture: " + BACKGROUND_IMAGE_FILE);
+    if(!backgroundTitleTexture.loadFromFile(BACKGROUND_TITLE_FILE)) {
+        Logger::log("Failed to load title background texture: " + BACKGROUND_TITLE_FILE);
+    }
+
+    if(!backgroundStageTexture.loadFromFile(BACKGROUND_STAGE_FILE)) {
+        Logger::log("Failed to load stage background texture: " + BACKGROUND_STAGE_FILE);
+    }
+
+    if(!stageClearTexture.loadFromFile(STAGE_CLEAR_FILE)) {
+        Logger::log("Failed to load stage clear texture: " + STAGE_CLEAR_FILE);
     }
     
     if(!buttonFont.openFromFile(BUTTON_FONT_FILE)) {
@@ -50,8 +63,20 @@ void Resource::init() {
         Logger::log("Failed to load player texture: " + PLAYER_TEXTURE_FILE);
     }
 
-    if(!openSpaceTexture.loadFromFile(OPEN_SPACE_TEXTURE_FILE)) {
-        Logger::log("Failed to load open space texture: " + OPEN_SPACE_TEXTURE_FILE);
+    if(!openSpaceTexture1.loadFromFile(OPEN_SPACE_1_TEXTURE_FILE)) {
+        Logger::log("Failed to load open space texture 1: " + OPEN_SPACE_1_TEXTURE_FILE);
+    }
+
+    if(!openSpaceTexture2.loadFromFile(OPEN_SPACE_2_TEXTURE_FILE)) {
+        Logger::log("Failed to load open space texture 2: " + OPEN_SPACE_2_TEXTURE_FILE);
+    }
+
+    if(!openSpaceTexture3.loadFromFile(OPEN_SPACE_3_TEXTURE_FILE)) {
+        Logger::log("Failed to load open space texture 3: " + OPEN_SPACE_3_TEXTURE_FILE);
+    }
+
+    if(!openSpaceTexture4.loadFromFile(OPEN_SPACE_4_TEXTURE_FILE)) {
+        Logger::log("Failed to load open space texture 4: " + OPEN_SPACE_4_TEXTURE_FILE);
     }
 
     if(!wallTexture.loadFromFile(WALL_TEXTURE_FILE)) {
@@ -95,8 +120,16 @@ const sf::Texture& Resource::getTitleTexture() {
     return titleTexture;
 }
 
-const sf::Texture& Resource::getTitleBackgroundTexture() {
-    return titleBackgroundTexture;
+const sf::Texture& Resource::getBackgroundTitleTexture() {
+    return backgroundTitleTexture;
+}
+
+const sf::Texture& Resource::getBackgroundStageTexture() {
+    return backgroundStageTexture;
+}
+
+const sf::Texture& Resource::getStageClearTexture() {
+    return stageClearTexture;
 }
 
 const sf::Font& Resource::getButtonFont() {
@@ -107,8 +140,14 @@ const sf::Texture& Resource::getPlayerTexture() {
     return playerTexture;
 }
 
-const sf::Texture& Resource::getOpenSpaceTexture() {
-    return openSpaceTexture;
+const sf::Texture& Resource::getOpenSpaceTexture(int variant) {
+    switch(variant) {
+        case 1: return openSpaceTexture1;
+        case 2: return openSpaceTexture2;
+        case 3: return openSpaceTexture3;
+        case 4: return openSpaceTexture4;
+        default: return openSpaceTexture1; // Default to variant 1 if invalid
+    }
 }
 
 const sf::Texture& Resource::getWallTexture() {

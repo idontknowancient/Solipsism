@@ -4,18 +4,18 @@ COLUMN: 15
 ROW: 10
 ACTION_PER_TURN: 1
 PATTERN_START
-DISPENSER: DXXDXDXDXX;DXDDXX;UXU;
+DISPENSER: DXDDX;DDDDX;UXUUR;
 GUARD_MONSTER: UD7U6;U2R2D4L2U2;
 PATTERN_END
 MAP_START
 ## P: Player start / X: Wall / M: Trace Monster / m: Guard Monster
 ## D: Dispenser / G: Goal
 P---XX--D--D--M
-----XX---X-----
+----XX---------
 ----XXm--X-----
 ---------X-----
 ---M-----Xm---G
-XX-----------MG
+XX-------X---MG
 XX-----X-------
 -------X-------
 -------X-------

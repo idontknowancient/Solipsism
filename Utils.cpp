@@ -46,6 +46,21 @@ void handleDrag(const sf::RenderWindow& window, sf::View& view, sf::Vector2i& la
         Logger::log_debug("View moved to (" + std::to_string(view.getCenter().x) + ", " + std::to_string(view.getCenter().y) + ")");
 }
 
+void handleScroll(sf::View& view, const sf::Event::MouseWheelScrolled* mouseWheel) {
+    //  > 0 meaning zoom in and restrict max/min zoom levels
+    if(mouseWheel->delta > 0 && view.getSize().x > 500.f && view.getSize().y > 500.f) {
+        // 1.0 - 0.1 = 0.9
+        view.zoom(1.0f - ZOOM_RATE);
+        Logger::log_debug("Zoomed in.");
+        Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
+    } else if(mouseWheel->delta < 0 && view.getSize().x < WORLD_WIDTH * 2.f && view.getSize().y < WORLD_HEIGHT * 2.f) {
+        // 1.0 + 0.1 = 1.1
+        view.zoom(1.0f + ZOOM_RATE);
+        Logger::log_debug("Zoomed out.");
+        Logger::log_debug("View size: (" + std::to_string(view.getSize().x) + ", " + std::to_string(view.getSize().y) + ").");
+    }
+}
+
 void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTexture) {
     // Original size of the background texture
     sf::Vector2u backgroundSize = backgroundTexture.getSize();
@@ -69,6 +84,8 @@ void setBackground(sf::Sprite& backgroundSprite, const sf::Texture& backgroundTe
     // Set position (align with View center)
     backgroundSprite.setPosition({viewWidth / 2.f, viewHeight / 2.f});
     backgroundSprite.setColor(BACKGROUND_TRANSLUCENT);
+
+    Logger::log_debug("Background set.");
 }
 
 // Process pattern: expand letters with numbers (e.g. U2D2L4 -> UUDDLLLL)
@@ -139,4 +156,13 @@ void cyclePattern(std::string& pattern) {
     pattern += firstChar;
 
     Logger::log_debug("Pattern cycled: " + pattern);
+}
+
+// Return 1~4 (Has a higher probability to return 1)
+int getVariantNumber() {
+    int randValue = rand() % 100;
+    if(randValue < 65) return 1;
+    else if(randValue < 80) return 2;
+    else if(randValue < 90) return 3;
+    else return 4;
 }

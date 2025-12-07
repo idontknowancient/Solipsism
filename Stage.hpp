@@ -28,6 +28,11 @@ private:
     // Store all shapes drawn
     // Use unique_ptr to manage shape memory automatically
     std::vector<std::unique_ptr<sf::Shape>> shapes;
+    // Store sprites for tiles
+    std::vector<sf::Sprite> tileSprites;
+    sf::Sprite backgroundSprite;
+    sf::RectangleShape stageClearShape;
+    sf::Sprite stageClearSprite;
 
     // Store monsters / projectiles / traps in the stage
     std::vector<std::unique_ptr<Object>> objects;
@@ -49,6 +54,8 @@ private:
     void handleObjectAction();
     void handlePlayerAction();
     bool shouldRemoveProjectile(Projectile* projectile, sf::Vector2i oldPosTile, int i);
+    bool playerIsDead();
+    bool playerReachedGoal();
 
     // Store initial state for reset
     std::vector<std::vector<char>> initialTileMap;
@@ -79,9 +86,9 @@ public:
     void undoLastAction();
 
     // Advance by actionPerTurn actions
-    void advance();
+    void advance(GameState& gameState);
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window, const GameState& gameState);
     void print() const;
     void reset();
 };
