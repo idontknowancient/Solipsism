@@ -346,6 +346,8 @@ int main() {
             
             // Draw start button
             startButton.draw(window);
+            settingsButton.draw(window);
+            quitButton.draw(window);
         } else if(gameState == GameState::StageSelect) {
             window.setView(view);
             window.draw(backgroundSprite);

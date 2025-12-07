@@ -1,310 +1,310 @@
-[2025-12-07 16:59:35] --- Logger Initialized ---
-[2025-12-07 16:59:35] Game started.
-[2025-12-07 16:59:35] Background set.
-[2025-12-07 16:59:35] Loading Stage: 1
-[2025-12-07 16:59:35] Background set.
-[2025-12-07 16:59:35] Stage 1 created with size (5, 5).
-[2025-12-07 16:59:35] Parsing patterns for stage 1
-[2025-12-07 16:59:35] Wall created at tile (0, 0).
-[2025-12-07 16:59:35] Wall created at tile (0, 0).
-[2025-12-07 16:59:35] Wall created at tile (1, 0).
-[2025-12-07 16:59:35] Wall created at tile (1, 0).
-[2025-12-07 16:59:35] Wall created at tile (2, 0).
-[2025-12-07 16:59:35] Wall created at tile (2, 0).
-[2025-12-07 16:59:35] Wall created at tile (3, 0).
-[2025-12-07 16:59:35] Wall created at tile (3, 0).
-[2025-12-07 16:59:35] Wall created at tile (4, 0).
-[2025-12-07 16:59:35] Wall created at tile (4, 0).
-[2025-12-07 16:59:35] Dispenser created at tile (4, 1).
-[2025-12-07 16:59:35] Dispenser created at tile (4, 1).
-[2025-12-07 16:59:35] TraceMonster created at tile (4, 2).
-[2025-12-07 16:59:35] TraceMonster created at tile (4, 2).
-[2025-12-07 16:59:35] Wall created at tile (3, 3).
-[2025-12-07 16:59:35] Wall created at tile (3, 3).
-[2025-12-07 16:59:35] Wall created at tile (4, 3).
-[2025-12-07 16:59:35] Wall created at tile (4, 3).
-[2025-12-07 16:59:35] Wall created at tile (0, 4).
-[2025-12-07 16:59:35] Wall created at tile (0, 4).
-[2025-12-07 16:59:35] Wall created at tile (1, 4).
-[2025-12-07 16:59:35] Wall created at tile (1, 4).
-[2025-12-07 16:59:35] Goal created at tile (4, 4).
-[2025-12-07 16:59:35] Goal created at tile (4, 4).
-[2025-12-07 16:59:35] Warning: Player symbol not found in stage 1. Creating default player at (0,0).
-[2025-12-07 16:59:35] Player created at tile (0, 0).
-[2025-12-07 16:59:35] Player created at tile (0, 0).
-[2025-12-07 16:59:35] Created tile at (0, 0) of type 'X' at position (510.000000, 90.000000).
-[2025-12-07 16:59:35] Created tile at (1, 0) of type 'X' at position (690.000000, 90.000000).
-[2025-12-07 16:59:35] Created tile at (2, 0) of type 'X' at position (870.000000, 90.000000).
-[2025-12-07 16:59:35] Created tile at (3, 0) of type 'X' at position (1050.000000, 90.000000).
-[2025-12-07 16:59:35] Created tile at (4, 0) of type 'X' at position (1230.000000, 90.000000).
-[2025-12-07 16:59:35] Created tile at (0, 1) of type '-' at position (510.000000, 270.000000).
-[2025-12-07 16:59:35] Created tile at (1, 1) of type '-' at position (690.000000, 270.000000).
-[2025-12-07 16:59:35] Created tile at (2, 1) of type '-' at position (870.000000, 270.000000).
-[2025-12-07 16:59:35] Created tile at (3, 1) of type '-' at position (1050.000000, 270.000000).
-[2025-12-07 16:59:35] Created tile at (4, 1) of type 'D' at position (1230.000000, 270.000000).
-[2025-12-07 16:59:35] Created tile at (0, 2) of type '-' at position (510.000000, 450.000000).
-[2025-12-07 16:59:35] Created tile at (1, 2) of type '-' at position (690.000000, 450.000000).
-[2025-12-07 16:59:35] Created tile at (2, 2) of type '-' at position (870.000000, 450.000000).
-[2025-12-07 16:59:35] Created tile at (3, 2) of type '-' at position (1050.000000, 450.000000).
-[2025-12-07 16:59:35] Created tile at (4, 2) of type 'M' at position (1230.000000, 450.000000).
-[2025-12-07 16:59:35] Created tile at (0, 3) of type '-' at position (510.000000, 630.000000).
-[2025-12-07 16:59:35] Created tile at (1, 3) of type '-' at position (690.000000, 630.000000).
-[2025-12-07 16:59:35] Created tile at (2, 3) of type '-' at position (870.000000, 630.000000).
-[2025-12-07 16:59:35] Created tile at (3, 3) of type 'X' at position (1050.000000, 630.000000).
-[2025-12-07 16:59:35] Created tile at (4, 3) of type 'X' at position (1230.000000, 630.000000).
-[2025-12-07 16:59:35] Created tile at (0, 4) of type 'X' at position (510.000000, 810.000000).
-[2025-12-07 16:59:35] Created tile at (1, 4) of type 'X' at position (690.000000, 810.000000).
-[2025-12-07 16:59:35] Created tile at (2, 4) of type '-' at position (870.000000, 810.000000).
-[2025-12-07 16:59:35] Created tile at (3, 4) of type '-' at position (1050.000000, 810.000000).
-[2025-12-07 16:59:35] Created tile at (4, 4) of type 'G' at position (1230.000000, 810.000000).
-[2025-12-07 16:59:35] Total objects in stage 1: 12
-[2025-12-07 16:59:35] Stage 1 loaded from file.
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] Printing tile map for Stage 1:
-[2025-12-07 16:59:35] Size (5, 5):
-[2025-12-07 16:59:35] Action Per Turn: 1
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] XXXXX
-[2025-12-07 16:59:35] ----D
-[2025-12-07 16:59:35] ----M
-[2025-12-07 16:59:35] ---XX
-[2025-12-07 16:59:35] XX--G
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] Pattern Guard Monster: 
-[2025-12-07 16:59:35] Pattern Dispenser: LLX;
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] Loading Stage: 2
-[2025-12-07 16:59:35] Background set.
-[2025-12-07 16:59:35] Stage 2 created with size (15, 10).
-[2025-12-07 16:59:35] Parsing patterns for stage 2
-[2025-12-07 16:59:35] Wall created at tile (4, 0).
-[2025-12-07 16:59:35] Wall created at tile (4, 0).
-[2025-12-07 16:59:35] Wall created at tile (5, 0).
-[2025-12-07 16:59:35] Wall created at tile (5, 0).
-[2025-12-07 16:59:35] Dispenser created at tile (8, 0).
-[2025-12-07 16:59:35] Dispenser created at tile (8, 0).
-[2025-12-07 16:59:35] Dispenser created at tile (11, 0).
-[2025-12-07 16:59:35] Dispenser created at tile (11, 0).
-[2025-12-07 16:59:35] TraceMonster created at tile (14, 0).
-[2025-12-07 16:59:35] TraceMonster created at tile (14, 0).
-[2025-12-07 16:59:35] Wall created at tile (4, 1).
-[2025-12-07 16:59:35] Wall created at tile (4, 1).
-[2025-12-07 16:59:35] Wall created at tile (5, 1).
-[2025-12-07 16:59:35] Wall created at tile (5, 1).
-[2025-12-07 16:59:35] Wall created at tile (4, 2).
-[2025-12-07 16:59:35] Wall created at tile (4, 2).
-[2025-12-07 16:59:35] Wall created at tile (5, 2).
-[2025-12-07 16:59:35] Wall created at tile (5, 2).
-[2025-12-07 16:59:35] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
-[2025-12-07 16:59:35] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
-[2025-12-07 16:59:35] Wall created at tile (9, 2).
-[2025-12-07 16:59:35] Wall created at tile (9, 2).
-[2025-12-07 16:59:35] Wall created at tile (9, 3).
-[2025-12-07 16:59:35] Wall created at tile (9, 3).
-[2025-12-07 16:59:35] TraceMonster created at tile (3, 4).
-[2025-12-07 16:59:35] TraceMonster created at tile (3, 4).
-[2025-12-07 16:59:35] Wall created at tile (9, 4).
-[2025-12-07 16:59:35] Wall created at tile (9, 4).
-[2025-12-07 16:59:35] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
-[2025-12-07 16:59:35] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
-[2025-12-07 16:59:35] Goal created at tile (14, 4).
-[2025-12-07 16:59:35] Goal created at tile (14, 4).
-[2025-12-07 16:59:35] Wall created at tile (0, 5).
-[2025-12-07 16:59:35] Wall created at tile (0, 5).
-[2025-12-07 16:59:35] Wall created at tile (1, 5).
-[2025-12-07 16:59:35] Wall created at tile (1, 5).
-[2025-12-07 16:59:35] Wall created at tile (9, 5).
-[2025-12-07 16:59:35] Wall created at tile (9, 5).
-[2025-12-07 16:59:35] TraceMonster created at tile (13, 5).
-[2025-12-07 16:59:35] TraceMonster created at tile (13, 5).
-[2025-12-07 16:59:35] Goal created at tile (14, 5).
-[2025-12-07 16:59:35] Goal created at tile (14, 5).
-[2025-12-07 16:59:35] Wall created at tile (0, 6).
-[2025-12-07 16:59:35] Wall created at tile (0, 6).
-[2025-12-07 16:59:35] Wall created at tile (1, 6).
-[2025-12-07 16:59:35] Wall created at tile (1, 6).
-[2025-12-07 16:59:35] Wall created at tile (7, 6).
-[2025-12-07 16:59:35] Wall created at tile (7, 6).
-[2025-12-07 16:59:35] Wall created at tile (7, 7).
-[2025-12-07 16:59:35] Wall created at tile (7, 7).
-[2025-12-07 16:59:35] Wall created at tile (7, 8).
-[2025-12-07 16:59:35] Wall created at tile (7, 8).
-[2025-12-07 16:59:35] Dispenser created at tile (2, 9).
-[2025-12-07 16:59:35] Dispenser created at tile (2, 9).
-[2025-12-07 16:59:35] Warning: Player symbol not found in stage 2. Creating default player at (0,0).
-[2025-12-07 16:59:35] Player created at tile (0, 0).
-[2025-12-07 16:59:35] Player created at tile (0, 0).
-[2025-12-07 16:59:35] Created tile at (0, 0) of type '-' at position (225.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (1, 0) of type '-' at position (323.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (2, 0) of type '-' at position (421.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (3, 0) of type '-' at position (519.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (4, 0) of type 'X' at position (617.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (5, 0) of type 'X' at position (715.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (6, 0) of type '-' at position (813.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (7, 0) of type '-' at position (911.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (8, 0) of type 'D' at position (1009.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (9, 0) of type '-' at position (1107.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (10, 0) of type '-' at position (1205.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (11, 0) of type 'D' at position (1303.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (12, 0) of type '-' at position (1401.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (13, 0) of type '-' at position (1499.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (14, 0) of type 'M' at position (1597.000000, 50.000000).
-[2025-12-07 16:59:35] Created tile at (0, 1) of type '-' at position (225.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (1, 1) of type '-' at position (323.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (2, 1) of type '-' at position (421.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (3, 1) of type '-' at position (519.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (4, 1) of type 'X' at position (617.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (5, 1) of type 'X' at position (715.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (6, 1) of type '-' at position (813.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (7, 1) of type '-' at position (911.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (8, 1) of type '-' at position (1009.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (9, 1) of type '-' at position (1107.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (10, 1) of type '-' at position (1205.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (11, 1) of type '-' at position (1303.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (12, 1) of type '-' at position (1401.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (13, 1) of type '-' at position (1499.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (14, 1) of type '-' at position (1597.000000, 148.000000).
-[2025-12-07 16:59:35] Created tile at (0, 2) of type '-' at position (225.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (1, 2) of type '-' at position (323.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (2, 2) of type '-' at position (421.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (3, 2) of type '-' at position (519.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (4, 2) of type 'X' at position (617.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (5, 2) of type 'X' at position (715.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (6, 2) of type 'm' at position (813.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (7, 2) of type '-' at position (911.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (8, 2) of type '-' at position (1009.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (9, 2) of type 'X' at position (1107.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (10, 2) of type '-' at position (1205.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (11, 2) of type '-' at position (1303.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (12, 2) of type '-' at position (1401.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (13, 2) of type '-' at position (1499.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (14, 2) of type '-' at position (1597.000000, 246.000000).
-[2025-12-07 16:59:35] Created tile at (0, 3) of type '-' at position (225.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (1, 3) of type '-' at position (323.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (2, 3) of type '-' at position (421.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (3, 3) of type '-' at position (519.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (4, 3) of type '-' at position (617.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (5, 3) of type '-' at position (715.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (6, 3) of type '-' at position (813.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (7, 3) of type '-' at position (911.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (8, 3) of type '-' at position (1009.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (9, 3) of type 'X' at position (1107.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (10, 3) of type '-' at position (1205.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (11, 3) of type '-' at position (1303.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (12, 3) of type '-' at position (1401.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (13, 3) of type '-' at position (1499.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (14, 3) of type '-' at position (1597.000000, 344.000000).
-[2025-12-07 16:59:35] Created tile at (0, 4) of type '-' at position (225.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (1, 4) of type '-' at position (323.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (2, 4) of type '-' at position (421.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (3, 4) of type 'M' at position (519.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (4, 4) of type '-' at position (617.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (5, 4) of type '-' at position (715.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (6, 4) of type '-' at position (813.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (7, 4) of type '-' at position (911.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (8, 4) of type '-' at position (1009.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (9, 4) of type 'X' at position (1107.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (10, 4) of type 'm' at position (1205.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (11, 4) of type '-' at position (1303.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (12, 4) of type '-' at position (1401.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (13, 4) of type '-' at position (1499.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (14, 4) of type 'G' at position (1597.000000, 442.000000).
-[2025-12-07 16:59:35] Created tile at (0, 5) of type 'X' at position (225.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (1, 5) of type 'X' at position (323.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (2, 5) of type '-' at position (421.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (3, 5) of type '-' at position (519.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (4, 5) of type '-' at position (617.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (5, 5) of type '-' at position (715.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (6, 5) of type '-' at position (813.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (7, 5) of type '-' at position (911.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (8, 5) of type '-' at position (1009.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (9, 5) of type 'X' at position (1107.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (10, 5) of type '-' at position (1205.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (11, 5) of type '-' at position (1303.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (12, 5) of type '-' at position (1401.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (13, 5) of type 'M' at position (1499.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (14, 5) of type 'G' at position (1597.000000, 540.000000).
-[2025-12-07 16:59:35] Created tile at (0, 6) of type 'X' at position (225.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (1, 6) of type 'X' at position (323.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (2, 6) of type '-' at position (421.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (3, 6) of type '-' at position (519.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (4, 6) of type '-' at position (617.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (5, 6) of type '-' at position (715.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (6, 6) of type '-' at position (813.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (7, 6) of type 'X' at position (911.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (8, 6) of type '-' at position (1009.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (9, 6) of type '-' at position (1107.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (10, 6) of type '-' at position (1205.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (11, 6) of type '-' at position (1303.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (12, 6) of type '-' at position (1401.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (13, 6) of type '-' at position (1499.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (14, 6) of type '-' at position (1597.000000, 638.000000).
-[2025-12-07 16:59:35] Created tile at (0, 7) of type '-' at position (225.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (1, 7) of type '-' at position (323.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (2, 7) of type '-' at position (421.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (3, 7) of type '-' at position (519.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (4, 7) of type '-' at position (617.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (5, 7) of type '-' at position (715.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (6, 7) of type '-' at position (813.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (7, 7) of type 'X' at position (911.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (8, 7) of type '-' at position (1009.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (9, 7) of type '-' at position (1107.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (10, 7) of type '-' at position (1205.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (11, 7) of type '-' at position (1303.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (12, 7) of type '-' at position (1401.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (13, 7) of type '-' at position (1499.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (14, 7) of type '-' at position (1597.000000, 736.000000).
-[2025-12-07 16:59:35] Created tile at (0, 8) of type '-' at position (225.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (1, 8) of type '-' at position (323.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (2, 8) of type '-' at position (421.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (3, 8) of type '-' at position (519.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (4, 8) of type '-' at position (617.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (5, 8) of type '-' at position (715.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (6, 8) of type '-' at position (813.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (7, 8) of type 'X' at position (911.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (8, 8) of type '-' at position (1009.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (9, 8) of type '-' at position (1107.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (10, 8) of type '-' at position (1205.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (11, 8) of type '-' at position (1303.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (12, 8) of type '-' at position (1401.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (13, 8) of type '-' at position (1499.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (14, 8) of type '-' at position (1597.000000, 834.000000).
-[2025-12-07 16:59:35] Created tile at (0, 9) of type '-' at position (225.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (1, 9) of type '-' at position (323.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (2, 9) of type 'D' at position (421.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (3, 9) of type '-' at position (519.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (4, 9) of type '-' at position (617.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (5, 9) of type '-' at position (715.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (6, 9) of type '-' at position (813.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (7, 9) of type '-' at position (911.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (8, 9) of type '-' at position (1009.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (9, 9) of type '-' at position (1107.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (10, 9) of type '-' at position (1205.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (11, 9) of type '-' at position (1303.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (12, 9) of type '-' at position (1401.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (13, 9) of type '-' at position (1499.000000, 932.000000).
-[2025-12-07 16:59:35] Created tile at (14, 9) of type '-' at position (1597.000000, 932.000000).
-[2025-12-07 16:59:35] Total objects in stage 2: 27
-[2025-12-07 16:59:35] Stage 2 loaded from file.
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] Printing tile map for Stage 2:
-[2025-12-07 16:59:35] Size (15, 10):
-[2025-12-07 16:59:35] Action Per Turn: 1
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] ----XX--D--D--M
-[2025-12-07 16:59:35] ----XX---------
-[2025-12-07 16:59:35] ----XXm--X-----
-[2025-12-07 16:59:35] ---------X-----
-[2025-12-07 16:59:35] ---M-----Xm---G
-[2025-12-07 16:59:35] XX-------X---MG
-[2025-12-07 16:59:35] XX-----X-------
-[2025-12-07 16:59:35] -------X-------
-[2025-12-07 16:59:35] -------X-------
-[2025-12-07 16:59:35] --D------------
-[2025-12-07 16:59:35] =====================
-[2025-12-07 16:59:35] Pattern Guard Monster: UDDDDDDDUUUUUU;UURRDDDDLLUU;
-[2025-12-07 16:59:35] Pattern Dispenser: DXDDX;DDDDX;UXUUR;
-[2025-12-07 16:59:35] =====================
-[2025-12-07 17:01:06] Window closed by user.
-[2025-12-07 17:01:06] Game exited.
-[2025-12-07 17:01:06] --- Logger Shutdown ---
+[2025-12-07 17:02:11] --- Logger Initialized ---
+[2025-12-07 17:02:11] Game started.
+[2025-12-07 17:02:11] Background set.
+[2025-12-07 17:02:11] Loading Stage: 1
+[2025-12-07 17:02:11] Background set.
+[2025-12-07 17:02:11] Stage 1 created with size (5, 5).
+[2025-12-07 17:02:11] Parsing patterns for stage 1
+[2025-12-07 17:02:11] Wall created at tile (0, 0).
+[2025-12-07 17:02:11] Wall created at tile (0, 0).
+[2025-12-07 17:02:11] Wall created at tile (1, 0).
+[2025-12-07 17:02:11] Wall created at tile (1, 0).
+[2025-12-07 17:02:11] Wall created at tile (2, 0).
+[2025-12-07 17:02:11] Wall created at tile (2, 0).
+[2025-12-07 17:02:11] Wall created at tile (3, 0).
+[2025-12-07 17:02:11] Wall created at tile (3, 0).
+[2025-12-07 17:02:11] Wall created at tile (4, 0).
+[2025-12-07 17:02:11] Wall created at tile (4, 0).
+[2025-12-07 17:02:11] Dispenser created at tile (4, 1).
+[2025-12-07 17:02:11] Dispenser created at tile (4, 1).
+[2025-12-07 17:02:11] TraceMonster created at tile (4, 2).
+[2025-12-07 17:02:11] TraceMonster created at tile (4, 2).
+[2025-12-07 17:02:11] Wall created at tile (3, 3).
+[2025-12-07 17:02:11] Wall created at tile (3, 3).
+[2025-12-07 17:02:11] Wall created at tile (4, 3).
+[2025-12-07 17:02:11] Wall created at tile (4, 3).
+[2025-12-07 17:02:11] Wall created at tile (0, 4).
+[2025-12-07 17:02:11] Wall created at tile (0, 4).
+[2025-12-07 17:02:11] Wall created at tile (1, 4).
+[2025-12-07 17:02:11] Wall created at tile (1, 4).
+[2025-12-07 17:02:11] Goal created at tile (4, 4).
+[2025-12-07 17:02:11] Goal created at tile (4, 4).
+[2025-12-07 17:02:11] Warning: Player symbol not found in stage 1. Creating default player at (0,0).
+[2025-12-07 17:02:11] Player created at tile (0, 0).
+[2025-12-07 17:02:11] Player created at tile (0, 0).
+[2025-12-07 17:02:11] Created tile at (0, 0) of type 'X' at position (510.000000, 90.000000).
+[2025-12-07 17:02:11] Created tile at (1, 0) of type 'X' at position (690.000000, 90.000000).
+[2025-12-07 17:02:11] Created tile at (2, 0) of type 'X' at position (870.000000, 90.000000).
+[2025-12-07 17:02:11] Created tile at (3, 0) of type 'X' at position (1050.000000, 90.000000).
+[2025-12-07 17:02:11] Created tile at (4, 0) of type 'X' at position (1230.000000, 90.000000).
+[2025-12-07 17:02:11] Created tile at (0, 1) of type '-' at position (510.000000, 270.000000).
+[2025-12-07 17:02:11] Created tile at (1, 1) of type '-' at position (690.000000, 270.000000).
+[2025-12-07 17:02:11] Created tile at (2, 1) of type '-' at position (870.000000, 270.000000).
+[2025-12-07 17:02:11] Created tile at (3, 1) of type '-' at position (1050.000000, 270.000000).
+[2025-12-07 17:02:11] Created tile at (4, 1) of type 'D' at position (1230.000000, 270.000000).
+[2025-12-07 17:02:11] Created tile at (0, 2) of type '-' at position (510.000000, 450.000000).
+[2025-12-07 17:02:11] Created tile at (1, 2) of type '-' at position (690.000000, 450.000000).
+[2025-12-07 17:02:11] Created tile at (2, 2) of type '-' at position (870.000000, 450.000000).
+[2025-12-07 17:02:11] Created tile at (3, 2) of type '-' at position (1050.000000, 450.000000).
+[2025-12-07 17:02:11] Created tile at (4, 2) of type 'M' at position (1230.000000, 450.000000).
+[2025-12-07 17:02:11] Created tile at (0, 3) of type '-' at position (510.000000, 630.000000).
+[2025-12-07 17:02:11] Created tile at (1, 3) of type '-' at position (690.000000, 630.000000).
+[2025-12-07 17:02:11] Created tile at (2, 3) of type '-' at position (870.000000, 630.000000).
+[2025-12-07 17:02:11] Created tile at (3, 3) of type 'X' at position (1050.000000, 630.000000).
+[2025-12-07 17:02:11] Created tile at (4, 3) of type 'X' at position (1230.000000, 630.000000).
+[2025-12-07 17:02:11] Created tile at (0, 4) of type 'X' at position (510.000000, 810.000000).
+[2025-12-07 17:02:11] Created tile at (1, 4) of type 'X' at position (690.000000, 810.000000).
+[2025-12-07 17:02:11] Created tile at (2, 4) of type '-' at position (870.000000, 810.000000).
+[2025-12-07 17:02:11] Created tile at (3, 4) of type '-' at position (1050.000000, 810.000000).
+[2025-12-07 17:02:11] Created tile at (4, 4) of type 'G' at position (1230.000000, 810.000000).
+[2025-12-07 17:02:11] Total objects in stage 1: 12
+[2025-12-07 17:02:11] Stage 1 loaded from file.
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] Printing tile map for Stage 1:
+[2025-12-07 17:02:11] Size (5, 5):
+[2025-12-07 17:02:11] Action Per Turn: 1
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] XXXXX
+[2025-12-07 17:02:11] ----D
+[2025-12-07 17:02:11] ----M
+[2025-12-07 17:02:11] ---XX
+[2025-12-07 17:02:11] XX--G
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] Pattern Guard Monster: 
+[2025-12-07 17:02:11] Pattern Dispenser: LLX;
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] Loading Stage: 2
+[2025-12-07 17:02:11] Background set.
+[2025-12-07 17:02:11] Stage 2 created with size (15, 10).
+[2025-12-07 17:02:11] Parsing patterns for stage 2
+[2025-12-07 17:02:11] Wall created at tile (4, 0).
+[2025-12-07 17:02:11] Wall created at tile (4, 0).
+[2025-12-07 17:02:11] Wall created at tile (5, 0).
+[2025-12-07 17:02:11] Wall created at tile (5, 0).
+[2025-12-07 17:02:11] Dispenser created at tile (8, 0).
+[2025-12-07 17:02:11] Dispenser created at tile (8, 0).
+[2025-12-07 17:02:11] Dispenser created at tile (11, 0).
+[2025-12-07 17:02:11] Dispenser created at tile (11, 0).
+[2025-12-07 17:02:11] TraceMonster created at tile (14, 0).
+[2025-12-07 17:02:11] TraceMonster created at tile (14, 0).
+[2025-12-07 17:02:11] Wall created at tile (4, 1).
+[2025-12-07 17:02:11] Wall created at tile (4, 1).
+[2025-12-07 17:02:11] Wall created at tile (5, 1).
+[2025-12-07 17:02:11] Wall created at tile (5, 1).
+[2025-12-07 17:02:11] Wall created at tile (4, 2).
+[2025-12-07 17:02:11] Wall created at tile (4, 2).
+[2025-12-07 17:02:11] Wall created at tile (5, 2).
+[2025-12-07 17:02:11] Wall created at tile (5, 2).
+[2025-12-07 17:02:11] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
+[2025-12-07 17:02:11] GuardMonster created at tile (6, 2) with behavior pattern: UDDDDDDDUUUUUU
+[2025-12-07 17:02:11] Wall created at tile (9, 2).
+[2025-12-07 17:02:11] Wall created at tile (9, 2).
+[2025-12-07 17:02:11] Wall created at tile (9, 3).
+[2025-12-07 17:02:11] Wall created at tile (9, 3).
+[2025-12-07 17:02:11] TraceMonster created at tile (3, 4).
+[2025-12-07 17:02:11] TraceMonster created at tile (3, 4).
+[2025-12-07 17:02:11] Wall created at tile (9, 4).
+[2025-12-07 17:02:11] Wall created at tile (9, 4).
+[2025-12-07 17:02:11] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
+[2025-12-07 17:02:11] GuardMonster created at tile (10, 4) with behavior pattern: UURRDDDDLLUU
+[2025-12-07 17:02:11] Goal created at tile (14, 4).
+[2025-12-07 17:02:11] Goal created at tile (14, 4).
+[2025-12-07 17:02:11] Wall created at tile (0, 5).
+[2025-12-07 17:02:11] Wall created at tile (0, 5).
+[2025-12-07 17:02:11] Wall created at tile (1, 5).
+[2025-12-07 17:02:11] Wall created at tile (1, 5).
+[2025-12-07 17:02:11] Wall created at tile (9, 5).
+[2025-12-07 17:02:11] Wall created at tile (9, 5).
+[2025-12-07 17:02:11] TraceMonster created at tile (13, 5).
+[2025-12-07 17:02:11] TraceMonster created at tile (13, 5).
+[2025-12-07 17:02:11] Goal created at tile (14, 5).
+[2025-12-07 17:02:11] Goal created at tile (14, 5).
+[2025-12-07 17:02:11] Wall created at tile (0, 6).
+[2025-12-07 17:02:11] Wall created at tile (0, 6).
+[2025-12-07 17:02:11] Wall created at tile (1, 6).
+[2025-12-07 17:02:11] Wall created at tile (1, 6).
+[2025-12-07 17:02:11] Wall created at tile (7, 6).
+[2025-12-07 17:02:11] Wall created at tile (7, 6).
+[2025-12-07 17:02:11] Wall created at tile (7, 7).
+[2025-12-07 17:02:11] Wall created at tile (7, 7).
+[2025-12-07 17:02:11] Wall created at tile (7, 8).
+[2025-12-07 17:02:11] Wall created at tile (7, 8).
+[2025-12-07 17:02:11] Dispenser created at tile (2, 9).
+[2025-12-07 17:02:11] Dispenser created at tile (2, 9).
+[2025-12-07 17:02:11] Warning: Player symbol not found in stage 2. Creating default player at (0,0).
+[2025-12-07 17:02:11] Player created at tile (0, 0).
+[2025-12-07 17:02:11] Player created at tile (0, 0).
+[2025-12-07 17:02:11] Created tile at (0, 0) of type '-' at position (225.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (1, 0) of type '-' at position (323.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (2, 0) of type '-' at position (421.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (3, 0) of type '-' at position (519.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (4, 0) of type 'X' at position (617.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (5, 0) of type 'X' at position (715.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (6, 0) of type '-' at position (813.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (7, 0) of type '-' at position (911.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (8, 0) of type 'D' at position (1009.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (9, 0) of type '-' at position (1107.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (10, 0) of type '-' at position (1205.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (11, 0) of type 'D' at position (1303.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (12, 0) of type '-' at position (1401.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (13, 0) of type '-' at position (1499.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (14, 0) of type 'M' at position (1597.000000, 50.000000).
+[2025-12-07 17:02:11] Created tile at (0, 1) of type '-' at position (225.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (1, 1) of type '-' at position (323.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (2, 1) of type '-' at position (421.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (3, 1) of type '-' at position (519.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (4, 1) of type 'X' at position (617.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (5, 1) of type 'X' at position (715.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (6, 1) of type '-' at position (813.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (7, 1) of type '-' at position (911.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (8, 1) of type '-' at position (1009.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (9, 1) of type '-' at position (1107.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (10, 1) of type '-' at position (1205.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (11, 1) of type '-' at position (1303.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (12, 1) of type '-' at position (1401.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (13, 1) of type '-' at position (1499.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (14, 1) of type '-' at position (1597.000000, 148.000000).
+[2025-12-07 17:02:11] Created tile at (0, 2) of type '-' at position (225.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (1, 2) of type '-' at position (323.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (2, 2) of type '-' at position (421.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (3, 2) of type '-' at position (519.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (4, 2) of type 'X' at position (617.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (5, 2) of type 'X' at position (715.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (6, 2) of type 'm' at position (813.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (7, 2) of type '-' at position (911.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (8, 2) of type '-' at position (1009.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (9, 2) of type 'X' at position (1107.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (10, 2) of type '-' at position (1205.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (11, 2) of type '-' at position (1303.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (12, 2) of type '-' at position (1401.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (13, 2) of type '-' at position (1499.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (14, 2) of type '-' at position (1597.000000, 246.000000).
+[2025-12-07 17:02:11] Created tile at (0, 3) of type '-' at position (225.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (1, 3) of type '-' at position (323.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (2, 3) of type '-' at position (421.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (3, 3) of type '-' at position (519.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (4, 3) of type '-' at position (617.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (5, 3) of type '-' at position (715.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (6, 3) of type '-' at position (813.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (7, 3) of type '-' at position (911.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (8, 3) of type '-' at position (1009.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (9, 3) of type 'X' at position (1107.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (10, 3) of type '-' at position (1205.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (11, 3) of type '-' at position (1303.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (12, 3) of type '-' at position (1401.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (13, 3) of type '-' at position (1499.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (14, 3) of type '-' at position (1597.000000, 344.000000).
+[2025-12-07 17:02:11] Created tile at (0, 4) of type '-' at position (225.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (1, 4) of type '-' at position (323.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (2, 4) of type '-' at position (421.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (3, 4) of type 'M' at position (519.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (4, 4) of type '-' at position (617.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (5, 4) of type '-' at position (715.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (6, 4) of type '-' at position (813.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (7, 4) of type '-' at position (911.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (8, 4) of type '-' at position (1009.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (9, 4) of type 'X' at position (1107.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (10, 4) of type 'm' at position (1205.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (11, 4) of type '-' at position (1303.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (12, 4) of type '-' at position (1401.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (13, 4) of type '-' at position (1499.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (14, 4) of type 'G' at position (1597.000000, 442.000000).
+[2025-12-07 17:02:11] Created tile at (0, 5) of type 'X' at position (225.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (1, 5) of type 'X' at position (323.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (2, 5) of type '-' at position (421.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (3, 5) of type '-' at position (519.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (4, 5) of type '-' at position (617.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (5, 5) of type '-' at position (715.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (6, 5) of type '-' at position (813.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (7, 5) of type '-' at position (911.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (8, 5) of type '-' at position (1009.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (9, 5) of type 'X' at position (1107.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (10, 5) of type '-' at position (1205.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (11, 5) of type '-' at position (1303.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (12, 5) of type '-' at position (1401.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (13, 5) of type 'M' at position (1499.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (14, 5) of type 'G' at position (1597.000000, 540.000000).
+[2025-12-07 17:02:11] Created tile at (0, 6) of type 'X' at position (225.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (1, 6) of type 'X' at position (323.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (2, 6) of type '-' at position (421.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (3, 6) of type '-' at position (519.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (4, 6) of type '-' at position (617.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (5, 6) of type '-' at position (715.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (6, 6) of type '-' at position (813.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (7, 6) of type 'X' at position (911.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (8, 6) of type '-' at position (1009.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (9, 6) of type '-' at position (1107.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (10, 6) of type '-' at position (1205.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (11, 6) of type '-' at position (1303.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (12, 6) of type '-' at position (1401.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (13, 6) of type '-' at position (1499.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (14, 6) of type '-' at position (1597.000000, 638.000000).
+[2025-12-07 17:02:11] Created tile at (0, 7) of type '-' at position (225.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (1, 7) of type '-' at position (323.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (2, 7) of type '-' at position (421.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (3, 7) of type '-' at position (519.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (4, 7) of type '-' at position (617.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (5, 7) of type '-' at position (715.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (6, 7) of type '-' at position (813.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (7, 7) of type 'X' at position (911.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (8, 7) of type '-' at position (1009.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (9, 7) of type '-' at position (1107.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (10, 7) of type '-' at position (1205.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (11, 7) of type '-' at position (1303.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (12, 7) of type '-' at position (1401.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (13, 7) of type '-' at position (1499.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (14, 7) of type '-' at position (1597.000000, 736.000000).
+[2025-12-07 17:02:11] Created tile at (0, 8) of type '-' at position (225.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (1, 8) of type '-' at position (323.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (2, 8) of type '-' at position (421.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (3, 8) of type '-' at position (519.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (4, 8) of type '-' at position (617.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (5, 8) of type '-' at position (715.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (6, 8) of type '-' at position (813.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (7, 8) of type 'X' at position (911.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (8, 8) of type '-' at position (1009.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (9, 8) of type '-' at position (1107.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (10, 8) of type '-' at position (1205.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (11, 8) of type '-' at position (1303.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (12, 8) of type '-' at position (1401.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (13, 8) of type '-' at position (1499.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (14, 8) of type '-' at position (1597.000000, 834.000000).
+[2025-12-07 17:02:11] Created tile at (0, 9) of type '-' at position (225.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (1, 9) of type '-' at position (323.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (2, 9) of type 'D' at position (421.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (3, 9) of type '-' at position (519.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (4, 9) of type '-' at position (617.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (5, 9) of type '-' at position (715.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (6, 9) of type '-' at position (813.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (7, 9) of type '-' at position (911.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (8, 9) of type '-' at position (1009.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (9, 9) of type '-' at position (1107.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (10, 9) of type '-' at position (1205.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (11, 9) of type '-' at position (1303.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (12, 9) of type '-' at position (1401.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (13, 9) of type '-' at position (1499.000000, 932.000000).
+[2025-12-07 17:02:11] Created tile at (14, 9) of type '-' at position (1597.000000, 932.000000).
+[2025-12-07 17:02:11] Total objects in stage 2: 27
+[2025-12-07 17:02:11] Stage 2 loaded from file.
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] Printing tile map for Stage 2:
+[2025-12-07 17:02:11] Size (15, 10):
+[2025-12-07 17:02:11] Action Per Turn: 1
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] ----XX--D--D--M
+[2025-12-07 17:02:11] ----XX---------
+[2025-12-07 17:02:11] ----XXm--X-----
+[2025-12-07 17:02:11] ---------X-----
+[2025-12-07 17:02:11] ---M-----Xm---G
+[2025-12-07 17:02:11] XX-------X---MG
+[2025-12-07 17:02:11] XX-----X-------
+[2025-12-07 17:02:11] -------X-------
+[2025-12-07 17:02:11] -------X-------
+[2025-12-07 17:02:11] --D------------
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:11] Pattern Guard Monster: UDDDDDDDUUUUUU;UURRDDDDLLUU;
+[2025-12-07 17:02:11] Pattern Dispenser: DXDDX;DDDDX;UXUUR;
+[2025-12-07 17:02:11] =====================
+[2025-12-07 17:02:13] Window closed by user.
+[2025-12-07 17:02:13] Game exited.
+[2025-12-07 17:02:13] --- Logger Shutdown ---
