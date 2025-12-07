@@ -1,19 +1,20 @@
+#include <SFML/Graphics.hpp>
 #include "Logger.hpp"
 #include "Utils.hpp"
 #include "Astar.hpp"
 #include "Object.hpp"
 
-Object::Object(const sf::Texture& texture, sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) 
+Object::Object(const sf::Texture& texture, sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize) 
     : sprite(texture), posTile(posTile), posWindow(posWindow) {
-    resizeTileTexture(sprite, tile_size);
-    sprite.setPosition(posWindow);
+    resizeTileTexture(sprite, tileSize);
+    sprite.setPosition(this->posWindow);
 }
 
 sf::Sprite& Object::getSprite() {
     return sprite;
 }
 
-void Object::draw(sf::RenderWindow& window, int tile_size) {
+void Object::draw(sf::RenderWindow& window, int tileSize) {
     window.draw(sprite);
 }
 
@@ -44,8 +45,8 @@ bool Object::isValidAction(std::vector<std::vector<char>>& tileMap, sf::Vector2i
 
 
 // ========== Player Class =============
-Player::Player(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) 
-    : Object(Resource::getPlayerTexture(), posTile, posWindow, tile_size) {
+Player::Player(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize) 
+    : Object(Resource::getPlayerTexture(), posTile, posWindow, tileSize) {
     Logger::log("Player created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
@@ -65,7 +66,7 @@ bool Player::isValidMove(std::vector<std::vector<char>>& tileMap, const Action& 
     return Object::isValidAction(tileMap, newPos);
 }
 
-void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size, const Action& action) {
+void Player::update(std::vector<std::vector<char>>& tileMap, int tileSize, const Action& action) {
     Logger::log_debug("Updating Player.");
     if(!isValidMove(tileMap, action)) return;
 
@@ -73,16 +74,16 @@ void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size, cons
     // No need to update tileMap
     if(action == Action::MoveUp) {
         posTile.y -= 1;
-        posWindow.y -= tile_size;
+        posWindow.y -= tileSize;
     } else if(action == Action::MoveDown) {
         posTile.y += 1;
-        posWindow.y += tile_size;
+        posWindow.y += tileSize;
     } else if(action == Action::MoveLeft) {
         posTile.x -= 1;
-        posWindow.x -= tile_size;
+        posWindow.x -= tileSize;
     } else if(action == Action::MoveRight) {
         posTile.x += 1;
-        posWindow.x += tile_size;
+        posWindow.x += tileSize;
     }
     getSprite().setPosition(posWindow);
 
@@ -94,16 +95,16 @@ void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size, cons
 
 
 // ========= Wall and Goal Class =============
-Wall::Wall(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : 
-    Object(Resource::getWallTexture(), posTile, posWindow, tile_size) {
+Wall::Wall(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize) : 
+    Object(Resource::getWallTexture(), posTile, posWindow, tileSize) {
     Logger::log("Wall created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
 
 
 
-Goal::Goal(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : 
-    Object(Resource::getGoalTexture(), posTile, posWindow, tile_size) {
+Goal::Goal(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize) : 
+    Object(Resource::getGoalTexture(), posTile, posWindow, tileSize) {
     Logger::log("Goal created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
@@ -126,13 +127,13 @@ bool Monster::isValidMove(std::vector<std::vector<char>>& tileMap, char actionCh
     return Object::isValidAction(tileMap, newPos);
 }
 
-TraceMonster::TraceMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : 
-    Monster(Resource::getTraceMonsterTexture(), posTile, posWindow, tile_size) {
+TraceMonster::TraceMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize) : 
+    Monster(Resource::getTraceMonsterTexture(), posTile, posWindow, tileSize) {
     Logger::log("TraceMonster created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
 
-void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size, const sf::Vector2i& playerPosTile) {
+void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tileSize, const sf::Vector2i& playerPosTile) {
     Logger::log_debug("Updating TraceMonster at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
     
@@ -158,7 +159,7 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
         
         // 3. 更新網格位置和視窗位置
         
-        // 計算位移量 (以 tile_size 為單位)
+        // 計算位移量 (以 tileSize 為單位)
         float deltaX = (float)(nextTilePos.x - posTile.x);
         float deltaY = (float)(nextTilePos.y - posTile.y);
         
@@ -166,8 +167,8 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
         posTile = nextTilePos; 
         
         // 更新視窗像素座標
-        posWindow.x += deltaX * tile_size;
-        posWindow.y += deltaY * tile_size;
+        posWindow.x += deltaX * tileSize;
+        posWindow.y += deltaY * tileSize;
         
         // 4. 在新位置標記怪物
         // 假設 'M' 是 TraceMonster 的符號
@@ -183,14 +184,14 @@ void TraceMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
     }
 }
 
-GuardMonster::GuardMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, const std::string& pattern) : 
-    Monster(Resource::getGuardMonsterTexture(), posTile, posWindow, tile_size), behaviorPattern(pattern) {
+GuardMonster::GuardMonster(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize, const std::string& pattern) : 
+    Monster(Resource::getGuardMonsterTexture(), posTile, posWindow, tileSize), behaviorPattern(pattern) {
     Logger::log("GuardMonster created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ") "
         + "with behavior pattern: " + behaviorPattern);
 }
 
-void GuardMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
+void GuardMonster::update(std::vector<std::vector<char>>& tileMap, int tileSize) {
     Logger::log_debug("Updating GuardMonster at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
     if(behaviorPattern.empty()) return;
@@ -203,22 +204,22 @@ void GuardMonster::update(std::vector<std::vector<char>>& tileMap, int tile_size
     // Update tile and window position
     if(actionChar == SYMBOL_UP) {
         posTile.y -= 1;
-        posWindow.y -= tile_size;
+        posWindow.y -= tileSize;
         tileMap[posTile.y + 1][posTile.x] = SYMBOL_OPEN_SPACE;
         tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
     } else if(actionChar == SYMBOL_DOWN) {
         posTile.y += 1;
-        posWindow.y += tile_size;
+        posWindow.y += tileSize;
         tileMap[posTile.y - 1][posTile.x] = SYMBOL_OPEN_SPACE;
         tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
     } else if(actionChar == SYMBOL_LEFT) {
         posTile.x -= 1;
-        posWindow.x -= tile_size;
+        posWindow.x -= tileSize;
         tileMap[posTile.y][posTile.x + 1] = SYMBOL_OPEN_SPACE;
         tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
     } else if(actionChar == SYMBOL_RIGHT) {
         posTile.x += 1;
-        posWindow.x += tile_size;
+        posWindow.x += tileSize;
         tileMap[posTile.y][posTile.x - 1] = SYMBOL_OPEN_SPACE;
         tileMap[posTile.y][posTile.x] = SYMBOL_GUARD_MONSTER;
     }
@@ -236,8 +237,8 @@ std::string& GuardMonster::getBehaviorPattern() {
 
 
 // ========== Dispenser Class =============
-Dispenser::Dispenser(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, const std::string& pattern) : 
-    Object(Resource::getDispenserTexture(), posTile, posWindow, tile_size), behaviorPattern(pattern) {
+Dispenser::Dispenser(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize, const std::string& pattern) : 
+    Object(Resource::getDispenserTexture(), posTile, posWindow, tileSize), behaviorPattern(pattern) {
     Logger::log("Dispenser created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
@@ -259,7 +260,7 @@ bool Dispenser::isSpawnable(std::vector<std::vector<char>>& tileMap, char action
     return Object::isValidAction(tileMap, newPos) && tileMap[newPos.y][newPos.x] == '-';
 }
 
-void Dispenser::update(std::vector<std::vector<char>>& tileMap, int tile_size, std::vector<std::unique_ptr<Object>>& bufferObjects) {
+void Dispenser::update(std::vector<std::vector<char>>& tileMap, int tileSize, std::vector<std::unique_ptr<Object>>& bufferObjects) {
     Logger::log_debug("Updating Dispenser at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
     // Dispenser does not move, but it will project arrows based on its behavior pattern.
@@ -275,21 +276,21 @@ void Dispenser::update(std::vector<std::vector<char>>& tileMap, int tile_size, s
     // Create a new Arrow object based on the actionChar
     if(actionChar == SYMBOL_UP) {
         arrowPosTile.y -= 1;
-        arrowPosWindow.y -= tile_size;
+        arrowPosWindow.y -= tileSize;
     } else if(actionChar == SYMBOL_DOWN) {
         arrowPosTile.y += 1;
-        arrowPosWindow.y += tile_size;
+        arrowPosWindow.y += tileSize;
     } else if(actionChar == SYMBOL_LEFT) {
         arrowPosTile.x -= 1;
-        arrowPosWindow.x -= tile_size;
+        arrowPosWindow.x -= tileSize;
     } else if(actionChar == SYMBOL_RIGHT) {
         arrowPosTile.x += 1;
-        arrowPosWindow.x += tile_size;
+        arrowPosWindow.x += tileSize;
     }
 
     // Mark arrow position in tile map
     tileMap[arrowPosTile.y][arrowPosTile.x] = SYMBOL_ARROW;
-    bufferObjects.emplace_back(std::make_unique<Arrow>(arrowPosTile, arrowPosWindow, tile_size, actionChar));
+    bufferObjects.emplace_back(std::make_unique<Arrow>(arrowPosTile, arrowPosWindow, tileSize, actionChar));
     Logger::log("Dispenser at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) 
         + ") dispensed an Arrow.");
@@ -302,17 +303,36 @@ std::string& Dispenser::getBehaviorPattern() {
 
 
 // ========== Projectile Class =============
+Projectile::Projectile(const sf::Texture& texture, sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize, char direction) 
+    : Object(texture, posTile, posWindow, tileSize), direction(direction) {
+    sf::FloatRect spriteBounds = sprite.getLocalBounds();
+    // Center the sprite origin
+    sprite.setOrigin({spriteBounds.position.x + spriteBounds.size.x / 2.f,
+        spriteBounds.position.y + spriteBounds.size.y / 2.f});
+    // Remember to "this"!!!!!
+    this->posWindow = {posWindow.x + tileSize / 2.f, posWindow.y + tileSize / 2.f};
+    sprite.setPosition(this->posWindow);
+    
+    // Rotate sprite according to direction. Default texture faces LEFT.
+    float angle = 0.f;
+    if(direction == SYMBOL_LEFT) angle = 0.f;
+    else if(direction == SYMBOL_UP) angle = 90.f;
+    else if(direction == SYMBOL_RIGHT) angle = 180.f;
+    else if(direction == SYMBOL_DOWN) angle = -90.f;
+    sprite.setRotation(sf::degrees(angle));
+}
+
 sf::Vector2i Projectile::getOriginalPosTile() const {
     return originalPosTile;
 }
 
-Arrow::Arrow(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size, char direction) : 
-    Projectile(Resource::getArrowTexture(), posTile, posWindow, tile_size, direction) {
+Arrow::Arrow(sf::Vector2i posTile, sf::Vector2f posWindow, int tileSize, char direction) : 
+    Projectile(Resource::getArrowTexture(), posTile, posWindow, tileSize, direction) {
     Logger::log("Arrow created at tile (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
 
-void Arrow::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
+void Arrow::update(std::vector<std::vector<char>>& tileMap, int tileSize) {
     Logger::log_debug("Updating Arrow at (" 
         + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
     
@@ -324,16 +344,16 @@ void Arrow::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
     // Move based on direction
     if(direction == SYMBOL_UP) {
         newPosTile.y -= 1;
-        newPosWindow.y -= tile_size;
+        newPosWindow.y -= tileSize;
     } else if(direction == SYMBOL_DOWN) {
         newPosTile.y += 1;
-        newPosWindow.y += tile_size;
+        newPosWindow.y += tileSize;
     } else if(direction == SYMBOL_LEFT) {
         newPosTile.x -= 1;
-        newPosWindow.x -= tile_size;
+        newPosWindow.x -= tileSize;
     } else if(direction == SYMBOL_RIGHT) {
         newPosTile.x += 1;
-        newPosWindow.x += tile_size;
+        newPosWindow.x += tileSize;
     }
     
     // Invalid move, let caller remove this arrow
@@ -344,7 +364,7 @@ void Arrow::update(std::vector<std::vector<char>>& tileMap, int tile_size) {
     posTile = newPosTile;
     posWindow = newPosWindow;
     tileMap[posTile.y][posTile.x] = SYMBOL_ARROW;
-    getSprite().setPosition(posWindow);
+    sprite.setPosition(posWindow);
     
     Logger::log_debug("Arrow moved to (" + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }

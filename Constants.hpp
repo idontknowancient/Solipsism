@@ -83,7 +83,7 @@ inline const char SYMBOL_LEFT = 'L';
 inline const char SYMBOL_RIGHT = 'R';
 
 // Default Button Settings
-inline const float BUTTON_WIDTH = 200.0f;
+inline const float BUTTON_WIDTH = 240.0f;
 inline const float BUTTON_HEIGHT = 80.0f;
 inline const float BUTTON_CENTER_X = WORLD_WIDTH / 2.f;
 inline const float BUTTON_CENTER_Y = WORLD_HEIGHT / 2.f + 100.f; // 100 pixels below center

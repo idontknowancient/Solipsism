@@ -40,3 +40,33 @@ XX-----X-------
 --D------------
 MAP_END
 STAGE_END
+
+STAGE_START
+STAGE_ID: 3
+COLUMN: 20
+ROW: 15
+ACTION_PER_TURN: 1
+PATTERN_START
+DISPENSER: LLDXLDD;LDDXUX;RRXRX;ULD;RDLU;RXX;UXXLUX;UUXX;
+GUARD_MONSTER: R5L5;DL5U3R5D2;LDLLDLDURURRUR;UL2D2R2U;U2L4DL7DUR7UR4D2;
+PATTERN_END
+MAP_START
+## P: Player start / X: Wall / M: Trace Monster / m: Guard Monster
+## D: Dispenser / G: Goal
+P---------D--M------
+---DXXm-------------
+----XXm--X-------XXX
+---------X----------
+MD-------m---X------
+XX-----------M------
+XX-----X------------
+-------X------------
+-------X----XX-----D
+--D-----------------
+-------X-----mXXX---
+-------X------------
+XXXX---X--XXXXX-----
+D------X------------
+G---D-DX---GGG----Mm
+MAP_END
+STAGE_END

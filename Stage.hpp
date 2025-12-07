@@ -19,7 +19,7 @@ private:
     int actionPerTurn;
 
     // Hold tile data
-    int tile_size;
+    int tileSize;
     // Start position of the tile map in window coordinates
     float start_x;
     float start_y;
@@ -64,7 +64,8 @@ private:
 public:
     // Stage clear overlay
     static sf::RectangleShape stageClearShape;
-    static sf::Sprite stageClearSprite;
+    // I don't know why but if this is static, it can't be drawn
+    sf::Sprite stageClearSprite;
     static RoundedRectangle buttonSelect;
     static RoundedRectangle buttonRetry;
     static RoundedRectangle buttonNext;

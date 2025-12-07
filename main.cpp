@@ -61,7 +61,7 @@ int main() {
 
     // Settings Button
     RoundedRectangle settingsButton(
-        BUTTON_CENTER_X, BUTTON_CENTER_Y + 100,
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 120,
         BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
         BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
         "SETTINGS", 30, Resource::getButtonFont()
@@ -69,7 +69,7 @@ int main() {
 
     // Quit Button
     RoundedRectangle quitButton(
-        BUTTON_CENTER_X, BUTTON_CENTER_Y + 200,
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 240,
         BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
         BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
         "QUIT", 30, Resource::getButtonFont()

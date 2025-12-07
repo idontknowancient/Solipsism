@@ -8,25 +8,31 @@
 
 // Static member initialization
 sf::RectangleShape Stage::stageClearShape;
-sf::Sprite Stage::stageClearSprite(Resource::getStageClearTexture());
 RoundedRectangle Stage::buttonSelect(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
 RoundedRectangle Stage::buttonRetry(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
 RoundedRectangle Stage::buttonNext(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
 
 Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), 
-    openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()) {
+    openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()),
+    stageClearSprite(Resource::getStageClearTexture()) {
     // Initialize tile size based on window size and number of tiles
-    this->tile_size = std::min(WORLD_WIDTH / (column + 1), WORLD_HEIGHT / (row + 1));
+    this->tileSize = std::min(WORLD_WIDTH / (column + 1), WORLD_HEIGHT / (row + 1));
 
     // Initialize start positions for the tile map in window coordinates
-    this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
-    this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
+    this->start_x = (WORLD_WIDTH - (column * tileSize)) / 2.f;
+    this->start_y = (WORLD_HEIGHT - (row * tileSize)) / 2.f;
     
     // Initialize tile map with open space '-'
     tileMap.resize(row, std::vector<char>(column, '-'));
 
-    resizeTileTexture(openSpace, tile_size);
+    resizeTileTexture(openSpace, tileSize);
     openSpace.setPosition({start_x, start_y});
+
+    resizeTileTexture(stageClearSprite, std::min(WORLD_WIDTH, WORLD_HEIGHT) * 0.8f);
+    stageClearSprite.setPosition({(WORLD_WIDTH - stageClearSprite.getGlobalBounds().size.x) / 2.f, 
+        (WORLD_HEIGHT - stageClearSprite.getGlobalBounds().size.y) / 2.f});
+    stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+    stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
 
     setBackground(backgroundSprite, Resource::getBackgroundStageTexture(), BACKGROUND_TRANSLUCENT_STRONGER);
     
@@ -122,48 +128,49 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             // Ensure the line length matches column (allow shorter lines, fill with '-')
             for(int c = 0; c < column && c < static_cast<int>(line.size()); c++) {
                 char ch = line[c];
-                // Leave open space for player start
-                if(ch == SYMBOL_PLAYER) ch = SYMBOL_OPEN_SPACE;
                 stage.tileMap[r][c] = ch;
-                // Initial position in window coordinates
-                sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
+                // Initial position in window coordinates (middle)
+                sf::Vector2f posWindow = {stage.start_x + c * stage.tileSize, stage.start_y + r * stage.tileSize};
 
                 // Tile sprite creation
                 int variant = getVariantNumber();
                 sf::Sprite tileSprite(Resource::getOpenSpaceTexture(variant));
                 tileSprite.setPosition(posWindow);
-                resizeTileTexture(tileSprite, stage.tile_size);
+                resizeTileTexture(tileSprite, stage.tileSize);
                 stage.tileSprites.emplace_back(tileSprite);
 
                 // Object creation based on symbol
                 // Player
                 if(ch == SYMBOL_PLAYER) {
-                    stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
-                    stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
+                    // posWindow will be adjusted to the middle of the tile in Object constructor
+                    stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tileSize);
+                    stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tileSize);
+                    // Leave open space for player start
+                    stage.tileMap[r][c] = SYMBOL_OPEN_SPACE;
                 }
 
                 // Walls
                 else if(ch == SYMBOL_WALL) {
                     stage.objects.emplace_back(std::make_unique<Wall>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                     stage.initialObjects.emplace_back(std::make_unique<Wall>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                 }
 
                 // Goals
                 else if(ch == SYMBOL_GOAL) {
                     stage.objects.emplace_back(std::make_unique<Goal>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                     stage.initialObjects.emplace_back(std::make_unique<Goal>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                 }
 
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
                     stage.objects.emplace_back(std::make_unique<TraceMonster>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                     stage.initialObjects.emplace_back(std::make_unique<TraceMonster>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                 }
 
                 // Guard monsters 
@@ -177,9 +184,9 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                         slicedPattern = guardMonsterPattern;
                     }
                     stage.objects.emplace_back(std::make_unique<GuardMonster>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
                     stage.initialObjects.emplace_back(std::make_unique<GuardMonster>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
                 }
 
                 // Dispensers
@@ -193,9 +200,9 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                         slicedPattern = dispenserPattern;
                     }
                     stage.objects.emplace_back(std::make_unique<Dispenser>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
                     stage.initialObjects.emplace_back(std::make_unique<Dispenser>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
                 }
             }
 
@@ -218,9 +225,9 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         if(!stage.player) {
             Logger::log("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
             stage.player = std::make_unique<Player>(sf::Vector2i{0, 0}, 
-                sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tileSize);
             stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{0, 0}, 
-                sf::Vector2f{stage.start_x, stage.start_y}, stage.tile_size);
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tileSize);
         }
 
         // Advance to STAGE_END
@@ -230,41 +237,33 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         Logger::log("Total objects in stage " + std::to_string(stageId) + ": " + std::to_string(stage.objects.size()));
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
-        
-        // Setup stage clear overlay
-        Stage::stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
-        Stage::stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
-        
-        // Set texture for sprite
-        Stage::stageClearSprite.setTexture(Resource::getStageClearTexture());
-        sf::Vector2u textureSize = Stage::stageClearSprite.getTexture().getSize();
-        float scaleX = static_cast<float>(stage.tile_size) / textureSize.x;
-        float scaleY = static_cast<float>(stage.tile_size) / textureSize.y;
-        Stage::stageClearSprite.setScale({scaleX, scaleY});
-        Stage::stageClearSprite.setPosition({(WORLD_WIDTH - Stage::stageClearSprite.getGlobalBounds().size.x) / 2.f, 
-            (WORLD_HEIGHT - Stage::stageClearSprite.getGlobalBounds().size.y) / 2.f});
-        Stage::buttonSelect = RoundedRectangle(
-            BUTTON_CENTER_X - 250, BUTTON_CENTER_Y + 50,
-            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
-            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
-            "SELECT", 30, Resource::getButtonFont()
-        );
-        Stage::buttonRetry = RoundedRectangle(
-            BUTTON_CENTER_X, BUTTON_CENTER_Y + 50,
-            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
-            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
-            "RETRY", 30, Resource::getButtonFont()
-        );
-        Stage::buttonNext = RoundedRectangle(
-            BUTTON_CENTER_X + 250, BUTTON_CENTER_Y + 50,
-            BUTTON_RECTANGLE_WIDTH, BUTTON_RECTANGLE_HEIGHT,
-            BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
-            "NEXT", 30, Resource::getButtonFont()
-        );
 
         // Add stage to stages vector
         stages.emplace_back(std::move(stage));
     }
+        
+    // Setup stage clear overlay
+    Stage::stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+    Stage::stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
+        
+    Stage::buttonSelect = RoundedRectangle(
+        BUTTON_CENTER_X - 250, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "SELECT", 30, Resource::getButtonFont()
+    );
+    Stage::buttonRetry = RoundedRectangle(
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "RETRY", 30, Resource::getButtonFont()
+    );
+    Stage::buttonNext = RoundedRectangle(
+        BUTTON_CENTER_X + 250, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "NEXT", 30, Resource::getButtonFont()
+    );
 
     file.close();
 }
@@ -273,11 +272,11 @@ void Stage::createTiles() {
     for(int i = 0; i < row; i++) {
         for(int j = 0; j < column; j++) {
             // Use new to allocate on heap to prevent going out of scope
-            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tile_size, tile_size));
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tileSize, tileSize));
             
             // Set position
-            float x = start_x + j * tile_size;
-            float y = start_y + i * tile_size;
+            float x = start_x + j * tileSize;
+            float y = start_y + i * tileSize;
             tile->setPosition({x, y});
             
             // Checkerboard colors
@@ -367,7 +366,7 @@ void Stage::handleObjectAction() {
             sf::Vector2i oldPosTile = arrow->posTile;
             
             // Update arrow
-            arrow->update(tileMap, tile_size);
+            arrow->update(tileMap, tileSize);
             if(shouldRemoveProjectile(arrow, arrow->getOriginalPosTile(), i)) {
                 objectsToRemove.push_back(i);
             }
@@ -379,11 +378,11 @@ void Stage::handleObjectAction() {
         
         // Use .get() to access the raw pointer from unique_ptr
         if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
-            traceMonster->update(tileMap, tile_size, player->posTile);
+            traceMonster->update(tileMap, tileSize, player->posTile);
         } else if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
-            guardMonster->update(tileMap, tile_size);
+            guardMonster->update(tileMap, tileSize);
         } else if(Dispenser* dispenser = dynamic_cast<Dispenser*>(object.get())) {
-            dispenser->update(tileMap, tile_size, bufferObjects);
+            dispenser->update(tileMap, tileSize, bufferObjects);
         }
     }
 
@@ -414,7 +413,7 @@ void Stage::handlePlayerAction() {
         case Action::MoveDown:
         case Action::MoveLeft:
         case Action::MoveRight:
-            player->update(tileMap, tile_size, action);
+            player->update(tileMap, tileSize, action);
             break;
         case Action::Attack:
             // To be implemented
@@ -505,16 +504,16 @@ void Stage::draw(sf::RenderWindow& window, const GameState& gameState) {
 
     //Draw all objects
     for(auto& object : objects) {
-        object->draw(window, tile_size);
+        object->draw(window, tileSize);
     }
 
     // Draw player
-    player->draw(window, tile_size);
+    player->draw(window, tileSize);
 
     // If stage clear, draw stage clear sprite
     if(gameState == GameState::StageClear) {
         window.draw(Stage::stageClearShape);
-        window.draw(Stage::stageClearSprite);
+        window.draw(stageClearSprite);
         Stage::buttonSelect.draw(window);
         Stage::buttonRetry.draw(window);
         Stage::buttonNext.draw(window);
@@ -559,11 +558,11 @@ void Stage::reset() {
 
     // Restore player from initial state
     if(initialPlayer) {
-        player = std::make_unique<Player>(initialPlayer->posTile, initialPlayer->posWindow, tile_size);
+        player = std::make_unique<Player>(initialPlayer->posTile, initialPlayer->posWindow, tileSize);
         Logger::log("Player reset to initial position (" + std::to_string(initialPlayer->posTile.x) + ", " + std::to_string(initialPlayer->posTile.y) + ").");
     } else {
         // If no initial player was stored, create default
-        player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tile_size);
+        player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tileSize);
         Logger::log_debug("No initial player found; created default player at (0,0).");
     }
 
@@ -571,19 +570,19 @@ void Stage::reset() {
     for(const auto& objPtr : initialObjects) {
         if(Wall* wall = dynamic_cast<Wall*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<Wall>(
-                wall->posTile, wall->posWindow, tile_size));
+                wall->posTile, wall->posWindow, tileSize));
         } else if(Goal* goal = dynamic_cast<Goal*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<Goal>(
-                goal->posTile, goal->posWindow, tile_size));
+                goal->posTile, goal->posWindow, tileSize));
         } else if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<TraceMonster>(
-                tm->posTile, tm->posWindow, tile_size));
+                tm->posTile, tm->posWindow, tileSize));
         } else if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<GuardMonster>(
-                gm->posTile, gm->posWindow, tile_size, gm->getBehaviorPattern()));
+                gm->posTile, gm->posWindow, tileSize, gm->getBehaviorPattern()));
         } else if(Dispenser* disp = dynamic_cast<Dispenser*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<Dispenser>(
-                disp->posTile, disp->posWindow, tile_size, disp->getBehaviorPattern()));
+                disp->posTile, disp->posWindow, tileSize, disp->getBehaviorPattern()));
         }
     }
 
