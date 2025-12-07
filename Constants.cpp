@@ -9,10 +9,14 @@ sf::Texture Resource::titleTexture;
 sf::Texture Resource::titleBackgroundTexture;
 sf::Font Resource::buttonFont;
 sf::Texture Resource::playerTexture;
+sf::Texture Resource::openSpaceTexture;
+sf::Texture Resource::wallTexture;
+sf::Texture Resource::goalTexture;
 sf::Texture Resource::guardMonsterTexture;
 sf::Texture Resource::traceMonsterTexture;
 sf::Texture Resource::dispenserTexture;
 sf::Texture Resource::arrowTexture;
+sf::Texture Resource::trapTexture;
 
 void Resource::init() {
     // Load icon
@@ -46,6 +50,18 @@ void Resource::init() {
         Logger::log("Failed to load player texture: " + PLAYER_TEXTURE_FILE);
     }
 
+    if(!openSpaceTexture.loadFromFile(OPEN_SPACE_TEXTURE_FILE)) {
+        Logger::log("Failed to load open space texture: " + OPEN_SPACE_TEXTURE_FILE);
+    }
+
+    if(!wallTexture.loadFromFile(WALL_TEXTURE_FILE)) {
+        Logger::log("Failed to load wall texture: " + WALL_TEXTURE_FILE);
+    }
+
+    if(!goalTexture.loadFromFile(GOAL_TEXTURE_FILE)) {
+        Logger::log("Failed to load goal texture: " + GOAL_TEXTURE_FILE);
+    }
+
     if(!guardMonsterTexture.loadFromFile(GUARD_MONSTER_TEXTURE_FILE)) {
         Logger::log("Failed to load guard monster texture: " + GUARD_MONSTER_TEXTURE_FILE);
     }
@@ -60,6 +76,10 @@ void Resource::init() {
 
     if(!arrowTexture.loadFromFile(ARROW_TEXTURE_FILE)) {
         Logger::log("Failed to load arrow texture: " + ARROW_TEXTURE_FILE);
+    }
+
+    if(!trapTexture.loadFromFile(TRAP_TEXTURE_FILE)) {
+        Logger::log("Failed to load trap texture: " + TRAP_TEXTURE_FILE);
     }
 }
 
@@ -87,6 +107,18 @@ const sf::Texture& Resource::getPlayerTexture() {
     return playerTexture;
 }
 
+const sf::Texture& Resource::getOpenSpaceTexture() {
+    return openSpaceTexture;
+}
+
+const sf::Texture& Resource::getWallTexture() {
+    return wallTexture;
+}
+
+const sf::Texture& Resource::getGoalTexture() {
+    return goalTexture;
+}
+
 const sf::Texture& Resource::getGuardMonsterTexture() {
     return guardMonsterTexture;
 }
@@ -101,4 +133,8 @@ const sf::Texture& Resource::getDispenserTexture() {
 
 const sf::Texture& Resource::getArrowTexture() {
     return arrowTexture;
+}
+
+const sf::Texture& Resource::getTrapTexture() {
+    return trapTexture;
 }

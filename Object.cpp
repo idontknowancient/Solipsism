@@ -73,21 +73,46 @@ void Player::update(std::vector<std::vector<char>>& tileMap, int tile_size, cons
     if(action == Action::MoveUp) {
         posTile.y -= 1;
         posWindow.y -= tile_size;
+        tileMap[posTile.y + 1][posTile.x] = '-';
+        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveDown) {
         posTile.y += 1;
         posWindow.y += tile_size;
+        tileMap[posTile.y - 1][posTile.x] = '-';
+        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveLeft) {
         posTile.x -= 1;
         posWindow.x -= tile_size;
+        tileMap[posTile.y][posTile.x + 1] = '-';
+        tileMap[posTile.y][posTile.x] = 'P';
     } else if(action == Action::MoveRight) {
         posTile.x += 1;
         posWindow.x += tile_size;
+        tileMap[posTile.y][posTile.x - 1] = '-';
+        tileMap[posTile.y][posTile.x] = 'P';
     }
     getSprite().setPosition(posWindow);
 
     Logger::log_debug("Player moved to (" 
         + std::to_string(posTile.x) + ", " 
         + std::to_string(posTile.y) + ").");
+}
+
+
+
+// ========= Wall and Goal Class =============
+Wall::Wall(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : 
+    Object(Resource::getWallTexture(), posTile, posWindow, tile_size) {
+    Logger::log("Wall created at tile (" 
+        + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
+}
+
+
+
+Goal::Goal(sf::Vector2i posTile, sf::Vector2f posWindow, int tile_size) : 
+    Object(Resource::getGoalTexture(), posTile, posWindow, tile_size) {
+    Logger::log("Goal created at tile (" 
+        + std::to_string(posTile.x) + ", " + std::to_string(posTile.y) + ").");
 }
 
 

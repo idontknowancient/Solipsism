@@ -32,10 +32,14 @@ inline const std::string TITLE_IMAGE_FILE = "assets/title_image.png";
 inline const std::string BACKGROUND_IMAGE_FILE = "assets/background_image.jpg";
 inline const std::string BUTTON_TEXTURE_FILE = "assets/start_button.png";
 inline const std::string PLAYER_TEXTURE_FILE = "assets/player.jpg";
-inline const std::string GUARD_MONSTER_TEXTURE_FILE = "assets/guard_monster.png";
-inline const std::string TRACE_MONSTER_TEXTURE_FILE = "assets/trace_monster.png";
-inline const std::string DISPENSER_TEXTURE_FILE = "assets/dispenser.png";
-inline const std::string ARROW_TEXTURE_FILE = "assets/arrow.png";
+inline const std::string OPEN_SPACE_TEXTURE_FILE = "assets/open_space.jpg";
+inline const std::string WALL_TEXTURE_FILE = "assets/wall.jpg";
+inline const std::string GOAL_TEXTURE_FILE = "assets/goal.jpg";
+inline const std::string GUARD_MONSTER_TEXTURE_FILE = "assets/guard_monster.jpg";
+inline const std::string TRACE_MONSTER_TEXTURE_FILE = "assets/trace_monster.jpg";
+inline const std::string DISPENSER_TEXTURE_FILE = "assets/dispenser.jpg";
+inline const std::string ARROW_TEXTURE_FILE = "assets/arrow.jpg";
+inline const std::string TRAP_TEXTURE_FILE = "assets/trap.jpg";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
@@ -82,10 +86,14 @@ private:
     static sf::Texture titleBackgroundTexture;
     static sf::Font buttonFont;
     static sf::Texture playerTexture;
+    static sf::Texture openSpaceTexture;
+    static sf::Texture wallTexture;
+    static sf::Texture goalTexture;
     static sf::Texture guardMonsterTexture;
     static sf::Texture traceMonsterTexture;
     static sf::Texture dispenserTexture;
     static sf::Texture arrowTexture;
+    static sf::Texture trapTexture;
 
 public:
     Resource() = delete;
@@ -98,8 +106,12 @@ public:
     static const sf::Texture& getTitleBackgroundTexture();
     static const sf::Font& getButtonFont();
     static const sf::Texture& getPlayerTexture();
+    static const sf::Texture& getOpenSpaceTexture();
+    static const sf::Texture& getWallTexture();
+    static const sf::Texture& getGoalTexture();
     static const sf::Texture& getGuardMonsterTexture();
     static const sf::Texture& getTraceMonsterTexture();
     static const sf::Texture& getDispenserTexture();
     static const sf::Texture& getArrowTexture();
+    static const sf::Texture& getTrapTexture();
 };

@@ -35,6 +35,8 @@ private:
     std::vector<std::unique_ptr<Object>> bufferObjects;
     // Store numbers of objects that should be removed
     std::vector<int> objectsToRemove;
+    // The texture for open space tiles (non-object)
+    sf::Sprite openSpace;
 
     std::unique_ptr<Player> player;
     // Record actions by player

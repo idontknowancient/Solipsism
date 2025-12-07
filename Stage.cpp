@@ -6,13 +6,17 @@
 #include <iostream>
 #include <vector>
 
-Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), tile_size(100) {
+Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), 
+    actionPerTurn(actionPerTurn), tile_size(100), openSpace(Resource::getOpenSpaceTexture()) {
     // Initialize start positions for the tile map in window coordinates
     this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
     this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
     
     // Initialize tile map with open space '-'
     tileMap.resize(row, std::vector<char>(column, '-'));
+
+    openSpace.setPosition({start_x, start_y});
+    resizeTileTexture(openSpace, tile_size);
     
     // Create visual tiles for the stage (will be called after loading map from file)
     // createTiles(100) should be called after map is loaded
@@ -117,6 +121,22 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                     stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tile_size);
                 }
 
+                // Walls
+                else if(ch == SYMBOL_WALL) {
+                    stage.objects.emplace_back(std::make_unique<Wall>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                    stage.initialObjects.emplace_back(std::make_unique<Wall>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                }
+
+                // Goals
+                else if(ch == SYMBOL_GOAL) {
+                    stage.objects.emplace_back(std::make_unique<Goal>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                    stage.initialObjects.emplace_back(std::make_unique<Goal>(
+                        sf::Vector2i{c, r}, posWindow, stage.tile_size));
+                }
+
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
                     stage.objects.emplace_back(std::make_unique<TraceMonster>(
@@ -207,10 +227,6 @@ void Stage::createTiles(int tile_size) {
             float x = start_x + j * tile_size;
             float y = start_y + i * tile_size;
             tile->setPosition({x, y});
-
-            // Set tile appearance
-            tile->setOutlineThickness(1.0f);
-            tile->setOutlineColor(sf::Color(100, 100, 100));
             
             // Checkerboard colors
             char tileType = tileMap[i][j];
@@ -388,6 +404,18 @@ void Stage::draw(sf::RenderWindow& window) {
         window.draw(*shape);
     }
 
+    // Draw open space tiles which are not objects
+    for(const auto& tile : tileMap) {
+        for(const char& ch : tile) {
+            if(ch == SYMBOL_OPEN_SPACE) {
+                openSpace.setPosition(
+                    {start_x + (&ch - &tile[0]) * tile_size,
+                    start_y + (&tile - &tileMap[0]) * tile_size});
+                window.draw(openSpace);
+            }
+        }
+    }
+
     //Draw all objects
     for(auto& object : objects) {
         object->draw(window, tile_size);
@@ -446,7 +474,13 @@ void Stage::reset() {
 
     // Clone all initial objects back to objects
     for(const auto& objPtr : initialObjects) {
-        if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
+        if(Wall* wall = dynamic_cast<Wall*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Wall>(
+                wall->posTile, wall->posWindow, tile_size));
+        } else if(Goal* goal = dynamic_cast<Goal*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Goal>(
+                goal->posTile, goal->posWindow, tile_size));
+        } else if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
             objects.emplace_back(std::make_unique<TraceMonster>(
                 tm->posTile, tm->posWindow, tile_size));
         } else if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
