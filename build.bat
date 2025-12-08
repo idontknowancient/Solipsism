@@ -19,10 +19,16 @@ if errorlevel 1 goto error
 REM 編譯 Utils.cpp (輸出 Utils.o)
 echo Compiling Utils.cpp...
 g++ -std=c++17 -IC:\SFML-3.0.2\include -c Utils.cpp -o Utils.o
+if errorlevel 1 goto error
 
 REM 編譯 Shape.cpp (輸出 Shape.o)
 echo Compiling Shape.cpp...
 g++ -std=c++17 -IC:\SFML-3.0.2\include -c Shape.cpp -o Shape.o
+if errorlevel 1 goto error
+
+REM 編譯 Astar.cpp (輸出 Astar.o)
+echo Compiling Astar.cpp...
+g++ -std=c++17 -IC:\SFML-3.0.2\include -c Astar.cpp -o Astar.o
 if errorlevel 1 goto error
 
 REM 編譯 Object.cpp (輸出 Object.o)
@@ -37,7 +43,7 @@ if errorlevel 1 goto error
 
 REM 連結所有物件檔 (.o) - 輸出 game.exe
 echo Linking game.exe...
-g++ -LC:\SFML-3.0.2\lib .\Constants.o .\Logger.o .\Utils.o .\Shape.o .\Object.o .\Stage.o .\main.o -o game.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -mwindows
+g++ -LC:\SFML-3.0.2\lib .\Constants.o .\Logger.o .\Utils.o .\Shape.o .\Astar.o .\Object.o .\Stage.o .\main.o -o game.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -mwindows
 if errorlevel 1 goto error
 
 REM 清理物件檔 (可選，但在開發階段很有用)
@@ -46,6 +52,7 @@ del .\Constants.o
 del .\Logger.o
 del .\Utils.o
 del .\Shape.o
+del .\Astar.o
 del .\Object.o
 del .\Stage.o
 

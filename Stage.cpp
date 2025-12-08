@@ -6,22 +6,41 @@
 #include <iostream>
 #include <vector>
 
-Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), tile_size(100), player(Resource::getPlayerTexture()) {
+// Static member initialization
+sf::RectangleShape Stage::stageClearShape;
+RoundedRectangle Stage::buttonSelect(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+RoundedRectangle Stage::buttonRetry(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+RoundedRectangle Stage::buttonNext(0, 0, 0, 0, 0, 0, "", 0, Resource::getButtonFont());
+
+Stage::Stage(int stageId, int column, int row, int actionPerTurn) : stageId(stageId), row(row), column(column), actionPerTurn(actionPerTurn), 
+    openSpace(Resource::getOpenSpaceTexture()), backgroundSprite(Resource::getBackgroundStageTexture()),
+    stageClearSprite(Resource::getStageClearTexture()) {
+    // Initialize tile size based on window size and number of tiles
+    this->tileSize = std::min(WORLD_WIDTH / (column + 1), WORLD_HEIGHT / (row + 1));
+
     // Initialize start positions for the tile map in window coordinates
-    this->start_x = (WORLD_WIDTH - (column * tile_size)) / 2.f;
-    this->start_y = (WORLD_HEIGHT - (row * tile_size)) / 2.f;
+    this->start_x = (WORLD_WIDTH - (column * tileSize)) / 2.f;
+    this->start_y = (WORLD_HEIGHT - (row * tileSize)) / 2.f;
     
     // Initialize tile map with open space '-'
     tileMap.resize(row, std::vector<char>(column, '-'));
+
+    resizeTileTexture(openSpace, tileSize);
+    openSpace.setPosition({start_x, start_y});
+
+    resizeTileTexture(stageClearSprite, std::min(WORLD_WIDTH, WORLD_HEIGHT) * 0.8f);
+    stageClearSprite.setPosition({(WORLD_WIDTH - stageClearSprite.getGlobalBounds().size.x) / 2.f, 
+        (WORLD_HEIGHT - stageClearSprite.getGlobalBounds().size.y) / 2.f});
+    stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+    stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
+
+    setBackground(backgroundSprite, Resource::getBackgroundStageTexture(), BACKGROUND_TRANSLUCENT_STRONGER);
     
     // Create visual tiles for the stage (will be called after loading map from file)
     // createTiles(100) should be called after map is loaded
     
     Logger::log("Stage " + std::to_string(stageId) + " created with size (" 
         + std::to_string(column) + ", " + std::to_string(row) + ").");
-}
-
-Stage::~Stage() {
 }
 
 void Stage::createFromFile(std::vector<Stage>& stages) {
@@ -66,8 +85,8 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         Stage stage(stageId, column, row, actionPerTurn);
 
         // Parse pattern section
-        std::string dispensorPattern;
         std::string guardMonsterPattern;
+        std::string dispenserPattern;
         std::string slicedPattern;
 
         if(line == "PATTERN_START") {
@@ -75,10 +94,10 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             // Read until PATTERN_END
             while(std::getline(file, line) && line != "PATTERN_END") {
                 line = trim(line);
-                if(line.rfind("DISPENSOR:", 0) == 0) {
-                    dispensorPattern = line.substr(std::string("DISPENSOR:").size());
+                if(line.rfind("DISPENSER:", 0) == 0) {
+                    dispenserPattern = line.substr(std::string("DISPENSER:").size());
                     // Remove leading/trailing whitespace
-                    dispensorPattern = trim(dispensorPattern);
+                    dispenserPattern = trim(dispenserPattern);
                 } else if(line.rfind("GUARD_MONSTER:", 0) == 0) {
                     guardMonsterPattern = line.substr(std::string("GUARD_MONSTER:").size());
                     // e.g. U2D2L4 -> UUDDLLLL
@@ -89,8 +108,8 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             }
         }
         // Store patterns into stage
-        stage.setPatternDispensor(dispensorPattern);
         stage.setPatternGuardMonster(guardMonsterPattern);
+        stage.setPatternDispenser(dispenserPattern);
 
         // Find MAP_START
         while(std::getline(file, line) && line != "MAP_START") {
@@ -110,13 +129,50 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             for(int c = 0; c < column && c < static_cast<int>(line.size()); c++) {
                 char ch = line[c];
                 stage.tileMap[r][c] = ch;
+                // Initial position in window coordinates (middle)
+                sf::Vector2f posWindow = {stage.start_x + c * stage.tileSize, stage.start_y + r * stage.tileSize};
+
+                // Tile sprite creation
+                int variant = getVariantNumber();
+                sf::Sprite tileSprite(Resource::getOpenSpaceTexture(variant));
+                tileSprite.setPosition(posWindow);
+                resizeTileTexture(tileSprite, stage.tileSize);
+                stage.tileSprites.emplace_back(tileSprite);
+
+                // Object creation based on symbol
                 // Player
                 if(ch == SYMBOL_PLAYER) {
-                    stage.getPlayer().posTile = {c, r};
+                    // posWindow will be adjusted to the middle of the tile in Object constructor
+                    stage.player = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tileSize);
+                    stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{c, r}, posWindow, stage.tileSize);
+                    // Leave open space for player start
+                    stage.tileMap[r][c] = SYMBOL_OPEN_SPACE;
                 }
+
+                // Walls
+                else if(ch == SYMBOL_WALL) {
+                    stage.objects.emplace_back(std::make_unique<Wall>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
+                    stage.initialObjects.emplace_back(std::make_unique<Wall>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
+                }
+
+                // Goals
+                else if(ch == SYMBOL_GOAL) {
+                    stage.objects.emplace_back(std::make_unique<Goal>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
+                    stage.initialObjects.emplace_back(std::make_unique<Goal>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
+                }
+
                 // Trace monsters 
                 else if(ch == SYMBOL_TRACE_MONSTER) {
+                    stage.objects.emplace_back(std::make_unique<TraceMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
+                    stage.initialObjects.emplace_back(std::make_unique<TraceMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize));
                 }
+
                 // Guard monsters 
                 else if(ch == SYMBOL_GUARD_MONSTER) {
                     // Extract the first pattern segment (from start to first semicolon)
@@ -127,12 +183,29 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
                     } else {
                         slicedPattern = guardMonsterPattern;
                     }
-                    // Initial position in window coordinates
-                    sf::Vector2f posWindow = {stage.start_x + c * stage.tile_size, stage.start_y + r * stage.tile_size};
                     stage.objects.emplace_back(std::make_unique<GuardMonster>(
-                        sf::Vector2i{c, r}, posWindow, stage.tile_size, slicedPattern));
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
+                    stage.initialObjects.emplace_back(std::make_unique<GuardMonster>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
+                }
+
+                // Dispensers
+                else if(ch == SYMBOL_DISPENSER) {
+                    // Extract the first pattern segment (from start to first semicolon)
+                    int semicolonPos = dispenserPattern.find(';');
+                    if(semicolonPos != std::string::npos) {
+                        slicedPattern = dispenserPattern.substr(0, semicolonPos);
+                        dispenserPattern = dispenserPattern.substr(semicolonPos + 1);
+                    } else {
+                        slicedPattern = dispenserPattern;
+                    }
+                    stage.objects.emplace_back(std::make_unique<Dispenser>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
+                    stage.initialObjects.emplace_back(std::make_unique<Dispenser>(
+                        sf::Vector2i{c, r}, posWindow, stage.tileSize, slicedPattern));
                 }
             }
+
             // Fill remaining columns with open space if line shorter
             for(int c = static_cast<int>(line.size()); c < column; ++c) {
                 stage.tileMap[r][c] = '-';
@@ -145,10 +218,22 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
             }
         }
 
-        // Finally, advance to STAGE_END
+        // Save initial state for reset
+        stage.initialTileMap = stage.tileMap;
+
+        // Handle if symbol of player not found
+        if(!stage.player) {
+            Logger::log("Warning: Player symbol not found in stage " + std::to_string(stageId) + ". Creating default player at (0,0).");
+            stage.player = std::make_unique<Player>(sf::Vector2i{0, 0}, 
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tileSize);
+            stage.initialPlayer = std::make_unique<Player>(sf::Vector2i{0, 0}, 
+                sf::Vector2f{stage.start_x, stage.start_y}, stage.tileSize);
+        }
+
+        // Advance to STAGE_END
         while(line != "STAGE_END" && std::getline(file, line)) {}
 
-        stage.createTiles(stage.tile_size);
+        stage.createTiles();
         Logger::log("Total objects in stage " + std::to_string(stageId) + ": " + std::to_string(stage.objects.size()));
         Logger::log("Stage " + std::to_string(stageId) + " loaded from file.");
         stage.print();
@@ -156,13 +241,89 @@ void Stage::createFromFile(std::vector<Stage>& stages) {
         // Add stage to stages vector
         stages.emplace_back(std::move(stage));
     }
+        
+    // Setup stage clear overlay
+    Stage::stageClearShape.setSize({WORLD_WIDTH, WORLD_HEIGHT});
+    Stage::stageClearShape.setFillColor(STAGE_CLEAR_TRANSLUCENT);
+        
+    Stage::buttonSelect = RoundedRectangle(
+        BUTTON_CENTER_X - 250, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "SELECT", 30, Resource::getButtonFont()
+    );
+    Stage::buttonRetry = RoundedRectangle(
+        BUTTON_CENTER_X, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "RETRY", 30, Resource::getButtonFont()
+    );
+    Stage::buttonNext = RoundedRectangle(
+        BUTTON_CENTER_X + 250, BUTTON_CENTER_Y + 50,
+        BUTTON_RECTANGLE_WIDTH - 40, BUTTON_RECTANGLE_HEIGHT,
+        BUTTON_CIRCLE_RADIUS, BUTTON_SHADOW_OFFSET,
+        "NEXT", 30, Resource::getButtonFont()
+    );
 
     file.close();
 }
 
+void Stage::createTiles() {
+    for(int i = 0; i < row; i++) {
+        for(int j = 0; j < column; j++) {
+            // Use new to allocate on heap to prevent going out of scope
+            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tileSize, tileSize));
+            
+            // Set position
+            float x = start_x + j * tileSize;
+            float y = start_y + i * tileSize;
+            tile->setPosition({x, y});
+            
+            // Checkerboard colors
+            char tileType = tileMap[i][j];
+            switch(tileType) {
+                case SYMBOL_PLAYER:
+                    tile->setFillColor(TILE_COLOR_PLAYER);
+                    break;
+                case SYMBOL_GOAL:
+                    tile->setFillColor(TILE_COLOR_GOAL);
+                    break;
+                case SYMBOL_WALL:
+                    tile->setFillColor(TILE_COLOR_WALL);
+                    break;
+                case SYMBOL_DISPENSER:
+                    tile->setFillColor(TILE_COLOR_DISPENSER);
+                    break;
+                case SYMBOL_TRACE_MONSTER:
+                    tile->setFillColor(TILE_COLOR_TRACE_MONSTER);
+                    break;
+                case SYMBOL_GUARD_MONSTER:
+                    tile->setFillColor(TILE_COLOR_GUARD_MONSTER);
+                    break;
+                case SYMBOL_OPEN_SPACE:
+                default:
+                    tile->setFillColor(TILE_COLOR_NORMAL);
+                    break;
+            }
+            
+            shapes.emplace_back(std::unique_ptr<sf::Shape>(tile));
+            Logger::log_debug("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
+                + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
+        }
+    }
+}
+
 int Stage::getRow() const { return row; }
 int Stage::getColumn() const { return column; }
-Player& Stage::getPlayer() { return player; }
+Player& Stage::getPlayer() { return *player; }
+
+void Stage::setPatternDispenser(const std::string& pattern) {
+    patternDispenser = pattern;
+}
+
+void Stage::setPatternGuardMonster(const std::string& pattern) {
+    patternGuardMonster = pattern;
+}
 
 void Stage::addAction(const Action action) {
     actions.push(action);
@@ -195,16 +356,55 @@ void Stage::undoLastAction() {
 
 void Stage::handleObjectAction() {
     Logger::log("Handling object action.");
-    for(std::unique_ptr<Object>& object : objects) {
-        // Use .get() to access the raw pointer from unique_ptr
-        if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
-            guardMonster->update(tileMap, tile_size);
+    
+    // First handle projectiles
+    for(int i = 0; i < objects.size(); i++) {
+        std::unique_ptr<Object>& object = objects[i];
+
+        if(Arrow* arrow = dynamic_cast<Arrow*>(object.get())) {
+            // Store old position before update
+            sf::Vector2i oldPosTile = arrow->posTile;
+            
+            // Update arrow
+            arrow->update(tileMap, tileSize);
+            if(shouldRemoveProjectile(arrow, arrow->getOriginalPosTile(), i)) {
+                objectsToRemove.push_back(i);
+            }
         }
     }
+    // Then handle other objects
+    for(int i = 0; i < objects.size(); i++) {
+        std::unique_ptr<Object>& object = objects[i];
+        
+        // Use .get() to access the raw pointer from unique_ptr
+        if(TraceMonster* traceMonster = dynamic_cast<TraceMonster*>(object.get())) {
+            traceMonster->update(tileMap, tileSize, player->posTile);
+        } else if(GuardMonster* guardMonster = dynamic_cast<GuardMonster*>(object.get())) {
+            guardMonster->update(tileMap, tileSize);
+        } else if(Dispenser* dispenser = dynamic_cast<Dispenser*>(object.get())) {
+            dispenser->update(tileMap, tileSize, bufferObjects);
+        }
+    }
+
+    // Add buffered objects to main objects vector
+    for(auto& bufferedObject : bufferObjects) {
+        objects.emplace_back(std::move(bufferedObject));
+    }
+    bufferObjects.clear();
+    
+    // Remove projectiles in reverse order to avoid index shifting issues
+    for(int i = objectsToRemove.size() - 1; i >= 0; i--) {
+        int removeIndex = objectsToRemove[i];
+        objects.erase(objects.begin() + removeIndex);
+        Logger::log_debug("Removed arrow at index " + std::to_string(removeIndex));
+    }
+    objectsToRemove.clear();
+
+    Logger::log_debug("Remaining objects after handling actions: " + std::to_string(objects.size()));
 }
 
-void Stage::handleAction() {
-    Logger::log("Handling action.");
+void Stage::handlePlayerAction() {
+    Logger::log("Handling player action.");
     Action action = actions.front();
     actions.pop();
 
@@ -213,7 +413,7 @@ void Stage::handleAction() {
         case Action::MoveDown:
         case Action::MoveLeft:
         case Action::MoveRight:
-            moveEntitySuccessful(player, action);
+            player->update(tileMap, tileSize, action);
             break;
         case Action::Attack:
             // To be implemented
@@ -223,7 +423,45 @@ void Stage::handleAction() {
     }
 }
 
-void Stage::advance() {
+bool Stage::shouldRemoveProjectile(Projectile* projectile, sf::Vector2i oldPosTile, int i) {
+    // If projectile position didn't change, it hit a wall or obstacle
+    if(projectile->posTile == oldPosTile) {
+        tileMap[projectile->posTile.y][projectile->posTile.x] = '-';
+        Logger::log_debug("Arrow at (" + std::to_string(oldPosTile.x) + ", " + std::to_string(oldPosTile.y) + ") stopped and will be removed.");
+        return true;
+    } 
+
+    return false;
+}
+
+bool Stage::playerIsDead() {
+    // End position of player collides with any monster or projectile
+    char endTile = tileMap[player->posTile.y][player->posTile.x];
+    if(endTile == SYMBOL_TRACE_MONSTER || endTile == SYMBOL_GUARD_MONSTER || endTile == SYMBOL_ARROW) {
+        Logger::log("Player collided with a dangerous object at (" 
+            + std::to_string(player->posTile.x) + ", " + std::to_string(player->posTile.y) + ").");
+        return true;
+    }
+
+    // Player bumps into any monster or projectile
+    // Temporary no need to check
+
+    return false;
+}
+
+bool Stage::playerReachedGoal() {
+    // End position of player is on goal tile
+    char endTile = tileMap[player->posTile.y][player->posTile.x];
+    if(endTile == SYMBOL_GOAL) {
+        Logger::log("Player reached the goal at (" 
+            + std::to_string(player->posTile.x) + ", " + std::to_string(player->posTile.y) + ").");
+        return true;
+    }
+
+    return false;
+}
+
+void Stage::advance(GameState& gameState) {
     Logger::log("Advancing stage by " + std::to_string(actionPerTurn) + " actions.");
     for(int i = 0; i < actionPerTurn; i++) {
         if(actions.empty()) {
@@ -231,149 +469,59 @@ void Stage::advance() {
             break;
         }
         handleObjectAction();
-        handleAction();
-    }
-}
-
-void Stage::setPatternDispensor(const std::string& pattern) {
-    patternDispensor = pattern;
-}
-
-void Stage::setPatternGuardMonster(const std::string& pattern) {
-    patternGuardMonster = pattern;
-}
-
-void Stage::createTiles(int tile_size) {
-    this->tile_size = tile_size;
-
-    // Scale player sprite to fit tile size
-    sf::Sprite& playerSprite = player.getSprite();
-    playerSprite.scale({static_cast<float>(tile_size) / playerSprite.getTexture().getSize().x, 
-        static_cast<float>(tile_size) / playerSprite.getTexture().getSize().y});
-    player.posWindow = {start_x + player.posTile.x * tile_size, start_y + player.posTile.y * tile_size};
-    playerSprite.setPosition(player.posWindow);
-    Logger::log("Player positioned at (" 
-        + std::to_string(player.posWindow.x) + ", " 
-        + std::to_string(player.posWindow.y) + ").");
-
-    for(int i = 0; i < row; i++) {
-        for(int j = 0; j < column; j++) {
-            // Use new to allocate on heap to prevent going out of scope
-            sf::RectangleShape* tile = new sf::RectangleShape(sf::Vector2f(tile_size, tile_size));
-            
-            // Set position
-            float x = start_x + j * tile_size;
-            float y = start_y + i * tile_size;
-            tile->setPosition({x, y});
-
-            // Set tile appearance
-            tile->setOutlineThickness(1.0f);
-            tile->setOutlineColor(sf::Color(100, 100, 100));
-            
-            // Checkerboard colors
-            char tileType = tileMap[i][j];
-            switch(tileType) {
-                case SYMBOL_PLAYER:
-                    tile->setFillColor(TILE_COLOR_PLAYER);
-                    break;
-                case SYMBOL_GOAL:
-                    tile->setFillColor(TILE_COLOR_GOAL);
-                    break;
-                case SYMBOL_WALL:
-                    tile->setFillColor(TILE_COLOR_WALL);
-                    break;
-                case SYMBOL_DISPENSOR:
-                    tile->setFillColor(TILE_COLOR_DISPENSOR);
-                    break;
-                case SYMBOL_TRACE_MONSTER:
-                    tile->setFillColor(TILE_COLOR_TRACE_MONSTER);
-                    break;
-                case SYMBOL_GUARD_MONSTER:
-                    tile->setFillColor(TILE_COLOR_GUARD_MONSTER);
-                    break;
-                case SYMBOL_OPEN_SPACE:
-                default:
-                    tile->setFillColor(TILE_COLOR_NORMAL);
-                    break;
-            }
-            
-            shapes.emplace_back(std::unique_ptr<sf::Shape>(tile));
-            Logger::log("Created tile at (" + std::to_string(j) + ", " + std::to_string(i) + ") of type '" 
-                + tileType + "' at position (" + std::to_string(x) + ", " + std::to_string(y) + ").");
+        handlePlayerAction();
+        if(playerIsDead()) {
+            Logger::log("Player has died. Stopping stage advance. Starting reset.");
+            Logger::log_debug("Stage state before reset:");
+            print();
+            reset();
+            return;
+        }
+        if(playerReachedGoal()) {
+            Logger::log("Player has reached the goal! Stopping stage advance.");
+            gameState = GameState::StageClear;
+            return;
         }
     }
+    Logger::log_debug("Stage advanced.");
+    Logger::log_debug("Stage state after advance:");
+    print();
 }
 
-bool Stage::isValidMove(Object& object, const Action& action) {
-    sf::Vector2i newPos = object.posTile;
-    if(action == Action::MoveUp) {
-        newPos.y -= 1;
-    } else if(action == Action::MoveDown) {
-        newPos.y += 1;
-    } else if(action == Action::MoveLeft) {
-        newPos.x -= 1;
-    } else if(action == Action::MoveRight) {
-        newPos.x += 1;
-    }
+void Stage::draw(sf::RenderWindow& window, const GameState& gameState) {
+    // Draw background
+    window.draw(backgroundSprite);
 
-    // Check bounds
-    if(newPos.x < 0 || newPos.x >= column || newPos.y < 0 || newPos.y >= row) {
-        Logger::log("Move out of bounds to (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
-        return false;
-    }
-
-    // Check tile type
-    char tileType = tileMap[newPos.y][newPos.x];
-    if(tileType == 'X') { // Wall
-        Logger::log("Move blocked by wall at (" + std::to_string(newPos.x) + ", " + std::to_string(newPos.y) + ").");
-        return false;
-    }
-
-    return true; // Valid move
-}
-
-bool Stage::moveEntitySuccessful(Object& object, const Action& action) {
-    if(!isValidMove(object, action)) return false;
-
-    // Update tile and window position
-    if(action == Action::MoveUp) {
-        object.posTile.y -= 1;
-        object.posWindow.y -= tile_size;
-    } else if(action == Action::MoveDown) {
-        object.posTile.y += 1;
-        object.posWindow.y += tile_size;
-    } else if(action == Action::MoveLeft) {
-        object.posTile.x -= 1;
-        object.posWindow.x -= tile_size;
-    } else if(action == Action::MoveRight) {
-        object.posTile.x += 1;
-        object.posWindow.x += tile_size;
-    }
-    object.getSprite().setPosition(object.posWindow);
-
-    Logger::log("Entity moved to (" 
-        + std::to_string(object.posTile.x) + ", " 
-        + std::to_string(object.posTile.y) + ").");
-    return true;
-}
-
-void Stage::draw(sf::RenderWindow& window) {
     // Draw all shapes
     for(const auto& shape : shapes) {
         window.draw(*shape);
     }
 
+    // Draw open space tiles which are not objects
+    for(const auto& tileSprite : tileSprites) {
+        window.draw(tileSprite);
+    }
+
     //Draw all objects
     for(auto& object : objects) {
-        object->draw(window, tile_size);
+        object->draw(window, tileSize);
     }
 
     // Draw player
-    player.draw(window, tile_size);
+    player->draw(window, tileSize);
 
+    // If stage clear, draw stage clear sprite
+    if(gameState == GameState::StageClear) {
+        window.draw(Stage::stageClearShape);
+        window.draw(stageClearSprite);
+        Stage::buttonSelect.draw(window);
+        Stage::buttonRetry.draw(window);
+        Stage::buttonNext.draw(window);
+    }
 }
 
 void Stage::print() const {
+    Logger::log_debug("=====================");
     Logger::log_debug("Printing tile map for Stage " + std::to_string(stageId) + ":");
     Logger::log_debug("Size (" + std::to_string(column) + ", " + std::to_string(row) + "):");
     Logger::log_debug("Action Per Turn: " + std::to_string(actionPerTurn));
@@ -386,7 +534,61 @@ void Stage::print() const {
         Logger::log_debug(line);
     }
     Logger::log_debug("=====================");
-    Logger::log_debug("Pattern Dispensor: " + patternDispensor);
     Logger::log_debug("Pattern Guard Monster: " + patternGuardMonster);
+    Logger::log_debug("Pattern Dispenser: " + patternDispenser);
     Logger::log_debug("=====================");
+}
+
+void Stage::reset() {
+    Logger::log("Resetting stage " + std::to_string(stageId) + " to initial state.");
+
+    // Clear any queued actions
+    while(!actions.empty()) actions.pop();
+
+    // Restore tile map
+    if(!initialTileMap.empty()) {
+        tileMap = initialTileMap;
+    } else {
+        Logger::log_debug("No initial tileMap stored; skipping restore.");
+    }
+
+    // Clear current objects and shapes
+    objects.clear();
+    shapes.clear();
+
+    // Restore player from initial state
+    if(initialPlayer) {
+        player = std::make_unique<Player>(initialPlayer->posTile, initialPlayer->posWindow, tileSize);
+        Logger::log("Player reset to initial position (" + std::to_string(initialPlayer->posTile.x) + ", " + std::to_string(initialPlayer->posTile.y) + ").");
+    } else {
+        // If no initial player was stored, create default
+        player = std::make_unique<Player>(sf::Vector2i{0,0}, sf::Vector2f{start_x, start_y}, tileSize);
+        Logger::log_debug("No initial player found; created default player at (0,0).");
+    }
+
+    // Clone all initial objects back to objects
+    for(const auto& objPtr : initialObjects) {
+        if(Wall* wall = dynamic_cast<Wall*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Wall>(
+                wall->posTile, wall->posWindow, tileSize));
+        } else if(Goal* goal = dynamic_cast<Goal*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Goal>(
+                goal->posTile, goal->posWindow, tileSize));
+        } else if(TraceMonster* tm = dynamic_cast<TraceMonster*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<TraceMonster>(
+                tm->posTile, tm->posWindow, tileSize));
+        } else if(GuardMonster* gm = dynamic_cast<GuardMonster*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<GuardMonster>(
+                gm->posTile, gm->posWindow, tileSize, gm->getBehaviorPattern()));
+        } else if(Dispenser* disp = dynamic_cast<Dispenser*>(objPtr.get())) {
+            objects.emplace_back(std::make_unique<Dispenser>(
+                disp->posTile, disp->posWindow, tileSize, disp->getBehaviorPattern()));
+        }
+    }
+
+    // Recreate visual tiles
+    createTiles();
+
+    Logger::log("Stage " + std::to_string(stageId) + " reset complete.");
+    print();
 }
