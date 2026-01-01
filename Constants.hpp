@@ -20,12 +20,24 @@ enum class Action {
     None,
 };
 
-// Inline ensures single definition across translation units
-// Global settings
-inline const bool DEBUG_MODE = true;
-inline const int WORLD_WIDTH = 1920;
-inline const int WORLD_HEIGHT = 1080;
-inline const int FRAME_RATE = 60;
+// Configuration class to load settings from file
+class Config {
+public:
+    // Global settings
+    static bool DEBUG_MODE;
+    static int WORLD_WIDTH;
+    static int WORLD_HEIGHT;
+    static int FRAME_RATE;
+    static float BGM_VOLUME;
+    static float ZOOM_RATE;
+    
+    // Load configuration from file
+    static void init(const std::string& configFile = "config.txt");
+    
+private:
+    Config() = delete;
+    ~Config() = delete;
+};
 
 // Resource files
 inline const std::string GAME_TITLE = "Solipsism";
@@ -51,8 +63,7 @@ inline const std::string TRAP_TEXTURE_FILE = "assets/trap.jpg";
 inline const std::string BUTTON_FONT_FILE = "assets/Conthrax.otf";
 inline const std::string STAGE_FILE = "stages.txt";
 
-inline const float BGM_VOLUME = 10.f;
-inline const float ZOOM_RATE = 0.1f; // Rate of zooming in/out per mouse wheel scroll
+// BGM_VOLUME and ZOOM_RATE moved to Config class
 
 // Colors
 inline const sf::Color BACKGROUND_TRANSLUCENT = sf::Color(255, 255, 255, 150);
@@ -94,6 +105,32 @@ inline const float BUTTON_SHADOW_OFFSET = 4.f;
 inline const sf::Color BUTTON_RECTANGLE_COLOR = sf::Color(40, 40, 40);
 inline const sf::Color BUTTON_SHADOW_COLOR = sf::Color(0, 0, 0, 150);
 inline const sf::Color BUTTON_TEXT_COLOR = sf::Color(200, 200, 200);
+
+class Config {
+private:
+    static bool DEBUG_MODE;
+    static int WORLD_WIDTH;
+    static int WORLD_HEIGHT;
+    static int FRAME_RATE;
+
+public:
+    Config() = delete;
+    ~Config() = delete;
+
+    static void init();
+
+    static bool isDebugMode();
+    static void setDebugMode(bool debug);
+
+    static int getWorldWidth();
+    static void setWorldWidth(int width);
+
+    static int getWorldHeight();
+    static void setWorldHeight(int height);
+
+    static int getFrameRate();
+    static void setFrameRate(int frameRate);
+};
 
 class Resource {
 private:

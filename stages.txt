@@ -2,6 +2,7 @@ STAGE_START
 STAGE_ID: 1
 COLUMN: 5
 ROW: 5
+ACTION_PER_TURN: 3
 PATTERN_START
 DISPENSER: LLX;
 PATTERN_END
@@ -20,7 +21,7 @@ STAGE_START
 STAGE_ID: 2
 COLUMN: 15
 ROW: 10
-ACTION_PER_TURN: 1
+ACTION_PER_TURN: 3
 PATTERN_START
 DISPENSER: DXDDX;DDDDX;UXUUR;
 GUARD_MONSTER: UD7U6;U2R2D4L2U2;
@@ -47,8 +48,8 @@ COLUMN: 20
 ROW: 15
 ACTION_PER_TURN: 1
 PATTERN_START
-DISPENSER: LLDXLDD;LDDXUX;RRXRX;ULD;RDLU;RXX;UXXLUX;UUXX;
-GUARD_MONSTER: R5L5;DL5U3R5D2;LDLLDLDURURRUR;UL2D2R2U;U2L4DL7DUR7UR4D2;
+DISPENSER: LLDXLDD;LDDXUX;RRXRX;UUDDLL;ULD;RDLU;LLLLX;RXX;UUULL;UXXLUX;UUXX;
+GUARD_MONSTER: R5L5;DL5U3R5D2;LDLLDLDURURRUR;L3R3;L3R3;UL2D2R2U;U2L4DL7DUR7UR4D2;
 PATTERN_END
 MAP_START
 ## P: Player start / X: Wall / M: Trace Monster / m: Guard Monster
@@ -57,16 +58,16 @@ P---------D--M------
 ---DXXm-------------
 ----XXm--X-------XXX
 ---------X----------
-MD-------m---X------
+MD-------m---X-X-X-X
 XX-----------M------
-XX-----X------------
--------X------------
--------X----XX-----D
+XX-----X---X---m---m
+-------X---X--------
+-------X--DXXX-----D
 --D-----------------
 -------X-----mXXX---
--------X------------
+-------X-----------D
 XXXX---X--XXXXX-----
-D------X------------
-G---D-DX---GGG----Mm
+D------X---------D--
+G-X-D-DXM-XGGGXX--Mm
 MAP_END
 STAGE_END

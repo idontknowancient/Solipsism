@@ -1,0 +1,16 @@
+# Game Configuration File
+# Format: KEY=VALUE (no spaces around =)
+
+# Window Settings
+WORLD_WIDTH=1920
+WORLD_HEIGHT=1080
+FRAME_RATE=60
+
+# Debug Settings
+DEBUG_MODE=true
+
+# Audio Settings
+BGM_VOLUME=10.0
+
+# Gameplay Settings
+ZOOM_RATE=0.1
